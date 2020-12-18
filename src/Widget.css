@@ -1,0 +1,13 @@
+
+.widget {
+    text-align: center;
+    padding: 10px 50px 10px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    height: fit-content;
+}
+
+.button {
+    background-color: #2190d9;
+}

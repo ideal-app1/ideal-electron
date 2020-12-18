@@ -1,0 +1,16 @@
+
+.column {
+    background-color: lightsalmon;
+}
+
+.row {
+    background-color: lightgreen;
+}
+
+.center {
+    background-color: lightskyblue;
+}
+
+.layout {
+    height: 100%;
+}
