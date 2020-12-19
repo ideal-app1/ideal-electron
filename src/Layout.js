@@ -10,7 +10,7 @@ const Layout = props => {
 
     const [widgetList, setWidgetList] = useState([])
 
-    const [{isOver}, drop] = useDrop({
+    const [{isOver, isOverCurrent}, drop] = useDrop({
         accept: WidgetType.LIST,
         drop: (item, monitor) => {
             const didDrop = monitor.didDrop();
@@ -20,17 +20,14 @@ const Layout = props => {
             const tmpItem = {
                     _id: uuid(),
                     type: WidgetType.VUE,
-                    name: item.name,
-                    class: item.class,
-                    direction: item.direction,
-                    justify: item.justify,
-                    align: item.align
+                    ...item
                 };
             setWidgetList([...widgetList, tmpItem]);
             console.log(widgetList)
         },
         collect: (monitor) => ({
-            isOver: monitor.isOver({ shallow: false }),
+            isOver: monitor.isOver(),
+            isOverCurrent: monitor.isOver({ shallow: true }),
         }),
     });
 
@@ -42,42 +39,25 @@ const Layout = props => {
             alignItems={props.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
+            style={isOverCurrent ? {filter: "brightness(85%)"} : {}}
             ref={drop}>
             {
                 widgetList.map(widget => {
-                    console.log(this, widgetList)
                     if (widget.class === WidgetClass.WIDGET) {
                         return (
-                            <Widget
-                                key={widget._id.toString()}
-                                _id={widget._id}
-                                name={widget.name}
-                                class={widget.class}
-                                type={widget.type}
-                            />
+                            <Widget key={widget._id.toString()} {...widget}/>
                         );
                     }
                     else if (widget.class === WidgetClass.LAYOUT) {
                         return (
-                            <Layout
-                                key={widget._id.toString()}
-                                _id={widget._id}
-                                name={widget.name}
-                                class={widget.class}
-                                type={widget.type}
-                                direction={widget.direction}
-                                justify={widget.justify}
-                                alignItems={widget.align}
-                            />
+                            <Layout key={widget._id.toString()} {...widget}/>
                         );
                     }
-                    return (<div/>);
                 })
             }
         </Grid>
     );
 };
-
 
 
 export default Layout

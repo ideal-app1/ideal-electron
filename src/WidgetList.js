@@ -11,7 +11,7 @@ export const Widgets = () => {
             class: WidgetClass.LAYOUT,
             direction: "column",
             justify: "flex-start",
-            align: "flex-start"
+            align: "center"
         },
         {
             _id: uuid(),
@@ -39,16 +39,11 @@ export const Widgets = () => {
     return (
         <div className={"widget-list"}>
             {
-                widgetList.map((widget, i) => (
+                widgetList.map(widget => (
                     <Widget
                         key={widget._id.toString()}
-                        _id={widget._id}
-                        name={widget.name}
-                        class={widget.class}
                         type={WidgetType.LIST}
-                        direction={widget.direction}
-                        justify={widget.justify}
-                        align={widget.align}
+                        {...widget}
                     />
                 ))
             }

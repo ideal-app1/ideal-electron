@@ -14,3 +14,7 @@
 .layout {
     height: 100%;
 }
+
+.hovered {
+    filter: brightness(0.9);
+}

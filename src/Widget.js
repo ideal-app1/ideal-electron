@@ -6,15 +6,7 @@ import "./Layout.css"
 const Widget = props => {
 
     const [{isDragging}, drag] = useDrag({
-        item: {
-            _id: props._id,
-            type: props.type,
-            name: props.name,
-            class: props.class,
-            direction: props.direction,
-            justify: props.justify,
-            align: props.align
-        },
+        item: {...props},
     });
 
     return (
