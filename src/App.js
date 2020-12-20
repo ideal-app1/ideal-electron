@@ -1,5 +1,5 @@
 import React from 'react';
-import {Widgets} from "./WidgetList";
+import {WidgetList} from "./WidgetList";
 import './App.css';
 import Phone from "./Phone";
 import {DndProvider} from "react-dnd";
@@ -12,7 +12,7 @@ class App extends React.Component {
             <div className="App">
                 <header className="App-header">
                     <DndProvider backend={HTML5Backend}>
-                        <Widgets/>
+                        <WidgetList/>
                         <Phone/>
                     </DndProvider>
                 </header>

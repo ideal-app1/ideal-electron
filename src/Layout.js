@@ -18,16 +18,15 @@ const Layout = props => {
                 return;
             }
             const tmpItem = {
-                    _id: uuid(),
-                    type: WidgetType.VUE,
-                    ...item
-                };
+                ...item,
+                _id: uuid(),
+                type: WidgetType.VUE
+            };
             setWidgetList([...widgetList, tmpItem]);
-            console.log(widgetList)
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
-            isOverCurrent: monitor.isOver({ shallow: true }),
+            isOverCurrent: monitor.isOver({ shallow: true })
         }),
     });
 
@@ -44,14 +43,10 @@ const Layout = props => {
             {
                 widgetList.map(widget => {
                     if (widget.class === WidgetClass.WIDGET) {
-                        return (
-                            <Widget key={widget._id.toString()} {...widget}/>
-                        );
+                        return (<Widget key={widget._id.toString()} {...widget}/>);
                     }
                     else if (widget.class === WidgetClass.LAYOUT) {
-                        return (
-                            <Layout key={widget._id.toString()} {...widget}/>
-                        );
+                        return (<Layout key={widget._id.toString()} {...widget}/>);
                     }
                 })
             }
