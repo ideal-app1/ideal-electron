@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 import Widget from "./Widget";
 import {WidgetType, WidgetClass} from "./utils/WidgetUtils";
 
-export const WidgetList = () => {
+export const Widgets = () => {
     const widgetList = [
         {
             _id: uuid(),
