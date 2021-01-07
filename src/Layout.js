@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 const Layout = props => {
 
     const [widgetList, setWidgetList] = useState([])
-
+// eslint-disable-next-line
     const [{isOver, isOverCurrent}, drop] = useDrop({
         accept: WidgetType.LIST,
         drop: (item, monitor) => {
@@ -41,6 +41,7 @@ const Layout = props => {
             style={isOverCurrent ? {filter: "brightness(85%)"} : {}}
             ref={drop}>
             {
+            // eslint-disable-next-line
                 widgetList.map(widget => {
                     if (widget.class === WidgetClass.WIDGET) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);

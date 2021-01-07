@@ -4,7 +4,7 @@ import "./Widget.css"
 import "./Layout.css"
 
 const Widget = props => {
-
+// eslint-disable-next-line
     const [{isDragging}, drag] = useDrag({
         item: {...props},
     });
