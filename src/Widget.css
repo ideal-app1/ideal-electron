@@ -11,3 +11,11 @@
 .button {
     background-color: #2190d9;
 }
+
+.text {
+    background-color: lightcoral;
+}
+
+.empty {
+    background: none;
+}

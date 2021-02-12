@@ -1,9 +1,10 @@
 import React from 'react';
-import {Widgets} from "./WidgetList";
+import {Library} from "./Library";
 import './App.css';
 import Phone from "./Phone";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import WidgetProperties from "./WidgetProperties";
 import {
     BrowserRouter as Router,
     Switch,
@@ -22,11 +23,12 @@ class App extends React.Component {
                         <div className="App">
                             <header className="App-header">
                                 <DndProvider backend={HTML5Backend}>
-                                    <Widgets/>
+                                    <Library/>
                                     <Phone/>
                                     <Link to={"/a"}>
                                         cya
                                     </Link>
+                                    <WidgetProperties ref={WidgetProperties.getInstance()}/>
                                 </DndProvider>
                             </header>
                         </div>
