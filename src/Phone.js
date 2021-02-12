@@ -5,12 +5,15 @@ import Layout from "./Layout";
 
 const Phone = () => {
     return (
-        <div className={"phone-view"}>
+        <div className={"phone"}>
             <Layout
                 name={"root"}
-                direction={"column"}
-                justify={"flex-start"}
-                alignItems={"flex-start"}/>
+                properties={{
+                    direction: "column",
+                    justify: "flex-start",
+                    align: "flex-start"
+                }}
+            />
         </div>
     );
 };

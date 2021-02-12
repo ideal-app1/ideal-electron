@@ -1,9 +1,9 @@
 export const WidgetType = {
-    LIST: 'list',
-    VUE: 'vue',
+    LIBRARY: 'library',
+    PHONE: 'phone',
 }
 
-export const WidgetClass = {
+export const WidgetGroup = {
     LAYOUT: 'layout',
     WIDGET: 'widget'
 }
