@@ -10,30 +10,29 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import Osef from "./osef";
+import CodeLink from "./CodeLink";
 
 class App extends React.Component {
 
     render() {
         return (
             <Router>
-
                 <Switch>
-                    <Route exact path = "/">
+                    <Route exact path="/">
                         <div className="App">
                             <header className="App-header">
                                 <DndProvider backend={HTML5Backend}>
                                     <Widgets/>
                                     <Phone/>
                                     <Link to={"/a"}>
-                                        <Osef/>
+                                        cya
                                     </Link>
                                 </DndProvider>
                             </header>
                         </div>
                     </Route>
-                    <Route exact path="/a">
-                        <Osef/>
+                    <Route  path="/a">
+                        <CodeLink/>
                         <Link to={"/"}>
                             back
                         </Link>
