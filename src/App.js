@@ -1,17 +1,16 @@
 import React from 'react';
-import {Library} from "./Library";
+import {Library} from "./Components/Main/Components/Library/Library";
 import './App.css';
-import Phone from "./Phone";
-import {DndProvider} from "react-dnd";
-import {HTML5Backend} from "react-dnd-html5-backend";
-import WidgetProperties from "./WidgetProperties";
+import Phone from "./Components/Main/Components/Phone/Phone"
+import WidgetProperties from "./Components/Main/Components/WidgetProperties/WidgetProperties";
+import Main from "./Components/Main/Main";
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
 } from "react-router-dom";
-import CodeLink from "./CodeLink";
+import CodeLink from "./Components/CodeLink/CodeLink";
 
 class App extends React.Component {
 
@@ -20,18 +19,7 @@ class App extends React.Component {
             <Router>
                 <Switch>
                     <Route exact path="/">
-                        <div className="App">
-                            <header className="App-header">
-                                <DndProvider backend={HTML5Backend}>
-                                    <Library/>
-                                    <Phone/>
-                                    <Link to={"/a"}>
-                                        cya
-                                    </Link>
-                                    <WidgetProperties ref={WidgetProperties.getInstance()}/>
-                                </DndProvider>
-                            </header>
-                        </div>
+                        <Main/>
                     </Route>
                     <Route  path="/a">
                         <CodeLink/>

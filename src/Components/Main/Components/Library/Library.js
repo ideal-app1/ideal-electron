@@ -1,8 +1,8 @@
 import React, {Fragment} from "react";
 import "./Library.css"
 import { v4 as uuid } from 'uuid';
-import LibraryWidget from "./LibraryWidget";
-import {WidgetType, WidgetGroup} from "./utils/WidgetUtils";
+import LibraryWidget from "./Components/LibraryWidget/LibraryWidget";
+import {WidgetType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";

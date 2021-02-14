@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import "./Layout.css"
 import {useDrop} from "react-dnd";
-import {WidgetType, WidgetGroup} from "./utils/WidgetUtils"
-import Widget from "./Widget";
+import {WidgetType, WidgetGroup} from "../../../../../../utils/WidgetUtils"
+import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
 import { v4 as uuid } from 'uuid';
-import WidgetDropPreview from "./WidgetDropPreview";
+import WidgetDropPreview from "../WidgetDropPreview/WidgetDropPreview";
 
 const Layout = props => {
 
