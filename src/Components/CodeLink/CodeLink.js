@@ -1,8 +1,4 @@
 import React from "react";
-import Rete from "rete";
-import ConnectionPlugin from 'rete-connection-plugin';
-import VueRenderPlugin from 'rete-vue-render-plugin';
-import ReactRenderPlugin from 'rete-react-render-plugin';
 import {LGraph, LGraphCanvas, LiteGraph} from "litegraph.js"
 import "./litegraph.css"
 

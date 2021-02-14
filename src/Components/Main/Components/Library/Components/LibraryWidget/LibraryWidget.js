@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag } from 'react-dnd'
 import "../Widget/Widget.css"
-import "../Layout/Layout.css"
+import "../../../Phone/Components/Layout/Layout.css"
 
 const LibraryWidget = props => {
 
