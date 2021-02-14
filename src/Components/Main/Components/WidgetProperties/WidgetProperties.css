@@ -1,4 +1,8 @@
 .widget-properties {
     background-color: #3c414e;
     font-size: 14px;
+    height: 98vh;
+    width: 20vh;
+    padding: 2vh !important;
+    right: 0;
 }

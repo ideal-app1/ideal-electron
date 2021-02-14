@@ -6,7 +6,6 @@ import WidgetProperties from "./Components/WidgetProperties/WidgetProperties";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
-import FlutterCreation from "./Components/Flutter/FlutterCreation";
 
 import {
     Link
@@ -36,7 +35,7 @@ class Main extends React.Component {
             </div>
         );
     }
-};
+}
 
 
 export default Main
