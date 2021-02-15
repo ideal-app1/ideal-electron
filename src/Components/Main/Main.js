@@ -22,7 +22,7 @@ class Main extends React.Component {
                         <Library/>
                         <Phone/>
                         <Link to={"/a"}>
-                            cya
+                            CodeLink
                         </Link>
                         <WidgetProperties ref={WidgetProperties.getInstance()}/>
                     </DndProvider>
