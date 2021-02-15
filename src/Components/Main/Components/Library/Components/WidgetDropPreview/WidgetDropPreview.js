@@ -1,5 +1,5 @@
 import React from "react";
-import Widget from "./Widget";
+import Widget from "../Widget/Widget";
 
 const WidgetDropPreview = (widget, isOverCurrent) => {
     if (isOverCurrent && widget._id) {

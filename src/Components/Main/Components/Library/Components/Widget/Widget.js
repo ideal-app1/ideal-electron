@@ -1,8 +1,8 @@
 import React from "react";
 import { useDrag } from 'react-dnd'
 import "./Widget.css"
-import "./Layout.css"
-import WidgetProperties from "./WidgetProperties";
+import "../../../Phone/Components/Layout/Layout.css"
+import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 
 const Widget = props => {
 // eslint-disable-next-line
