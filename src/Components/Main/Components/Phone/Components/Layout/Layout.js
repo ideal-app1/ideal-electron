@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import "./Layout.css"
 import {useDrop} from "react-dnd";
 import {WidgetType, WidgetGroup} from "../../../../../../utils/WidgetUtils"
-import Widget from "../Widget/Widget";
+import Widget from "../../../Library/Components/Widget/Widget";
 import {Grid} from "@material-ui/core";
 import { v4 as uuid } from 'uuid';
-import WidgetDropPreview from "../WidgetDropPreview/WidgetDropPreview";
+import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
+import WidgetDropPreview from "../../../Library/Components/WidgetDropPreview/WidgetDropPreview";
 
 const Layout = props => {
 
@@ -48,6 +49,7 @@ const Layout = props => {
             onClick={(event) => {
                 event.stopPropagation()
                 console.log("clicked => " + props.name)
+                WidgetProperties.getInstance().current.handleSelect(props)
             }}
             ref={drop}>
             {

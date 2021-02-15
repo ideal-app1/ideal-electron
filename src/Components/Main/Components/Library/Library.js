@@ -44,13 +44,16 @@ export const Library = () => {
             _id: uuid(),
             name: "button",
             group: WidgetGroup.WIDGET,
-            properties: {}
+            properties: {
+                color: "blue"
+            }
         },
         {
             _id: uuid(),
             name: "text",
             group: WidgetGroup.WIDGET,
             properties: {
+                text: "text",
                 empty: true
             }
         }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./Phone.css"
-import Layout from "../Library/Components/Layout/Layout";
+import Layout from "./Components/Layout/Layout";
 
 
 const Phone = () => {
