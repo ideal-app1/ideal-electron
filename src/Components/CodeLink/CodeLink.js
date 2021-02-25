@@ -7,7 +7,13 @@ import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
 const fs = window.require("fs")
 
-class CodeLink extends React.Component {
+function Addition(a,b) {
+    return a + b;
+}
+
+function NewNode() {
+    LiteGraph.wrapFunctionAsNode("CodeLink/Addition", Addition,["Number","Number"],"Number");
+}
 
     #graph = new LGraph();
 
