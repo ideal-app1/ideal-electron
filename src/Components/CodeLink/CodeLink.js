@@ -11,24 +11,10 @@ function Addition(a,b) {
     return a + b;
 }
 
-function NewNode() {
-    LiteGraph.wrapFunctionAsNode("CodeLink/Addition", Addition,["Number","Number"],"Number");
-}
+class CodeLink extends React.Component {
+
 
     #graph = new LGraph();
-
-   /* deduceType = (funct) => {
-        let returnValue = funct["return"];
-
-        funct["annotations"].forEach((annotation) => {
-            if (annotation["name"] === "TemplatedArg") {
-                if (annotation["parameters"].length > 0 && annotation["parameters"][0]["value"] == true) {
-                    returnValue = undefined;
-                }
-            }
-        });
-        return (returnValue);
-    }*/
 
     createConstValueNodes = (constValue) => {
 
