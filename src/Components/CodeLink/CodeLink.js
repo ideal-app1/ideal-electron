@@ -4,6 +4,7 @@ import "./litegraph.css"
 import createNode from "./CodeLinkNodes/test"
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
+import createSplitter from "./CodeLinkNodes/Splitter";
 const fs = window.require("fs")
 
 class CodeLink extends React.Component {
@@ -59,6 +60,8 @@ class CodeLink extends React.Component {
 
         parsed["funcs"].forEach(createBasicFunction);
         parsed["constValues"].forEach(createValue);
+        createSplitter();
+
     }
 
     addNodes = () => {
@@ -68,7 +71,7 @@ class CodeLink extends React.Component {
     init = () => {
 
         this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
-
+        LiteGraph.clearRegisteredTypes()
        /* const node1 = LiteGraph.createNode("basic/const")
         node1.pos  = [100, 100];
         this.#graph.add(node1)
