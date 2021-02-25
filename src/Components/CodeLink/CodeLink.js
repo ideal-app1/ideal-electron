@@ -2,10 +2,18 @@ import React from "react";
 import {LGraph, LGraphCanvas, LiteGraph} from "litegraph.js"
 import "./litegraph.css"
 
+function Addition(a,b) {
+    return a + b;
+}
+
+function NewNode() {
+    LiteGraph.wrapFunctionAsNode("CodeLink/Addition", Addition,["Number","Number"],"Number");
+}
+
 class CodeLink extends React.Component {
 
-
     funct = () => {
+        NewNode();
         var graph = new LGraph();
 
         this.Lcanvas = new LGraphCanvas(this.canvas, graph);
