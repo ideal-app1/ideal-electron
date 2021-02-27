@@ -56,6 +56,23 @@ export const Library = () => {
                 text: "text",
                 empty: true
             }
+        },
+        {
+            _id: uuid(),
+            name: "text field",
+            group: WidgetGroup.WIDGET,
+            properties: {
+                placeholder: "Text field",
+                focus: false
+            }
+        },
+        {
+            _id: uuid(),
+            name: "image",
+            group: WidgetGroup.WIDGET,
+            properties: {
+                rounded: true
+            }
         }
     ]
 

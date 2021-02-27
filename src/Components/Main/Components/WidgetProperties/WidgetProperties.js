@@ -39,8 +39,14 @@ class WidgetProperties extends React.Component {
                                 return (
                                     <ListItem key={k}>{k}:
                                         <TextField defaultValue={v.toString()} variant="outlined" onChange={entry => {
-                                            console.log(entry.target.value)
-                                            this.setState({...this.state, text: entry.target.value})
+                                            const updateState = {
+                                                ...this.state,
+                                                properties: {
+                                                    ...this.state.properties,
+                                                    text: entry.target.value}
+                                            }
+                                            this.setState(updateState)
+                                            this.state.update(updateState)
                                         }}/>
                                     </ListItem>
                                 );

@@ -15,11 +15,10 @@ const Widget = props => {
             className={"widget " + props.name}
             onClick={(event) => {
                 event.stopPropagation()
-                console.log("clicked => " + props.name)
                 WidgetProperties.getInstance().current.handleSelect(props)
             }}
             ref={drag}>
-            {props.name}
+            {props.properties.text ? props.properties.text : props.name}
         </div>
     );
 }

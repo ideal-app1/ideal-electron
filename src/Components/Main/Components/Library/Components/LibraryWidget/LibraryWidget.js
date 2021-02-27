@@ -1,6 +1,6 @@
 import React from "react";
 import { useDrag } from 'react-dnd'
-import "../Widget/Widget.css"
+import "./LibraryWidget.css"
 import "../../../Phone/Components/Layout/Layout.css"
 
 const LibraryWidget = props => {
@@ -10,7 +10,7 @@ const LibraryWidget = props => {
     });
 
     return (
-        <div className={"widget " + props.name} ref={drag}>
+        <div className={"library-widget " + props.name} ref={drag}>
             {props.name}
         </div>
     );
