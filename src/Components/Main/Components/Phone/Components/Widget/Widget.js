@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag } from 'react-dnd'
 import "./Widget.css"
-import "../../../Phone/Components/Layout/Layout.css"
+import "../Layout/Layout.css"
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 
 const Widget = props => {

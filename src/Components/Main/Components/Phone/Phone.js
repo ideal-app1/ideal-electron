@@ -1,6 +1,7 @@
 import React, {Fragment} from "react";
 import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
+import {Button} from "@material-ui/core";
 
 class Phone extends React.Component {
 
@@ -33,6 +34,7 @@ class Phone extends React.Component {
                         setList={this.setList}
                     />
                 </div>
+                <Button onClick={console.log(this.getList())}>Test</Button>
             </Fragment>
         );
     }

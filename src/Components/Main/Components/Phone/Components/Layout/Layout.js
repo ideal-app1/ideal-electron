@@ -1,31 +1,22 @@
-import React, {useState} from "react";
+import React from "react";
 import "./Layout.css"
 import {useDrop} from "react-dnd";
 import {WidgetType, WidgetGroup} from "../../../../../../utils/WidgetUtils"
-import Widget from "../../../Library/Components/Widget/Widget";
+import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
 import { v4 as uuid } from 'uuid';
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
-import WidgetDropPreview from "../../../Library/Components/WidgetDropPreview/WidgetDropPreview";
+import WidgetDropPreview from "../WidgetDropPreview/WidgetDropPreview";
 
 const Layout = props => {
-
-    const [widgetList, setWidgetList] = useState([])
 
     const [{isOver, isOverCurrent, getItem}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
-            const didDrop = monitor.didDrop();
-            if (didDrop) {
+            if (monitor.didDrop()) {
                 return;
             }
-            const tmpItem = {
-                ...item,
-                _id: uuid(),
-                source: WidgetType.PHONE,
-                remove: () => {setWidgetList(widgetList => widgetList.filter(widget => widget !== tmpItem))}
-            };
-            setWidgetList([...widgetList, tmpItem]);
+            props.setList([...props.getList(), itemToAdd(item)])
             if (item.source === WidgetType.PHONE) {
                 item.remove();
             }
@@ -36,6 +27,32 @@ const Layout = props => {
             getItem: monitor.getItem()
         }),
     });
+
+    const itemToAdd = (item) => {
+        const tmpItem = {
+            ...item,
+            _id: uuid(),
+            source: WidgetType.PHONE,
+            widgetList: [],
+            getList: () => {
+                return tmpItem.widgetList;
+            },
+            updateList: props.updateList,
+            setList: (list) => {
+                tmpItem.widgetList = list
+                tmpItem.updateList()
+            },
+            update: (updateItem) => {
+                const newList = props.getList()
+                newList[newList.findIndex(w => w._id === tmpItem._id)] = updateItem
+                props.setList(newList)
+            },
+            remove: () => {
+                props.setList(props.getList().filter(w => w._id !== tmpItem._id))
+            }
+        };
+        return tmpItem;
+    }
 
     return (
         <Grid
@@ -48,12 +65,11 @@ const Layout = props => {
             style={isOverCurrent ? {filter: "brightness(85%)"} : {}}
             onClick={(event) => {
                 event.stopPropagation()
-                console.log("clicked => " + props.name)
                 WidgetProperties.getInstance().current.handleSelect(props)
             }}
             ref={drop}>
             {
-                widgetList.map(widget => {
+                props.getList().map(widget => {
                     if (widget.group === WidgetGroup.WIDGET) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);
                     }
