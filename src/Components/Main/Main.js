@@ -14,6 +14,7 @@ import Menu from "./Components/Menu/Menu";
 
 class Main extends React.Component {
 
+    static MainProjectPath = "";
 
 
     render() {
