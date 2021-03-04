@@ -2,15 +2,15 @@ import React, {Fragment} from "react";
 import "./Library.css"
 import { v4 as uuid } from 'uuid';
 import LibraryWidget from "./Components/LibraryWidget/LibraryWidget";
-import {WidgetType, WidgetGroup} from "../../../../utils/WidgetUtils";
+import {WidgetType, WidgetGroup, PropType} from "../../../../utils/WidgetUtils";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
 
 export const Library = () => {
-    const widgets = [
-        {
+    const widgets = {
+        column: {
             _id: uuid(),
             name: "column",
             group: WidgetGroup.LAYOUT,
@@ -20,7 +20,7 @@ export const Library = () => {
                 align: "center"
             }
         },
-        {
+        row: {
             _id: uuid(),
             name: "row",
             group: WidgetGroup.LAYOUT,
@@ -30,7 +30,7 @@ export const Library = () => {
                 align: "flex-start"
             }
         },
-        {
+        center: {
             _id: uuid(),
             name: "center",
             group: WidgetGroup.LAYOUT,
@@ -40,7 +40,7 @@ export const Library = () => {
                 align: "center"
             }
         },
-        {
+        button: {
             _id: uuid(),
             name: "button",
             group: WidgetGroup.WIDGET,
@@ -48,40 +48,55 @@ export const Library = () => {
                 color: "blue"
             }
         },
-        {
+        text: {
             _id: uuid(),
             name: "text",
             group: WidgetGroup.WIDGET,
             properties: {
-                text: "text",
+                text: {
+                    value: "text",
+                    type: PropType.TEXTFIELD
+                },
                 empty: true
+            },
+            display: function () {
+                return this.properties.text.value
             }
         },
-        {
+        textfield: {
             _id: uuid(),
             name: "text field",
             group: WidgetGroup.WIDGET,
             properties: {
-                placeholder: "Text field",
+                placeholder: {
+                    value: "Placeholder",
+                    type: PropType.TEXTFIELD
+                },
                 focus: false
+            },
+            display: function () {
+                return this.properties.placeholder.value
             }
         },
-        {
+        image: {
             _id: uuid(),
             name: "image",
             group: WidgetGroup.WIDGET,
             properties: {
-                rounded: true
+                rounded: {
+                    value: true,
+                    type: PropType.CHECKBOX
+                }
             }
         }
-    ]
+    }
 
     const ListGroups = (name, group) => {
         return (
             <Fragment>
                 <ListSubheader>{name}</ListSubheader>
                 {
-                    widgets.filter(w => w.group === group).map(widget => (
+                    Object.values(widgets).filter(w => w.group === group).map(widget => (
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
                                 <LibraryWidget

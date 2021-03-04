@@ -1,10 +1,10 @@
-import React from "react";
+import React, {Fragment} from "react";
 import "./Layout.css"
 import {useDrop} from "react-dnd";
-import {WidgetType, WidgetGroup} from "../../../../../../utils/WidgetUtils"
+import {WidgetGroup, WidgetType} from "../../../../../../utils/WidgetUtils"
 import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
-import { v4 as uuid } from 'uuid';
+import {v4 as uuid} from 'uuid';
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import WidgetDropPreview from "../WidgetDropPreview/WidgetDropPreview";
 
@@ -34,24 +34,24 @@ const Layout = props => {
             _id: uuid(),
             source: WidgetType.PHONE,
             widgetList: [],
-            getList: () => {
-                return tmpItem.widgetList;
+            getList: function () {
+                return this.widgetList;
             },
             updateList: props.updateList,
-            setList: (list) => {
+            setList: function (list) {
                 tmpItem.widgetList = list
-                tmpItem.updateList()
+                this.updateList()
             },
-            update: (updateItem) => {
+            update: function (updateItem) {
                 const newList = props.getList()
-                newList[newList.findIndex(w => w._id === tmpItem._id)] = updateItem
+                newList[newList.findIndex(w => w._id === this._id)] = updateItem
                 props.setList(newList)
             },
-            remove: () => {
-                props.setList(props.getList().filter(w => w._id !== tmpItem._id))
+            remove: function () {
+                props.setList(props.getList().filter(w => w._id !== this._id))
             }
         };
-        return tmpItem;
+        return tmpItem
     }
 
     return (
@@ -76,6 +76,7 @@ const Layout = props => {
                     else if (widget.group === WidgetGroup.LAYOUT) {
                         return (<Layout key={widget._id.toString()} {...widget}/>);
                     }
+                    else return (<Fragment/>)
                 })
             }
             {WidgetDropPreview(getItem, isOverCurrent)}

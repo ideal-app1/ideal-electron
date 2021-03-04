@@ -18,7 +18,7 @@ const Widget = props => {
                 WidgetProperties.getInstance().current.handleSelect(props)
             }}
             ref={drag}>
-            {props.properties.text ? props.properties.text : props.name}
+            {props.display ? props.display() : props.name}
         </div>
     );
 }
