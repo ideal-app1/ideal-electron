@@ -1,0 +1,117 @@
+{
+  "funcs": [
+    {
+      "name": "func",
+      "parameters": [
+        {
+          "type": "bool",
+          "name": "mdr",
+          "isNamed": "false",
+          "isRequired": "false"
+        },
+        {
+          "type": "int",
+          "name": "lol",
+          "isNamed": "false",
+          "isRequired": "false"
+        }
+      ],
+      "return": "void",
+      "annotations": [],
+      "code": "{}"
+    },
+    {
+      "name": "named",
+      "parameters": [
+        {
+          "type": "String",
+          "name": "name",
+          "isNamed": "true",
+          "isRequired": "false"
+        }
+      ],
+      "return": "void",
+      "annotations": [],
+      "code": "{}"
+    },
+    {
+      "name": "addNumberToString",
+      "parameters": [
+        {
+          "type": "String",
+          "name": "source",
+          "isNamed": "false",
+          "isRequired": "true"
+        }
+      ],
+      "return": "int",
+      "annotations": [
+        {
+          "name": "CodeLink",
+          "parameters": [
+            {
+              "type": "bool",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "code": "{return (1);}"
+    },
+    {
+      "name": "main",
+      "parameters": [],
+      "return": "void",
+      "annotations": [],
+      "code": "{func(true);}"
+    }
+  ],
+  "classes": [
+    {
+      "name": "theClass",
+      "methods": []
+    },
+    {
+      "name": "Mdr",
+      "methods": [
+        {
+          "name": "memfunczeubi",
+          "parameters": [
+            {
+              "type": "int",
+              "name": "a"
+            },
+            {
+              "type": "int",
+              "name": "mdr"
+            }
+          ],
+          "return": "T",
+          "annotations": [],
+          "code": "{print('haha!'); var i = 0; print(i); return (this.lol);}"
+        }
+      ]
+    },
+    {
+      "name": "testImport",
+      "methods": []
+    }
+  ],
+  "constValues": [
+    {
+      "name": "a",
+      "type": "bool",
+      "value": "true"
+    },
+    {
+      "name": "i",
+      "type": "int",
+      "value": "0"
+    },
+    {
+      "name": "coucou",
+      "type": "String",
+      "value": "salut"
+    }
+  ]
+}

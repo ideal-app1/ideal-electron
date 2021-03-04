@@ -1,0 +1,30 @@
+
+.widget {
+    text-align: center;
+    padding: 10px 50px 10px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    height: fit-content;
+}
+
+.widget.button {
+    background-color: #2190d9;
+}
+
+.widget.text {
+    background-color: lightcoral;
+}
+
+.widget.text.field {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.widget.image {
+    background-color: lightpink;
+    padding: 100px;
+}
+
+.widget.empty {
+    background: none;
+}

@@ -13,8 +13,20 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600, webPreferences: { nodeIntegration: true }});
+    //titleBarStyle: 'hidden',
+    mainWindow = new BrowserWindow({
+        minWidth: 800,
+        minHeight: 600,
+        backgroundColor: '#282c34',
+        webPreferences: { nodeIntegration: true },
+        show: false
+    });
+
     mainWindow.maximize();
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+    })
 
     // and load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({

@@ -1,5 +1,5 @@
 
-.widget {
+.library-widget {
     text-align: center;
     padding: 10px 50px 10px 50px;
     border-radius: 5px;
@@ -8,14 +8,18 @@
     height: fit-content;
 }
 
-.button {
+.library-widget.button {
     background-color: #2190d9;
 }
 
-.text {
+.library-widget.text {
     background-color: lightcoral;
 }
 
-.empty {
+.library-widget.image {
+    background-color: lightpink;
+}
+
+.library-widget.empty {
     background: none;
 }

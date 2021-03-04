@@ -1,7 +1,7 @@
 import React from "react";
 import { useDrag } from 'react-dnd'
 import "./Widget.css"
-import "../../../Phone/Components/Layout/Layout.css"
+import "../Layout/Layout.css"
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 
 const Widget = props => {
@@ -15,11 +15,10 @@ const Widget = props => {
             className={"widget " + props.name}
             onClick={(event) => {
                 event.stopPropagation()
-                console.log("clicked => " + props.name)
                 WidgetProperties.getInstance().current.handleSelect(props)
             }}
             ref={drag}>
-            {props.name}
+            {props.display ? props.display() : props.name}
         </div>
     );
 }
