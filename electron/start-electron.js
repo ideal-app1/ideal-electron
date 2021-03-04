@@ -15,8 +15,8 @@ function createWindow() {
     // Create the browser window.
     //titleBarStyle: 'hidden',
     mainWindow = new BrowserWindow({
-        minWidth: 800,
-        minHeight: 600,
+        minWidth: 1000,
+        minHeight: 1000,
         backgroundColor: '#282c34',
         webPreferences: { nodeIntegration: true },
         show: false

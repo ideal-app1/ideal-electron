@@ -1,7 +1,9 @@
 import React, {Fragment} from "react";
 import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
+import JsonManager from "./Tools/JsonManager";
 import {Button} from "@material-ui/core";
+import Main from "../../Main";
 
 class Phone extends React.Component {
 
@@ -12,6 +14,12 @@ class Phone extends React.Component {
 
     getList = () => {
         return this.state.widgetList;
+    }
+
+    componentDidUpdate(prevProps, prevState)
+    {
+
+        JsonManager.saveThis(this.state, Main.MainProjectPath + "\\Ideal_config.json");
     }
 
     setList = list => {

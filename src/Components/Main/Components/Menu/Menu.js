@@ -1,14 +1,13 @@
 import React from "react";
 
 import Process from "./Tools/Process"
+import "./Menu.css"
 
-
+import New from "./Assets/new.png"
+import Play from "./Assets/play.png"
+import Main from "../../Main";
 
 class Menu extends React.Component {
-
-    static electron = window.require("electron");
-    static fs = window.require('fs');
-    static exec = window.require('child_process');
 
     constructor(props) {
         super(props);
@@ -18,7 +17,7 @@ class Menu extends React.Component {
 
 
 
-    change = (event) => {
+    newProject = (event) => {
         const theFiles = event.target.files;
         const relativePath = theFiles[0].webkitRelativePath;
         const folder = relativePath.split("/");
@@ -36,21 +35,33 @@ class Menu extends React.Component {
             }
         }
 
+        Main.MainProjectPath = finalPath + "IdealProject";
+        Process.runScript("flutter create " + Main.MainProjectPath);
+    }
 
-        console.log(finalPath);
-        Process.runScript("flutter create " + finalPath + "IdealProject");
+    runProject = (event) => {
+        console.log(Main.MainProjectPath);
+
+        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 
 
     render() {
         return (
 
-            <input
-                type="file"
-                directory=""
-                webkitdirectory="true"
-                onChange={this.change}
-            />
+            <div className={"new"}>
+                <label for="new-input">
+                    <img src={New}/>
+                </label>
+                <input
+                    id="new-input"
+                    type="file"
+                    directory=""
+                    webkitdirectory="true"
+                    onChange={this.newProject}
+                />
+                <img src={Play} onClick={this.runProject}/>
+            </div>
         );
     }
 }

@@ -9,14 +9,17 @@ class Process {
 
     static runScript(command) {
 
+        console.log('start : ' + command);
+
         Process.exec.exec(command, (err, stdout, stderr) => {
             if (err) {
-                console.log(`stderr: ${stderr}`);
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
                 return;
             }
 
-            console.log(`stdout: ${stdout}`);
-            console.log(`stderr: ${stderr}`);
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
         });
     }
 }
