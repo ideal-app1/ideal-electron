@@ -7,8 +7,7 @@ import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
 import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
-import {Link, Route} from "react-router-dom";
-import {Button, Col, Container, Form, FormControl, Nav, Navbar, Row} from 'react-bootstrap';
+import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
 
 const fs = window.require("fs")
 
@@ -17,7 +16,6 @@ function Addition(a,b) {
 }
 
 class CodeLink extends React.Component {
-
 
     #graph = new LGraph();
 
@@ -104,6 +102,13 @@ class CodeLink extends React.Component {
                     <Navbar.Brand>CodeLink</Navbar.Brand>
                     <Nav className="mr-auto">
                         <Nav.Link href="/">Home view</Nav.Link>
+                        <NavDropdown title="Tools" id="collasible-nav-dropdown">
+                            <NavDropdown.Item >
+                                <CodeLinkTree/>
+                            </NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item href="#action/3.4">Tmp</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                     <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
                         console.log("mdr")
