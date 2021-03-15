@@ -5,6 +5,8 @@ import createNode from "./CodeLinkNodes/test"
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
+import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
+import {Col, Container, Row} from "react-bootstrap";
 const fs = window.require("fs")
 
 function Addition(a,b) {
@@ -95,6 +97,7 @@ class CodeLink extends React.Component {
     render() {
         return (
             <div>
+                <CodeLinkTree />
                 <canvas id="mycanvas" height={1080} width={1920} ref={(canvas) => {
                     this.canvas = canvas;
                     this.init()
@@ -107,13 +110,9 @@ class CodeLink extends React.Component {
                 }}>
                     EXEC
                 </button>
-
-
             </div>
-
         );
     }
-};
-
+}
 
 export default CodeLink
