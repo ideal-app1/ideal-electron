@@ -6,3 +6,11 @@
     padding: 2vh !important;
     right: 0;
 }
+
+.MuiFormControl-root {
+    margin-left: 5px !important;
+}
+
+.MuiInputBase-input {
+    padding: 6px 7px !important;
+}

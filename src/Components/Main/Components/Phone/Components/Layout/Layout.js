@@ -35,12 +35,12 @@ const Layout = props => {
             source: WidgetType.PHONE,
             widgetList: [],
             getList: function () {
-                return this.widgetList;
+                return tmpItem.widgetList;
             },
             updateList: props.updateList,
             setList: function (list) {
                 tmpItem.widgetList = list
-                this.updateList()
+                tmpItem.updateList()
             },
             update: function (updateItem) {
                 const newList = props.getList()

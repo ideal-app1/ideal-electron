@@ -2,10 +2,10 @@ import React, {Fragment} from "react";
 import "./WidgetProperties.css"
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import {Checkbox, ListSubheader} from "@material-ui/core";
+import {Button, Checkbox, ListSubheader} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
-import {PropType} from "../../../../utils/WidgetUtils";
+import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 
 class WidgetProperties extends React.Component {
 
@@ -78,6 +78,12 @@ class WidgetProperties extends React.Component {
                             );
                         })
                     }
+                    <Divider />
+                    {
+                        (this.state.group === WidgetGroup.WIDGET) ?
+                            <ListItem><Button variant="contained" color="primary">CodeLink</Button></ListItem> :
+                            <Fragment/>
+                    }
                 </Fragment>
             );
         else
@@ -89,7 +95,7 @@ class WidgetProperties extends React.Component {
             <List className={"widget-properties"}>
                 {this.onSelection()}
             </List>
-        );
+        )
     }
 }
 
