@@ -50,7 +50,7 @@
     ]
   },
   "devDependencies": {
-    "electron": "^10.1.5",
+    "electron": "^10.4.3",
     "foreman": "^3.0.1",
     "uuid": "^8.3.2"
   }

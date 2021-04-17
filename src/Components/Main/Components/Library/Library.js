@@ -44,6 +44,7 @@ export const Library = () => {
             _id: uuid(),
             name: "button",
             group: WidgetGroup.WIDGET,
+            codelink: WidgetGroup.CODELINK,
             properties: {
                 color: "blue"
             }
@@ -52,6 +53,7 @@ export const Library = () => {
             _id: uuid(),
             name: "text",
             group: WidgetGroup.WIDGET,
+            codelink: WidgetGroup.CODELINK,
             properties: {
                 text: {
                     value: "text",
@@ -67,6 +69,7 @@ export const Library = () => {
             _id: uuid(),
             name: "text field",
             group: WidgetGroup.WIDGET,
+            codelink: WidgetGroup.CODELINK,
             properties: {
                 placeholder: {
                     value: "Placeholder",
@@ -82,6 +85,7 @@ export const Library = () => {
             _id: uuid(),
             name: "image",
             group: WidgetGroup.WIDGET,
+            codelink: WidgetGroup.CODELINK,
             properties: {
                 rounded: {
                     value: true,
@@ -119,6 +123,7 @@ export const Library = () => {
         <List className={"library"}>
             {ListGroups("Widgets", WidgetGroup.WIDGET)}
             {ListGroups("Layouts", WidgetGroup.LAYOUT)}
+            {ListGroups("CodeLink", WidgetGroup.codelink)}
         </List>
     )
 }

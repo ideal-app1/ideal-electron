@@ -1,10 +1,13 @@
 import React from "react";
-import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "litegraph.js"
+import {LGraph, LGraphCanvas, LiteGraph, serializedLGraph} from "litegraph.js"
+import {Link, Route} from "react-router-dom";
 import "./litegraph.css"
 import createNode from "./CodeLinkNodes/test"
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
+import WidgetProperties from "./../Main/Components/WidgetProperties/WidgetProperties.js"
+
 const fs = window.require("fs")
 
 function Addition(a,b) {
@@ -13,9 +16,37 @@ function Addition(a,b) {
 
 class CodeLink extends React.Component {
 
-
     #graph = new LGraph();
 
+    constructor(props) {
+        super(props)
+        
+        this.state = {
+            urldata: this.props.orgs
+        }
+        console.log(this.props)
+    }
+
+        /*
+            constructor(props) {
+                super(props)
+
+                const defaultFileType = "json";
+                this.fileNames = {
+                    json: "graph.json"
+                }
+                this.state = {
+                    fileType: defaultFileType,
+                    fileDownloadUrl: null,
+                    status: "",
+                    data: [
+                        {id: "1", type:"boolen", name:"length", value:"0"}
+                    ]
+                }
+                this.download = this.download.bind(this);
+            }
+        */
+    
     createConstValueNodes = (constValue) => {
 
         function ConstantNumber() {
@@ -92,11 +123,38 @@ class CodeLink extends React.Component {
         //this.#graph.start()
     }
 
+    /*
+    download (event) {
+        //event.preventDefault();
+          // Prepare the file
+        let output;
+        if (this.state.fileType === "json") {
+            output = JSON.stringify(event, 
+              null, 4);
+        }
+        // Download it
+        const blob = new Blob([output]);
+        const fileDownloadUrl = URL.createObjectURL(blob);
+        this.setState ({fileDownloadUrl: fileDownloadUrl}, 
+          () => {
+            this.dofileDownload.click(); 
+            URL.revokeObjectURL(fileDownloadUrl);  // free up storage--no longer needed.
+            this.setState({fileDownloadUrl: ""})
+        })    
+      }
+      */
+
     render() {
         return (
             <div>
                 <canvas id="mycanvas" height={1080} width={1920} ref={(canvas) => {
                     this.canvas = canvas;
+                    
+                    console.log("papapapap")
+                    console.log(this.props.location)
+                    console.log(this.props.orgs)
+                    console.log(this.state.urldata)
+                    console.log(this.state.orgs)
                     this.init()
                 }
                 }/>
@@ -108,6 +166,25 @@ class CodeLink extends React.Component {
                     EXEC
                 </button>
 
+                <button onClick={() => {
+                    console.log("mdr")
+                    console.log("saveyolo")
+                    console.log(this.state.urldata)
+                    console.log(this.#graph.serialize(serializedLGraph))
+
+                }}>
+                    SAVE
+                </button>
+
+                <button onClick={() => {
+                    //this.props.SaveNode();
+                    console.log("mdr")
+                    console.log(typeof(this.#graph.serialize(serializedLGraph)))
+                    this.download(this.#graph.serialize(serializedLGraph))
+
+                }}>
+                    DOWNLOAD
+                </button>
 
             </div>
 
