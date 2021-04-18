@@ -1,4 +1,5 @@
 const electron = require('electron');
+const {ipcMain, dialog} = require('electron')
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
@@ -71,3 +72,13 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('select-file', (event, arg) => {
+    var result = dialog.showOpenDialogSync({
+        properties: ['openFile', 'multiSelections'],
+        filtres: [
+            { name : 'Images', extensions: ['jpg', 'png', 'gif'] }
+        ]
+    })
+    event.returnValue = result
+})

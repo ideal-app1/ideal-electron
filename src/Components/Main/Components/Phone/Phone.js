@@ -38,6 +38,7 @@ class Phone extends React.Component {
                     getList={this.getList}
                     updateList={() => this.forceUpdate()}
                     setList={this.setList}
+                    display={() => {return {}}}
                 />
             </div>
         );

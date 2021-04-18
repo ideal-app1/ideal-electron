@@ -4,7 +4,9 @@
     padding: 10px 50px 10px 50px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
     height: fit-content;
 }
 
