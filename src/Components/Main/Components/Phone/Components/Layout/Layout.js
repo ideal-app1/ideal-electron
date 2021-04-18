@@ -79,8 +79,8 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            justify={props.properties.justify}
-            alignItems={props.properties.align}
+            justify={props.properties.justify.value ? props.properties.justify.value : props.properties.justify}
+            alignItems={props.properties.align.value ? props.properties.align.value : props.properties.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
             style={isOverCurrent ? {...props.display().style, filter: "brightness(85%)"} : {...props.display().style}}
