@@ -1,8 +1,7 @@
-import React, {Fragment} from "react";
+import React from "react";
 import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
 import JsonManager from "./Tools/JsonManager";
-import {Button} from "@material-ui/core";
 import Main from "../../Main";
 
 class Phone extends React.Component {
@@ -28,22 +27,19 @@ class Phone extends React.Component {
 
     render() {
         return (
-            <Fragment>
-                <div className={"phone"}>
-                    <Layout
-                        name={"root"}
-                        properties={{
-                            direction: "column",
-                            justify: "flex-start",
-                            align: "flex-start"
-                        }}
-                        getList={this.getList}
-                        updateList={() => this.forceUpdate()}
-                        setList={this.setList}
-                    />
-                </div>
-                <Button onClick={console.log(this.getList())}>Test</Button>
-            </Fragment>
+            <div className={"phone"}>
+                <Layout
+                    name={"root"}
+                    properties={{
+                        direction: "column",
+                        justify: "flex-start",
+                        align: "flex-start"
+                    }}
+                    getList={this.getList}
+                    updateList={() => this.forceUpdate()}
+                    setList={this.setList}
+                />
+            </div>
         );
     }
 }

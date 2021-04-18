@@ -87,6 +87,9 @@ export const Library = () => {
                     value: true,
                     type: PropType.CHECKBOX
                 }
+            },
+            display: function () {
+                return this.name
             }
         }
     }
