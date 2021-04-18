@@ -14,6 +14,7 @@ export const Library = () => {
             _id: uuid(),
             name: "column",
             group: WidgetGroup.LAYOUT,
+            codePathFile: "Column.dart",
             properties: {
                 direction: "column",
                 justify: "flex-start",
@@ -24,6 +25,7 @@ export const Library = () => {
             _id: uuid(),
             name: "row",
             group: WidgetGroup.LAYOUT,
+            codePathFile: "Row.dart",
             properties: {
                 direction: "row",
                 justify: "flex-start",
@@ -34,6 +36,7 @@ export const Library = () => {
             _id: uuid(),
             name: "center",
             group: WidgetGroup.LAYOUT,
+            codePathFile: "Center.dart",
             properties: {
                 direction: "column",
                 justify: "center",
@@ -44,6 +47,7 @@ export const Library = () => {
             _id: uuid(),
             name: "button",
             group: WidgetGroup.WIDGET,
+            codePathFile: "Button.dart",
             properties: {
                 color: "blue"
             }
@@ -52,6 +56,7 @@ export const Library = () => {
             _id: uuid(),
             name: "text",
             group: WidgetGroup.WIDGET,
+            codePathFile: "Text.dart",
             properties: {
                 text: {
                     value: "text",
@@ -67,6 +72,7 @@ export const Library = () => {
             _id: uuid(),
             name: "text field",
             group: WidgetGroup.WIDGET,
+            codePathFile: "TextField.dart",
             properties: {
                 placeholder: {
                     value: "Placeholder",
