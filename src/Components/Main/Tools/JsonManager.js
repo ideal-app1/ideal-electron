@@ -13,6 +13,12 @@ class JsonManager {
         console.log(json);
         JsonManager.fs.writeFileSync(path, json);
     }
+
+    static get(path) {
+        let file = JsonManager.fs.readFileSync(path, 'utf8');
+        const result = JSON.parse(file);
+        return result;
+    }
 }
 
 export default JsonManager

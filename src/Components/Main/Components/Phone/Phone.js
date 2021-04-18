@@ -1,8 +1,9 @@
 import React from "react";
 import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
-import JsonManager from "./Tools/JsonManager";
+import JsonManager from "../../Tools/JsonManager";
 import Main from "../../Main";
+import { MapInteractionCSS } from 'react-map-interaction';
 
 class Phone extends React.Component {
 
@@ -15,9 +16,7 @@ class Phone extends React.Component {
         return this.state.widgetList;
     }
 
-    componentDidUpdate(prevProps, prevState)
-    {
-
+    componentDidUpdate(prevProps, prevState) {
         JsonManager.saveThis(this.state, Main.MainProjectPath + "\\Ideal_config.json");
     }
 

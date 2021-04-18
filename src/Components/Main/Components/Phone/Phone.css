@@ -4,5 +4,6 @@
     height: 812px !important;
     width: 375px !important;
     align-content: center;
-    overflow: hidden;
+    overflow: auto;
 }
+
