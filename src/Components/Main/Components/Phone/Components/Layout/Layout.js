@@ -16,10 +16,15 @@ const Layout = props => {
             if (monitor.didDrop()) {
                 return;
             }
-            props.setList([...props.getList(), itemToAdd(item)])
             if (item.source === WidgetType.PHONE) {
-                item.remove();
+                item.remove()
             }
+            const tmpList = [...props.getList()]
+            const tmpObj = itemToAdd(item)
+            console.log('drop in layout')
+            tmpList.push(tmpObj)
+            props.setList(tmpList)
+
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -42,13 +47,29 @@ const Layout = props => {
                 tmpItem.widgetList = list
                 tmpItem.updateList()
             },
+            getParentList: function () {
+                return props.getList()
+            },
+            setParentList: function (list) {
+                props.setList(list)
+            },
+            move: function (item) {
+                const tmpList = item.getParentList()
+                const pos = tmpList.findIndex(w => w._id === item._id)
+                const tmpItem = {
+                    ...this,
+                    getParentList: item.getParentList,
+                    setParentList: item.setParentList
+                }
+                tmpList.splice(pos, 0, tmpItem)
+            },
             update: function (updateItem) {
-                const newList = props.getList()
+                const newList = this.getParentList()
                 newList[newList.findIndex(w => w._id === this._id)] = updateItem
-                props.setList(newList)
+                this.setParentList(newList)
             },
             remove: function () {
-                props.setList(props.getList().filter(w => w._id !== this._id))
+                this.setParentList(this.getParentList().filter(w => w._id !== this._id))
             }
         };
         return tmpItem
@@ -58,11 +79,11 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            justify={props.properties.justify}
-            alignItems={props.properties.align}
+            justify={props.properties.justify.value ? props.properties.justify.value : props.properties.justify}
+            alignItems={props.properties.align.value ? props.properties.align.value : props.properties.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
-            style={isOverCurrent ? {filter: "brightness(85%)"} : {}}
+            style={isOverCurrent ? {...props.display().style, filter: "brightness(85%)"} : {...props.display().style}}
             onClick={(event) => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props)
@@ -70,7 +91,7 @@ const Layout = props => {
             ref={drop}>
             {
                 props.getList().map(widget => {
-                    if (widget.group === WidgetGroup.WIDGET) {
+                    if (widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);
                     }
                     else if (widget.group === WidgetGroup.LAYOUT) {
@@ -79,10 +100,10 @@ const Layout = props => {
                     else return (<Fragment/>)
                 })
             }
-            {WidgetDropPreview(getItem, isOverCurrent)}
         </Grid>
     );
 };
 
+//{WidgetDropPreview(getItem, isOverCurrent)}
 
 export default Layout

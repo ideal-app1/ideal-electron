@@ -2,15 +2,38 @@
     background-color: #3c414e;
     font-size: 14px;
     height: 98vh;
-    width: 20vh;
+    width: 30vh;
     padding: 2vh !important;
     right: 0;
 }
 
-.MuiFormControl-root {
+.widget-properties.MuiList-root {
+    position: fixed !important;
+}
+
+.widget-properties .MuiListItem-gutters {
+    height: 45px;
+}
+
+.widget-properties .MuiFormControl-root {
     margin-left: 5px !important;
 }
 
-.MuiInputBase-input {
+.widget-properties .MuiInputBase-input {
+    color: white !important;
+}
+
+.widget-properties .MuiOutlinedInput-input {
     padding: 6px 7px !important;
+}
+
+.widget-properties .MuiListSubheader-root {
+    color: ghostwhite !important;
+    font-size: 20px !important;
+}
+
+.property_name {
+    width: 80px;
+    margin-right: 8px;
+    text-align: right;
 }

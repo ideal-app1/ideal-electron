@@ -6,6 +6,8 @@ import "./Menu.css"
 import New from "./Assets/new.png"
 import Play from "./Assets/play.png"
 import Main from "../../Main";
+import JsonManager from "../../Tools/JsonManager";
+import FlutterManager from "../Phone/Tools/FlutterManager";
 
 class Menu extends React.Component {
 
@@ -36,11 +38,17 @@ class Menu extends React.Component {
         }
 
         Main.MainProjectPath = finalPath + "IdealProject";
-        Process.runScript("flutter create " + Main.MainProjectPath);
+        Process.runScript("flutter create " + Main.MainProjectPath, () => {
+            Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart");
+        });
     }
 
     runProject = (event) => {
         console.log(Main.MainProjectPath);
+        const jsonCode = JsonManager.get(Main.MainProjectPath + "\\Ideal_config.json");
+
+        console.log(jsonCode);
+        FlutterManager.witeCode(jsonCode, Main.MainProjectPath + "\\" + "lib\\main.dart");
 
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
