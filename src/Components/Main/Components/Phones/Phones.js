@@ -9,9 +9,7 @@ class Phones extends React.Component {
     render() {
         return (
             <div className={"phones"}>
-                <MapInteractionCSS>
                     <Phone/>
-                </MapInteractionCSS>
             </div>
         );
     }
