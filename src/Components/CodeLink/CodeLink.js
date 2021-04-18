@@ -1,10 +1,14 @@
 import React from "react";
 import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "litegraph.js"
+import './CodeLink.css';
 import "./litegraph.css"
 import createNode from "./CodeLinkNodes/test"
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
+import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
+import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
+
 const fs = window.require("fs")
 
 function Addition(a,b) {
@@ -12,7 +16,6 @@ function Addition(a,b) {
 }
 
 class CodeLink extends React.Component {
-
 
     #graph = new LGraph();
 
@@ -95,25 +98,42 @@ class CodeLink extends React.Component {
     render() {
         return (
             <div>
-                <canvas id="mycanvas" height={1080} width={1920} ref={(canvas) => {
-                    this.canvas = canvas;
-                    this.init()
-                }
-                }/>
-                <button onClick={() => {
-                    console.log("mdr")
-                    this.#graph.runStep(1)
-
-                }}>
-                    EXEC
-                </button>
-
-
+                <Navbar fixed="top" bg="dark" variant="dark">
+                    <Navbar.Brand>CodeLink</Navbar.Brand>
+                    <Nav className="mr-auto">
+                        <Nav.Link href="/">Home view</Nav.Link>
+                        <NavDropdown title="Tools" id="collasible-nav-dropdown">
+                            <NavDropdown.Item >
+                                <CodeLinkTree/>
+                            </NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item href="#action/3.4">Tmp</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
+                        console.log("mdr")
+                        this.#graph.runStep(1)
+                    }}>
+                        Exec
+                    </Button>
+                    <Form inline>
+                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                        <Button variant="outline-info">Search</Button>
+                    </Form>
+                </Navbar>
+                <Container fluid className={"CodeLink-Content"}>
+                    <Row className={"CodeLink-canvas"}>
+                        <Col className={"CodeLink-canvas-Box"}>
+                            <canvas id="myCanvas" width={1920} height={1080} ref={(canvas) => {
+                                this.canvas = canvas;
+                                this.init()
+                            }}/>
+                        </Col>
+                    </Row>
+                </Container>
             </div>
-
         );
     }
-};
-
+}
 
 export default CodeLink

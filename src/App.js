@@ -20,9 +20,9 @@ class App extends React.Component {
                     </Route>
                     <Route  path="/a">
                         <CodeLink/>
-                        <Link to={"/"}>
-                            back
-                        </Link>
+                        {/*<Link to={"/"}>*/}
+                        {/*    back*/}
+                        {/*</Link>*/}
                     </Route>
                 </Switch>
             </Router>
