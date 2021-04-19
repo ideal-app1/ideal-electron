@@ -37,7 +37,7 @@ class Menu extends React.Component {
             }
         }
 
-        Main.MainProjectPath = finalPath + "IdealProject";
+        Main.MainProjectPath = finalPath + "app";
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
             Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart");
         });

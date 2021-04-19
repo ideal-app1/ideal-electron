@@ -1,35 +1,38 @@
-import React from 'react';
-import './App.css';
-import Main from "./Components/Main/Main";
+import React, { useState } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link
 } from "react-router-dom";
+
+import './App.css';
+import Main from "./Components/Main/Main";
+import Login from "./Components/Login/Login"
 import CodeLink from "./Components/CodeLink/CodeLink";
 
-class App extends React.Component {
+function App () {
+    const [token, setToken] = useState();
+    const [licence, setLicence] = useState();
 
-    render() {
-        return (
+    if (!token || !licence) {
+        return <Login setToken={setToken} setLicence={setLicence}/>
+    }
+
+    return (
+        <div className={"wrapper"}>
             <Router>
                 <Switch>
                     <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route  path="/a">
+                    <Route path="/a">
                         <CodeLink/>
-                        {/*<Link to={"/"}>*/}
-                        {/*    back*/}
-                        {/*</Link>*/}
                     </Route>
                 </Switch>
             </Router>
-            /*  */
-
-        );
-    }
+        </div>
+    );
 }
 
 export default App;
