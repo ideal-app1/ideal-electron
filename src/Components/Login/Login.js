@@ -45,7 +45,7 @@ function openWebSite() {
     shell.openExternal('https://account.idealapp.fr')
 }
 
-export default function Login({setToken}, {setLicence}) {
+export default function Login({setToken, setLicence}) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [open, setOpen] = useState();
@@ -117,5 +117,6 @@ export default function Login({setToken}, {setLicence}) {
 }
 
 Login.propTypes = {
-    setToken: PropTypes.func.isRequired
+    setToken: PropTypes.func.isRequired,
+    setLicence: PropTypes.func.isRequired
 }
