@@ -4,8 +4,12 @@
 
 .new {
     position: absolute;
-    right: 50px;
-    bottom: 50px;
+    width: -webkit-fill-available;
+    top: 0px;
+}
+
+.MuiList-padding {
+    top: 35px;
 }
 
 .new>label>img {

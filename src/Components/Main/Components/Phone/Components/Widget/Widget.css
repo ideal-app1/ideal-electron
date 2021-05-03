@@ -5,6 +5,8 @@
     border-radius: 5px;
     cursor: pointer;
     height: fit-content;
+    font-size: 15px;
+    color: black;
 }
 
 .widget.button {

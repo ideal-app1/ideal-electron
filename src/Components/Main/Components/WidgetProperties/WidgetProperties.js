@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
+import {Route} from "react-router";
 const { ipcRenderer } = window.require('electron')
 
 class WidgetProperties extends React.Component {
@@ -136,7 +137,15 @@ class WidgetProperties extends React.Component {
                     <Divider />
                     {
                         (this.state.group === WidgetGroup.MATERIAL) ?
-                            <ListItem><Button variant="contained" color="primary">CodeLink</Button></ListItem> :
+                            <ListItem>
+                                <Route render={({ history}) => (
+                                    <Button className="codelink-button"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => {history.push('/a')}}>
+                                        CodeLink</Button>
+                                )} />
+                            </ListItem> :
                             <Fragment/>
                     }
                 </Fragment>
