@@ -1,29 +1,30 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import {useDrag, useDrop} from 'react-dnd'
 import "./Widget.css"
 import "../Layout/Layout.css"
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import {WidgetType} from "../../../../../../utils/WidgetUtils";
+import Phone from "../../Phone";
 
 const Widget = props => {
-// eslint-disable-next-line
+
+    const phone = Phone.getInstance()
 
     const ref = useRef(null);
 
     const [{isOver}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
-            console.log('drop in widget')
-            //console.log(props, monitor.getItem())
-            if (item.source === WidgetType.PHONE) {
-                console.log(props)
-                item.move(props)
+            if (monitor.didDrop()) {
+                return;
             }
-            //monitor.getItem().update({...monitor.getItem(), pos: props._id})
-        },
-        hover: (item, monitor) => {
-            if (item.source === WidgetType.PHONE)
-                item.remove()
+            if (item.source === WidgetType.PHONE) {
+                phone.current.moveByID(item._id, props._id)
+            } else {
+                const itemID = phone.current.addToWidgetList(item)
+                phone.current.moveByID(itemID, props._id)
+            }
+            phone.current.componentDidUpdate()
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -32,6 +33,24 @@ const Widget = props => {
 
     const [{isDragging}, drag] = useDrag({
         item: {...props},
+        isDragging: monitor => {
+            const didDrop = monitor.didDrop();
+            if (!didDrop) {
+                if (monitor.getItem().source === WidgetType.PHONE) {
+                    phone.current.removeByID(monitor.getItem()._id)
+                }
+            }
+        },
+        end: (draggedItem, monitor) => {
+            const didDrop = monitor.didDrop();
+            if (!didDrop) {
+                phone.current.componentDidUpdate()
+                console.log('dropped outside');
+            }
+        },
+        collect: monitor => ({
+            isDragging: monitor.isDragging()
+        })
     });
 
     drag(drop(ref));
@@ -39,10 +58,10 @@ const Widget = props => {
     return (
         <div
             className={"widget " + props.name}
-            style={props.display().style}
+            style={isOver ? {...props.display().style, backgroundColor: "#323232"} : props.display().style}
             onClick={(event) => {
                 event.stopPropagation()
-                WidgetProperties.getInstance().current.handleSelect(props)
+                WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
             ref={ref}>
             {props.display().display}

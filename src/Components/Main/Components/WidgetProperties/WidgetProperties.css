@@ -37,3 +37,11 @@
     margin-right: 8px;
     text-align: right;
 }
+
+#no-selection {
+    height: 100%;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

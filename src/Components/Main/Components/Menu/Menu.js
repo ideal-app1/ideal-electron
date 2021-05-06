@@ -58,7 +58,7 @@ class Menu extends React.Component {
         return (
 
             <div className={"new"}>
-                <label for="new-input">
+                <label htmlFor={"new-input"}>
                     <img src={New}/>
                 </label>
                 <input

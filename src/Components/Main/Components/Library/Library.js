@@ -17,10 +17,33 @@ export const Library = () => {
             codePathFile: "Column.dart",
             properties: {
                 direction: "column",
-                justify: "flex-start",
-                align: "center"
+                justify: {
+                    value: "flex-start",
+                    type: PropType.COMBOBOX,
+                    items: [
+                        "flex-start",
+                        "center",
+                        "flex-end"
+                    ]
+                },
+                align: {
+                    value: "flex-start",
+                    type: PropType.COMBOBOX,
+                    items: [
+                        "flex-start",
+                        "center",
+                        "flex-end"
+                    ]
+                }
             },
-            display: () => {return {}}
+            display: function () {
+                return {
+                    style: {
+                        justifyContent: this.properties.justify.value,
+                        alignItems: this.properties.align.value
+                    }
+                }
+            }
         },
         row: {
             _id: uuid(),
@@ -163,13 +186,23 @@ export const Library = () => {
                 rounded: {
                     value: true,
                     type: PropType.CHECKBOX
+                },
+                width: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+                height: {
+                    value: 200,
+                    type: PropType.NUMFIELD
                 }
             },
             display: function () {
                 return {
                     display: this.name,
                     style: {
-                        borderRadius: this.properties.rounded.value ? "30px" : "0"
+                        borderRadius: this.properties.rounded.value ? "20px" : "0",
+                        width: this.properties.width.value,
+                        height: this.properties.height.value
                     }
                 }
             }
@@ -209,4 +242,3 @@ export const Library = () => {
         </List>
     )
 }
-

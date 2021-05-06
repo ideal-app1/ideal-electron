@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
+import Phone from "../Phone/Phone";
 const { ipcRenderer } = window.require('electron')
 
 class WidgetProperties extends React.Component {
@@ -19,6 +20,7 @@ class WidgetProperties extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.phone = Phone.getInstance()
     }
 
     static instance = null;
@@ -29,23 +31,14 @@ class WidgetProperties extends React.Component {
         return WidgetProperties.instance;
     }
 
-    handleSelect = properties => {
-        this.setState(properties)
+    handleSelect = id => {
+        this.setState(this.phone.current.findWidgetByID(id))
     }
 
     updateState = (key, value) => {
-        const updateState = {
-            ...this.state,
-            properties: {
-                ...this.state.properties,
-                [key]: {
-                    ...this.state.properties[key],
-                    value: value
-                }
-            }
-        }
-        this.setState(updateState)
-        this.state.update(updateState)
+        this.state.properties[key].value = value
+        this.forceUpdate()
+        this.phone.current.forceUpdate()
     }
 
     widgetPropType = (name, prop) => {
@@ -109,7 +102,6 @@ class WidgetProperties extends React.Component {
                             }
                         >Select file</Button>
                     </Fragment>
-
                 )
             default:
                 return (prop.toString())
@@ -121,7 +113,6 @@ class WidgetProperties extends React.Component {
             return (
                 <Fragment>
                     <ListSubheader>{this.state.name}</ListSubheader>
-                    <Divider />
                     <ListItem><div className={"property_name"}>group:</div>{this.state.group}</ListItem>
                     {
                         Object.entries(this.state.properties).map(([key, value]) => {
@@ -142,7 +133,7 @@ class WidgetProperties extends React.Component {
                 </Fragment>
             );
         else
-            return ('No Selection');
+            return (<div id={'no-selection'}>No Selection</div>);
     }
 
     render () {
