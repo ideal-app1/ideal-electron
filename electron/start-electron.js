@@ -4,9 +4,34 @@ const {ipcMain, dialog} = require('electron')
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-
 const path = require('path');
 const url = require('url');
+const Menu = electron.Menu;
+
+const menuTemplate = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                click() {
+                }
+            },
+            {
+                label: 'Dev Tools',
+                accelerator: 'CmdOrCtrl+J',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        ]
+    },
+]
+
+if (process.platform === 'darwin') {
+    menuTemplate.unshift({role:"fileMenu"},);
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -46,6 +71,9 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    const mainMenu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(mainMenu);
 }
 
 // This method will be called when Electron has finished

@@ -1,5 +1,5 @@
 .widget-properties {
-    background-color: #3c414e;
+    background-color: #333333;
     font-size: 14px;
     height: 98vh;
     width: 30vh;
@@ -44,4 +44,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+input {
+    background-color: #292929 !important;
+}
+
+.codelink-button {
+    background-color: #242424 !important;
+    color: #b3b3b3 !important;
+}
+
+#menu- > div.MuiPaper-root.MuiMenu-paper.MuiPopover-paper.MuiPaper-elevation8.MuiPaper-rounded {
+    background-color: #565656 !important;
+    color: white;
+    width: 150px;
+    margin-top: 50px;
 }
