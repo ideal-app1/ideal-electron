@@ -17,13 +17,13 @@ function App () {
     // const { token, setToken } = useToken();
     // const { licence, setLicence } = useLicence();
 
-    const [token, setToken] = useState();
-    const [licence, setLicence] = useState();
-
-    if (!token || !licence) {
-        console.log(token, licence);
-        return <Login setToken={setToken} setLicence={setLicence}/>
-    }
+    // const [token, setToken] = useState();
+    // const [licence, setLicence] = useState();
+    //
+    // if (!token || !licence) {
+    //     console.log(token, licence);
+    //     return <Login setToken={setToken} setLicence={setLicence}/>
+    // }
 
     return (
         <div className={"wrapper"}>
@@ -32,7 +32,7 @@ function App () {
                     <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route path="/a">
+                    <Route path="/CodeLink">
                         <CodeLink/>
                     </Route>
                 </Switch>
