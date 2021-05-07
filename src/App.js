@@ -5,27 +5,28 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+    BrowserRouter
 } from "react-router-dom";
 import CodeLink from "./Components/CodeLink/CodeLink";
 
 class App extends React.Component {
 
+    
+
     render() {
         return (
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <Main/>
-                    </Route>
-                    <Route  path="/a">
-                        <CodeLink/>
-                        <Link to={"/"}>
-                            back
-                        </Link>
-                    </Route>
-                </Switch>
-            </Router>
+            <BrowserRouter>
+                
+                    <Switch>
+                        <Route exact path="/">
+                            <Main/>
+                        </Route>
+                        <Route exact path="/codelink/:filepath" component={CodeLink}>
+                        </Route>
+                    </Switch>
+                
+            </BrowserRouter>
             /*  */
 
         );

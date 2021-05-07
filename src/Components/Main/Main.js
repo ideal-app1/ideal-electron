@@ -2,14 +2,20 @@ import React from "react";
 import {Library} from "./Components/Library/Library";
 import Phone from "./Components/Phone/Phone";
 import WidgetProperties from "./Components/WidgetProperties/WidgetProperties";
+import CodeLink from '../CodeLink/CodeLink';
 
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 
 import {
-    Link
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    BrowserRouter
 } from "react-router-dom";
+
 import Menu from "./Components/Menu/Menu";
 
 class Main extends React.Component {
@@ -26,9 +32,11 @@ class Main extends React.Component {
 
                         <Library/>
                         <Phone/>
-                        <Link to={"/a"}>
+                        <Route exact path="/codelink/:filepath" component={CodeLink}></Route>
+                        <Link to={"/codelink/codelink"}>
                             CodeLink
                         </Link>
+                        
                         <WidgetProperties ref={WidgetProperties.getInstance()}/>
                         <Menu/>
                     </DndProvider>
