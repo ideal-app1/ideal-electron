@@ -149,14 +149,22 @@ export const Library = () => {
             name: "text",
             codePathFile: "Text.dart",
             properties: {
-                text: {
+                data: {
                     value: "text",
                     type: PropType.TEXTFIELD
                 },
-                empty: true
+                overflow: {
+                    value: 'TextOverflow.clip',
+                    type: PropType.COMBOBOX,
+                    items: [
+                        {name: 'clip', value: 'TextOverflow.clip'},
+                        {name: 'ellipsis', value: 'TextOverflow.ellipsis'},
+                        {name: 'fade', value: 'TextOverflow.fade'}
+                    ]
+                }
             },
             display: function () {
-                return {display: this.properties.text.value}
+                return {display: this.properties.data.value}
             }
         },
         textfield: {

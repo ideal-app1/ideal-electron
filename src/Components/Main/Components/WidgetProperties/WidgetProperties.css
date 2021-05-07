@@ -9,6 +9,7 @@
 
 .widget-properties.MuiList-root {
     position: fixed !important;
+    top: 35px;
 }
 
 .widget-properties .MuiListItem-gutters {

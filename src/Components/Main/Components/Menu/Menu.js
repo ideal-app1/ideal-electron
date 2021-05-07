@@ -74,12 +74,9 @@ class Menu extends React.Component {
                                webkitdirectory="true"
                                onChange={this.newProject}/>
                     </NavItem>
-                    <a onClick={this.runProject}>
-                        <NavItem icon={<ChevronIcon />}>
-                        </NavItem>
-                    </a>
+                    <NavItem icon={<ChevronIcon onClick={this.runProject}/>}/>
                     <NavItem icon={<CaretIcon />}>
-                        <Dropdown></Dropdown>
+                        <Dropdown/>
                     </NavItem>
                 </Navbar>
             </div>
@@ -159,7 +156,7 @@ function Dropdown() {
                 unmountOnExit
                 onEnter={calcHeight}>
                 <div className="menu">
-                    <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}></DropdownItem>
+                    <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}/>
                     <DropdownItem>Option 1</DropdownItem>
                     <DropdownItem>Option 2</DropdownItem>
                     <DropdownItem>Option 2</DropdownItem>

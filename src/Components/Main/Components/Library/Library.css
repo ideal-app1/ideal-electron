@@ -12,6 +12,7 @@
 
 #library.MuiList-root {
     position: fixed !important;
+    top: 35px;
 }
 
 #library > li > div {
