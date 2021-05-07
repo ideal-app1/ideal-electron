@@ -1,0 +1,21 @@
+
+.column {
+    background-color: lightsalmon;
+}
+
+.row {
+    background-color: lightgreen;
+}
+
+.center {
+    background-color: lightskyblue;
+}
+
+.layout {
+    height: 100%;
+    cursor: pointer;
+}
+
+.hovered {
+    filter: brightness(0.9);
+}

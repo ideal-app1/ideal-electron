@@ -51,10 +51,8 @@ class Menu extends React.Component {
     }
 
     runProject = (event) => {
-        console.log(Main.MainProjectPath);
         const jsonCode = JsonManager.get(Main.MainProjectPath + "\\Ideal_config.json");
 
-        console.log(jsonCode);
         FlutterManager.witeCode(jsonCode, Main.MainProjectPath + "\\" + "lib\\main.dart");
 
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");

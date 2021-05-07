@@ -36,7 +36,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "start-all": "nf start -p 3000"
+    "start-all": "nf start -p 3000",
+    "package-win": "electron-packager . IDEAL --overwrite --platform=win32 --arch=ia32 --icon=icon/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"IDEAL\"",
+    "package-linux": "electron-packager . IDEAL --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
   },
   "eslintConfig": {
     "extends": [
@@ -57,6 +59,9 @@
     ]
   },
   "devDependencies": {
-    "foreman": "^3.0.1"
+    "electron": "^10.1.5",
+    "electron-packager": "^15.2.0",
+    "foreman": "^3.0.1",
+    "uuid": "^8.3.2"
   }
 }

@@ -105,7 +105,8 @@ export const Library = () => {
             properties: {
                 text: {
                     value: "button",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_BUTTON_TEXT",
                 },
                 color: {
                     value: "#2190d9",
@@ -114,7 +115,7 @@ export const Library = () => {
                         {name: "blue", value: "#2190d9"},
                         "red",
                         "green"
-                    ]
+                    ],
                 },
                 state: {
                     value: "enabled",
@@ -122,15 +123,18 @@ export const Library = () => {
                     items: [
                         "enabled",
                         "disabled"
-                    ]
+                    ],
+                    codeFlage: "IDEAL_BUTTON_STATE",
                 },
                 width: {
                     value: 80,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlage: "IDEAL_BUTTON_WIDTH",
                 },
                 height: {
                     value: 40,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlage: "IDEAL_BUTTON_HEIGHT",
                 }
             },
             display: function () {
@@ -151,7 +155,8 @@ export const Library = () => {
             properties: {
                 data: {
                     value: "text",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_TEXT",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -174,7 +179,8 @@ export const Library = () => {
             properties: {
                 placeholder: {
                     value: "Placeholder",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_PLACEHOLDER",
                 },
                 focus: false
             },
