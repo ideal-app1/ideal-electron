@@ -3,11 +3,13 @@ import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "li
 import './CodeLink.css';
 import "./litegraph.css"
 import createNode from "./CodeLinkNodes/test"
+import createNode2 from "./CodeLinkNodes/test2";
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
 import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
 import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
+import sharedBuffer from "./CodeLinkParsing/BufferSingleton";
 
 const fs = window.require("fs")
 
@@ -60,7 +62,9 @@ class CodeLink extends React.Component {
     }
 
     addNodes = () => {
-        LiteGraph.registerNodeType("basic/sumation", createNode() );
+        LiteGraph.registerNodeType("basic/sumation2", createNode() );
+        LiteGraph.registerNodeType("basic/sumation", createNode2() );
+
     }
 
     init = () => {
@@ -88,9 +92,6 @@ class CodeLink extends React.Component {
         node2.connect(0, this.sum, 1);
 */
         this.addNodes()
-        this.sum = LiteGraph.createNode("basic/sumation");
-        this.sum.pos = [500, 500];
-        this.#graph.add(this.sum);
         fs.readFile('data.json', 'utf-8', this.createEveryNodes);
         //this.#graph.start()
     }
@@ -111,8 +112,9 @@ class CodeLink extends React.Component {
                         </NavDropdown>
                     </Nav>
                     <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
-                        console.log("mdr")
+
                         this.#graph.runStep(1)
+                        sharedBuffer.erase();
                     }}>
                         Exec
                     </Button>
