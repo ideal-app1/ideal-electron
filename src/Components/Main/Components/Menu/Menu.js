@@ -35,7 +35,7 @@ class Menu extends React.Component {
         const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
 
 
-        Main.MainProjectPath = res.filePaths + "\\IdealProject";
+        Main.MainProjectPath = res.filePaths + "\\idealproject";
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
             Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart");
         });
