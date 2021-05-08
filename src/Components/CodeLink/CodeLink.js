@@ -6,18 +6,11 @@ import createNode from "./CodeLinkNodes/test"
 import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
 import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
-<<<<<<< HEAD
-import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
-import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
-import {Route} from "react-router";
-=======
 import {Box, Grid, Button, Divider, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {Loop} from "@material-ui/icons";
->>>>>>> authentification
 
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
-
 
 class CodeLink extends React.Component {
 
@@ -83,7 +76,7 @@ class CodeLink extends React.Component {
             {encoding:'utf8', flag:'r'});
   
         // Display the file data
-        if (data.length == 0) {
+        if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
             this.sum = LiteGraph.createNode("basic/sumation");
@@ -122,40 +115,6 @@ class CodeLink extends React.Component {
         console.log("View codelink")
         return (
             <div>
-<<<<<<< HEAD
-                <Navbar fixed="top" bg="dark" variant="dark">
-                    <Navbar.Brand>CodeLink</Navbar.Brand>
-                    <Nav className="mr-auto">
-                        <Nav.Link href="/">Home view</Nav.Link>
-                        <NavDropdown title="Tools" id="collasible-nav-dropdown">
-                            <NavDropdown.Item >
-                                <CodeLinkTree/>
-                            </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Tmp</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
-                        console.log("mdr")
-                        this.#graph.runStep(1)
-                    }}>
-                        Exec
-                    </Button>
-                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
-                        console.log("SaveFile")
-                        this.savegraph(this.#graph.serialize(serializedLGraph))
-                    }}>
-                        Save
-                    </Button>
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                        <Button variant="outline-info">Search</Button>
-                    </Form>
-                </Navbar>
-                <Container fluid className={"CodeLink-Content"}>
-                    <Row className={"CodeLink-canvas"}>
-                        <Col className={"CodeLink-canvas-Box"}>
-=======
                 <Grid container className={"CodeLink-Content"}>
                     <Grid xs={12} className={"CodeLink-bar-menu"}>
                         <Grid container>
@@ -209,7 +168,6 @@ class CodeLink extends React.Component {
                     </Grid>
                     <Grid xs={10} className={"CodeLink-canvas"}>
                         <Box className={"CodeLink-canvas-Box"}>
->>>>>>> authentification
                             <canvas id="myCanvas" width={1920} height={1080} ref={(canvas) => {
                                 this.canvas = canvas;
                                 this.init()
