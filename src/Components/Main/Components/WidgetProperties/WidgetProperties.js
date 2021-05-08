@@ -152,20 +152,14 @@ class WidgetProperties extends React.Component {
                     }
                     <Divider />
                     {
-                        (this.state.group === WidgetGroup.WIDGET) ?
-                            <ListItem>
-                                   <Link to={`/codelink/${this.state.codelink}`}>
-                                       <Button variant="contained" color="primary">
-                                CodeLink</Button></Link> 
-                                </ListItem> :
                         (this.state.group === WidgetGroup.MATERIAL) ?
                             <ListItem>
                                 <Route render={({ history}) => (
                                     <Button className="codelink-button"
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => {history.push('/a')}}>
-                                        CodeLink</Button>
+                                        onClick={() => {history.push(`/codelink/${this.state.codelink}`)}}>
+                                        CodeLinknnn</Button>
                                 )} />
                             </ListItem> :
                             <Fragment/>
