@@ -101,7 +101,7 @@ export const Library = () => {
         button: {
             _id: uuid(),
             name: "button",
-            group: WidgetGroup.WIDGET,
+            group: WidgetGroup.MATERIAL,
             codelink: WidgetGroup.CODELINK,
             codePathFile: "Button.dart",
             properties: {
@@ -153,7 +153,7 @@ export const Library = () => {
         text: {
             _id: uuid(),
             name: "text",
-            group: WidgetGroup.WIDGET,
+            group: WidgetGroup.MATERIAL,
             codelink: WidgetGroup.CODELINK,
             codePathFile: "Text.dart",
             properties: {
@@ -179,7 +179,7 @@ export const Library = () => {
         textfield: {
             _id: uuid(),
             name: "text field",
-            group: WidgetGroup.WIDGET,
+            group: WidgetGroup.MATERIAL,
             codelink: WidgetGroup.CODELINK,
             codePathFile: "TextField.dart",
             properties: {
@@ -197,7 +197,7 @@ export const Library = () => {
         image: {
             _id: uuid(),
             name: "image",
-            group: WidgetGroup.WIDGET,
+            group: WidgetGroup.MATERIAL,
             codelink: WidgetGroup.CODELINK,
             codePathFile: "Image.dart",
             properties: {
