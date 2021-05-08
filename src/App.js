@@ -15,10 +15,10 @@ class App extends React.Component {
         return (
             <Router>
                 <Switch>
-                    <Route exact path="/a">
+                    <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route  path="/">
+                    <Route  path="/a">
                         <CodeLink/>
                         {/*<Link to={"/"}>*/}
                         {/*    back*/}
