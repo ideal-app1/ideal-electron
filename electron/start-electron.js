@@ -8,6 +8,8 @@ const path = require('path');
 const url = require('url');
 const Menu = electron.Menu;
 
+
+
 const menuTemplate = [
     {
         label: 'File',
@@ -36,6 +38,8 @@ if (process.platform === 'darwin') {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+
 
 function createWindow() {
     // Create the browser window.
@@ -84,6 +88,8 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
 
+
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
@@ -113,3 +119,8 @@ ipcMain.on('select-file', (event, arg) => {
     })
     event.returnValue = result
 })
+ipcMain.on('runCommand', async (event, arg) => {
+    event.returnValue = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+    });
+});

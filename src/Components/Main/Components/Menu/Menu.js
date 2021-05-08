@@ -16,7 +16,12 @@ import {ReactComponent as CaretIcon} from "./icons/caret.svg";
 import {ReactComponent as PlayIcon} from "./icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 
+
+
+
 class Menu extends React.Component {
+
+
 
     constructor(props) {
         super(props);
@@ -26,26 +31,11 @@ class Menu extends React.Component {
 
 
 
-    newProject = (event) => {
-        console.log("SSSS")
-        const theFiles = event.target.files;
-        const relativePath = theFiles[0].webkitRelativePath;
-        const folder = relativePath.split("/");
-        const folderSelected = folder[0];
+    newProject = async (event) => {
+        const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
 
-        const filePath = theFiles[0].path;
-        const filePathSplit = filePath.split("\\");
-        let finalPath = "";
 
-        for (let i = 0; i < filePathSplit.length; i++) {
-            finalPath += filePathSplit[i];
-            finalPath += "\\";
-            if (filePathSplit[i] === folderSelected) {
-                break;
-            }
-        }
-
-        Main.MainProjectPath = finalPath + "IdealProject";
+        Main.MainProjectPath = res.filePaths + "\\IdealProject";
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
             Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart");
         });
@@ -61,17 +51,16 @@ class Menu extends React.Component {
 
 
     render() {
+
+
+        console.log(React.version);
         return (
 
             <div className={"new"}>
                 <Navbar>
                     <h1>IDEAL</h1>
-                    <NavItem icon={<PlusIcon />}>
-                        <input id="new-input"
-                               type="file"
-                               directory=""
-                               webkitdirectory="true"
-                               onChange={this.newProject}/>
+                    <NavItem icon={<PlusIcon onClick={this.newProject}/>}>
+
                     </NavItem>
                     <NavItem icon={<ChevronIcon onClick={this.runProject}/>}/>
                     <NavItem icon={<CaretIcon />}>
