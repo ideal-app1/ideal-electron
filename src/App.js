@@ -18,10 +18,9 @@ class App extends React.Component {
                     <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route  path="/a">
-                        <CodeLink/>
+                    <Route exact path="/codelink/:filepath" component={CodeLink}>
                         <Link to={"/"}>
-                            back
+                            backkkk
                         </Link>
                     </Route>
                 </Switch>

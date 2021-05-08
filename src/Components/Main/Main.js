@@ -21,13 +21,17 @@ import {
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
 
+const app = window.require('electron').remote.app;
+
 class Main extends React.Component {
 
     static MainProjectPath = "";
+    static CodeLinkPath = "";
 
     constructor(props) {
         super(props);
         Main.MainProjectPath = config.ProjectPathAutoSaved;
+        Main.CodeLinkPath = app.getAppPath();
     }
 
     render() {
@@ -39,7 +43,7 @@ class Main extends React.Component {
 
                         <Library/>
                         <Route exact path="/codelink/:filepath" component={CodeLink}></Route>
-                        <Link to={"/codelink/codelink"}>
+                        <Link to={`/codelink/${Main.CodeLinkPath}codelink.json`}>
                             CodeLink
                         </Link>
                         
