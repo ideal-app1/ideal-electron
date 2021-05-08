@@ -22,7 +22,7 @@ class CodeLink extends React.Component {
         super(props)
         console.log("props de codelink")
         console.log(this.props.match.params.filepath)
-        const codelinkfilepath = this.props.match.params.filepath;
+        console.log(this.props.match.params.idwidget)
     }    
     
     createConstValueNodes = (constValue) => {
@@ -126,6 +126,12 @@ class CodeLink extends React.Component {
                         this.#graph.runStep(1)
                     }}>
                         Exec
+                    </Button>
+                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
+                        console.log("SaveFile")
+                        this.savegraph(this.#graph.serialize(serializedLGraph))
+                    }}>
+                        Save
                     </Button>
                     <Form inline>
                         <FormControl type="text" placeholder="Search" className="mr-sm-2" />

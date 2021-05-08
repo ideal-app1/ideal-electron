@@ -126,7 +126,7 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.codelink = app.getAppPath() + this.state.name + ".json";
+        this.state.codelink = app.getAppPath() + this.state._id + this.state.name + ".json";
         this.createFile(this.state)
         filepathCodelink.filepath = this.state.codelink
     }
@@ -158,7 +158,7 @@ class WidgetProperties extends React.Component {
                                     <Button className="codelink-button"
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => {history.push(`/codelink/${this.state.codelink}`)}}>
+                                        onClick={() => {history.push(`/codelink/${this.state.codelink}/${this.state._id}`)}}>
                                         CodeLinknnn</Button>
                                 )} />
                             </ListItem> :
