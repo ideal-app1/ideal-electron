@@ -3,7 +3,7 @@ TextField(
     border: InputBorder.none,
     filled: true,
     fillColor: Colors.white,
-    hintText: 'Password'
+    hintText: '/* IDEAL_PLACEHOLDER */'
   ),
   obscureText: true,
 )

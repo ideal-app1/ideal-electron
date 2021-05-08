@@ -4,13 +4,42 @@ const {ipcMain, dialog} = require('electron')
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-
 const path = require('path');
 const url = require('url');
+const Menu = electron.Menu;
+
+
+
+const menuTemplate = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                click() {
+                }
+            },
+            {
+                label: 'Dev Tools',
+                accelerator: 'CmdOrCtrl+J',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        ]
+    },
+]
+
+if (process.platform === 'darwin') {
+    menuTemplate.unshift({role:"fileMenu"},);
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+
 
 function createWindow() {
     // Create the browser window.
@@ -19,7 +48,10 @@ function createWindow() {
         minWidth: 1000,
         minHeight: 1000,
         backgroundColor: '#282c34',
-        webPreferences: { nodeIntegration: true },
+        webPreferences: { 
+            enableRemoteModule: true,
+            nodeIntegration: true 
+        },
         show: false
     });
 
@@ -46,12 +78,17 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    const mainMenu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(mainMenu);
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
+
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -82,3 +119,8 @@ ipcMain.on('select-file', (event, arg) => {
     })
     event.returnValue = result
 })
+ipcMain.on('runCommand', async (event, arg) => {
+    event.returnValue = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+    });
+});

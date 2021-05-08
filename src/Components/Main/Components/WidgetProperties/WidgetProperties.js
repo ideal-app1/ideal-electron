@@ -12,13 +12,25 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
+import {Link, Route, useLocation} from "react-router-dom";
+import Phone from "../Phone/Phone";
+
+var fs = window.require('fs'); // Load the File System to execute our common tasks (CRUD)
+const app = window.require('electron').remote.app;
+
 const { ipcRenderer } = window.require('electron')
+
+const filepathCodelink = {
+    filepath: ''
+}
+
 
 class WidgetProperties extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {};
+        this.phone = Phone.getInstance()
     }
 
     static instance = null;
@@ -29,23 +41,14 @@ class WidgetProperties extends React.Component {
         return WidgetProperties.instance;
     }
 
-    handleSelect = properties => {
-        this.setState(properties)
+    handleSelect = id => {
+        this.setState(this.phone.current.findWidgetByID(id))
     }
 
     updateState = (key, value) => {
-        const updateState = {
-            ...this.state,
-            properties: {
-                ...this.state.properties,
-                [key]: {
-                    ...this.state.properties[key],
-                    value: value
-                }
-            }
-        }
-        this.setState(updateState)
-        this.state.update(updateState)
+        this.state.properties[key].value = value
+        this.forceUpdate()
+        this.phone.current.forceUpdate()
     }
 
     widgetPropType = (name, prop) => {
@@ -109,11 +112,23 @@ class WidgetProperties extends React.Component {
                             }
                         >Select file</Button>
                     </Fragment>
-
                 )
             default:
                 return (prop.toString())
         }
+    }
+
+    createFile(props) {
+        fs.appendFile(props.codelink, null, { flag: 'wx' }, function (err) {
+            if (err) throw err;
+            console.log("It's saved!");
+        });
+    }
+
+    onCodelink = () => {
+        this.state.codelink = app.getAppPath() + this.state.name + ".json";
+        this.createFile(this.state)
+        filepathCodelink.filepath = this.state.codelink
     }
 
     onSelection = () => {
@@ -121,7 +136,6 @@ class WidgetProperties extends React.Component {
             return (
                 <Fragment>
                     <ListSubheader>{this.state.name}</ListSubheader>
-                    <Divider />
                     <ListItem><div className={"property_name"}>group:</div>{this.state.group}</ListItem>
                     {
                         Object.entries(this.state.properties).map(([key, value]) => {
@@ -133,19 +147,32 @@ class WidgetProperties extends React.Component {
                             );
                         })
                     }
+                    {
+                        this.onCodelink()
+                    }
                     <Divider />
                     {
                         (this.state.group === WidgetGroup.MATERIAL) ?
-                            <ListItem><Button variant="contained" color="primary">CodeLink</Button></ListItem> :
+                            <ListItem>
+                                <Route render={({ history}) => (
+                                    <Button className="codelink-button"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => {history.push(`/codelink/${this.state.codelink}`)}}>
+                                        CodeLinknnn</Button>
+                                )} />
+                            </ListItem> :
                             <Fragment/>
+                            
                     }
                 </Fragment>
             );
         else
-            return ('No Selection');
+            return (<div id={'no-selection'}>No Selection</div>);
     }
 
     render () {
+        
         return (
             <List className={"widget-properties"}>
                 {this.onSelection()}

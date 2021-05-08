@@ -30,6 +30,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  /* IDEAL_START */
+  /* IDEAL_END */
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -42,9 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: /* IDEAL_START */
+        body:
+        /* IDEAL_BODY_START */
             Text("Start")
-        /* IDEAL_END */
+        /* IDEAL_BODY_END */
+
         );
   }
 }

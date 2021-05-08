@@ -1,5 +1,5 @@
 #library {
-    background-color: #3c414e;
+    background-color: #333333;
     height: 100%;
     padding: 1vh !important;
     left: 0;
@@ -12,4 +12,15 @@
 
 #library.MuiList-root {
     position: fixed !important;
+    top: 35px;
+}
+
+#library > li > div {
+    color: black;
+    font-size: 15px;
+}
+
+.widget-button {
+    color: black;
+    font-size: 15px;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "litegraph.js"
+import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import createNode from "./CodeLinkNodes/test"
@@ -8,17 +8,23 @@ import createValue from "./CodeLinkNodes/Value"
 import createSplitter from "./CodeLinkNodes/Splitter";
 import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
 import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
+import {Route} from "react-router";
 
 const fs = window.require("fs")
+const app = window.require('electron').remote.app;
 
-function Addition(a,b) {
-    return a + b;
-}
 
 class CodeLink extends React.Component {
 
     #graph = new LGraph();
 
+    constructor(props) {
+        super(props)
+        console.log("props de codelink")
+        console.log(this.props.match.params.filepath)
+        const codelinkfilepath = this.props.match.params.filepath;
+    }    
+    
     createConstValueNodes = (constValue) => {
 
         function ConstantNumber() {
@@ -64,38 +70,43 @@ class CodeLink extends React.Component {
     }
 
     init = () => {
-
+        console.log("Ici commence Init function")
         this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
-        LiteGraph.clearRegisteredTypes()
-       /* const node1 = LiteGraph.createNode("basic/const")
-        node1.pos  = [100, 100];
-        this.#graph.add(node1)
+        let currentpath = this.props.match.params.filepath;
+        console.log(currentpath)
+        const data = fs.readFileSync(currentpath,
+            {encoding:'utf8', flag:'r'});
+  
+        // Display the file data
+        if (data.length == 0) {
+            LiteGraph.clearRegisteredTypes()
+            this.addNodes()
+            this.sum = LiteGraph.createNode("basic/sumation");
+            this.sum.pos = [500, 500];
+            this.#graph.add(this.sum);
+            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+        } else {
+            const buffer = JSON.parse(data)
+            this.#graph.configure(buffer, false)
+            LiteGraph.clearRegisteredTypes()
+            this.addNodes()
+            this.sum = LiteGraph.createNode("basic/sumation");
+            this.sum.pos = [500, 500];
+            this.#graph.add(this.sum);
+            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+        }
+    }
 
-        const node2 = LiteGraph.createNode("basic/const");
-        node2.pos = [200, 200];
-        this.#graph.add(node2)
-
-        var node_watch = LiteGraph.createNode("basic/watch");
-
-        node_watch.pos = [0, 0];
-
-        this.#graph.add(node_watch);
-        this.addNodes()
-        this.sum = LiteGraph.createNode("basic/sumation");
-        this.sum.pos = [500, 500];
-
-        node1.connect(0, this.sum, 0);
-        node2.connect(0, this.sum, 1);
-*/
-        this.addNodes()
-        this.sum = LiteGraph.createNode("basic/sumation");
-        this.sum.pos = [500, 500];
-        this.#graph.add(this.sum);
-        fs.readFile('data.json', 'utf-8', this.createEveryNodes);
-        //this.#graph.start()
+    savegraph(event) {
+        console.log("Début de la save")
+        let currentpath = this.props.match.params.filepath;
+        
+        let output = JSON.stringify(event, null, 4);
+        fs.writeFileSync(currentpath, output);
     }
 
     render() {
+        console.log("View codelink")
         return (
             <div>
                 <Navbar fixed="top" bg="dark" variant="dark">

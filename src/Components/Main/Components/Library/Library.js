@@ -17,10 +17,33 @@ export const Library = () => {
             codePathFile: "Column.dart",
             properties: {
                 direction: "column",
-                justify: "flex-start",
-                align: "center"
+                justify: {
+                    value: "flex-start",
+                    type: PropType.COMBOBOX,
+                    items: [
+                        "flex-start",
+                        "center",
+                        "flex-end"
+                    ]
+                },
+                align: {
+                    value: "flex-start",
+                    type: PropType.COMBOBOX,
+                    items: [
+                        "flex-start",
+                        "center",
+                        "flex-end"
+                    ]
+                }
             },
-            display: () => {return {}}
+            display: function () {
+                return {
+                    style: {
+                        justifyContent: this.properties.justify.value,
+                        alignItems: this.properties.align.value
+                    }
+                }
+            }
         },
         row: {
             _id: uuid(),
@@ -78,11 +101,14 @@ export const Library = () => {
         button: {
             _id: uuid(),
             name: "button",
+            group: WidgetGroup.MATERIAL,
+            codelink: WidgetGroup.CODELINK,
             codePathFile: "Button.dart",
             properties: {
                 text: {
                     value: "button",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_BUTTON_TEXT",
                 },
                 color: {
                     value: "#2190d9",
@@ -91,7 +117,7 @@ export const Library = () => {
                         {name: "blue", value: "#2190d9"},
                         "red",
                         "green"
-                    ]
+                    ],
                 },
                 state: {
                     value: "enabled",
@@ -99,15 +125,18 @@ export const Library = () => {
                     items: [
                         "enabled",
                         "disabled"
-                    ]
+                    ],
+                    codeFlage: "IDEAL_BUTTON_STATE",
                 },
                 width: {
                     value: 80,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlage: "IDEAL_BUTTON_WIDTH",
                 },
                 height: {
                     value: 40,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlage: "IDEAL_BUTTON_HEIGHT",
                 }
             },
             display: function () {
@@ -124,26 +153,40 @@ export const Library = () => {
         text: {
             _id: uuid(),
             name: "text",
+            group: WidgetGroup.MATERIAL,
+            codelink: WidgetGroup.CODELINK,
             codePathFile: "Text.dart",
             properties: {
-                text: {
+                data: {
                     value: "text",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_TEXT",
                 },
-                empty: true
+                overflow: {
+                    value: 'TextOverflow.clip',
+                    type: PropType.COMBOBOX,
+                    items: [
+                        {name: 'clip', value: 'TextOverflow.clip'},
+                        {name: 'ellipsis', value: 'TextOverflow.ellipsis'},
+                        {name: 'fade', value: 'TextOverflow.fade'}
+                    ]
+                }
             },
             display: function () {
-                return {display: this.properties.text.value}
+                return {display: this.properties.data.value}
             }
         },
         textfield: {
             _id: uuid(),
             name: "text field",
+            group: WidgetGroup.MATERIAL,
+            codelink: WidgetGroup.CODELINK,
             codePathFile: "TextField.dart",
             properties: {
                 placeholder: {
                     value: "Placeholder",
-                    type: PropType.TEXTFIELD
+                    type: PropType.TEXTFIELD,
+                    codeFlage: "IDEAL_PLACEHOLDER",
                 },
                 focus: false
             },
@@ -154,6 +197,8 @@ export const Library = () => {
         image: {
             _id: uuid(),
             name: "image",
+            group: WidgetGroup.MATERIAL,
+            codelink: WidgetGroup.CODELINK,
             codePathFile: "Image.dart",
             properties: {
                 file: {
@@ -163,13 +208,23 @@ export const Library = () => {
                 rounded: {
                     value: true,
                     type: PropType.CHECKBOX
+                },
+                width: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+                height: {
+                    value: 200,
+                    type: PropType.NUMFIELD
                 }
             },
             display: function () {
                 return {
                     display: this.name,
                     style: {
-                        borderRadius: this.properties.rounded.value ? "30px" : "0"
+                        borderRadius: this.properties.rounded.value ? "20px" : "0",
+                        width: this.properties.width.value,
+                        height: this.properties.height.value
                     }
                 }
             }
@@ -209,4 +264,3 @@ export const Library = () => {
         </List>
     )
 }
-

@@ -9,7 +9,7 @@ class Phones extends React.Component {
     render() {
         return (
             <div className={"phones"}>
-                    <Phone/>
+                    <Phone ref={Phone.getInstance()}/>
             </div>
         );
     }

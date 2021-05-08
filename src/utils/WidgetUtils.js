@@ -5,7 +5,8 @@ export const WidgetType = {
 
 export const WidgetGroup = {
     LAYOUT: 'layout',
-    MATERIAL: 'material'
+    MATERIAL: 'material',
+    CODELINK: 'codelink'
 }
 
 export const PropType = {
