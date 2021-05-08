@@ -106,6 +106,7 @@ class CodeLink extends React.Component {
     }
 
     render() {
+        console.log("View codelink")
         return (
             <div>
                 <Navbar fixed="top" bg="dark" variant="dark">
