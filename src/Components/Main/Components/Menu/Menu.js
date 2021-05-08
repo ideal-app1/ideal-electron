@@ -16,32 +16,28 @@ import {ReactComponent as CaretIcon} from "./icons/caret.svg";
 import {ReactComponent as PlayIcon} from "./icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 
+import Loader from "react-loader-spinner";
 
 
-
-class Menu extends React.Component {
-
+export default function Menu() {
 
 
-    constructor(props) {
-        super(props);
+    const [LoaderState, setLoader] = React.useState(false);
 
-        this.folderInput = React.createRef();
-    }
-
-
-
-    newProject = async (event) => {
+    const newProject = async () => {
         const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
 
-
+        setLoader(true);
         Main.MainProjectPath = res.filePaths + "\\idealproject";
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
-            Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart");
+            Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart", () => {
+                setLoader(false);
+                JsonManager.saveThis(JSON.stringify({ProjectPathAutoSaved: res.filePaths}), "src/flutterCode/config.json")
+            });
         });
     }
 
-    runProject = (event) => {
+    const runProject = (event) => {
         const jsonCode = JsonManager.get(Main.MainProjectPath + "\\Ideal_config.json");
 
         FlutterManager.witeCode(jsonCode, Main.MainProjectPath + "\\" + "lib\\main.dart");
@@ -50,26 +46,32 @@ class Menu extends React.Component {
     }
 
 
-    render() {
+    console.log(LoaderState);
+    return (
 
+        <div className={"new"}>
 
-        console.log(React.version);
-        return (
+            <Navbar>
+                <h1>IDEAL</h1>
+                <NavItem icon={<PlusIcon onClick={newProject}/>}>
 
-            <div className={"new"}>
-                <Navbar>
-                    <h1>IDEAL</h1>
-                    <NavItem icon={<PlusIcon onClick={this.newProject}/>}>
-
-                    </NavItem>
-                    <NavItem icon={<ChevronIcon onClick={this.runProject}/>}/>
-                    <NavItem icon={<CaretIcon />}>
-                        <Dropdown/>
-                    </NavItem>
-                </Navbar>
-            </div>
-        );
-    }
+                </NavItem>
+                {LoaderState ?
+                    <Loader
+                        className={"loader"}
+                        type="Puff"
+                        color="#00BFFF"
+                        height={100}
+                        width={100}
+                        timeout={30000}
+                    /> : ""}
+                <NavItem icon={<ChevronIcon onClick={runProject}/>}/>
+                <NavItem icon={<CaretIcon/>}>
+                    <Dropdown/>
+                </NavItem>
+            </Navbar>
+        </div>
+    );
 }
 
 function Navbar(props) {
@@ -154,14 +156,4 @@ function Dropdown() {
         </div>
     );
 }
-
-export default Menu
-
-
-
-
-
-
-
-
 
