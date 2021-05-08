@@ -41,7 +41,7 @@ const createBasicFunction = (func) => {
 
 
     BasicFunction.prototype.onExecute = function () {
-        let buffer = "const " + func["return"] + this.randomName + " = " + this.title + "(";
+        let buffer = "const " + func["return"] + " " + this.randomName + " = " + this.title + "(";
         const nbOfInputs = func["parameters"].length;
         let node = undefined;
 
