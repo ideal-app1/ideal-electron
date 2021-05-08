@@ -18,7 +18,7 @@ class App extends React.Component {
                     <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route exact path="/codelink/:filepath" component={CodeLink}/>
+                    <Route exact path="/codelink/:filepath/:idwidget" component={CodeLink}/>
                 </Switch>
             </Router>
             /*  */
