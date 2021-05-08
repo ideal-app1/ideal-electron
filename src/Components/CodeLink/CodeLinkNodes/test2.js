@@ -1,27 +1,20 @@
-import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "litegraph.js"
+import {LiteGraph} from "litegraph.js";
 
-const createNode = () => {
+const createNode2 = () => {
 //your node constructor class
     function MyAddNode() {
-        this.addInput("Mdr", LiteGraph.ACTION);
         //add some input slots
         this.addInput("A", "int");
         this.addInput("B", "int");
         //add some output slots
-        this.addOutput("A+B", "String");
+        this.addOutput("A+B", LiteGraph.ACTION);
         //add some properties
         this.properties = {precision: 1};
     }
 
 //name to show on the canvas
-    MyAddNode.title = "LaSommeHaha";
+    MyAddNode.title = "LaSommeHaha2";
 
-
-    MyAddNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        console.log("Je suis connecté ? " + isConnected + " du type ? " + type)
-        console.log(link)
-
-    }
 //function to call when the node is executed
     MyAddNode.prototype.onExecute = function () {
         var m = {
@@ -38,11 +31,8 @@ const createNode = () => {
         //assing data to otputs
         this.setOutputData(0, m);
         console.log("Result + " + (A + B));
-        console.log(A)
-        this.mdr();
     }
 
     return (MyAddNode)
 }
-
-export default createNode
+export default createNode2
