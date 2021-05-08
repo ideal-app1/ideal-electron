@@ -3,7 +3,6 @@ import './Login.css'
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
-import Button from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import authService from "../../service/auth-service";
 
@@ -19,19 +18,14 @@ async function loginUser(credentials) {
     }
 }
 
-async function licenceUser(token) {
-    return fetch('https://account.idealapp.fr/api/licences', {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-        }
-    })
-        .then((data) => data.text())
-        .catch(err => {
-            console.debug("Error in fetch", err);
-        });
+async function licenceUser() {
+    try {
+        await authService.loadLicence();
+        return true;
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
 }
 
 function openWebSite() {
@@ -40,7 +34,7 @@ function openWebSite() {
     shell.openExternal('https://account.idealapp.fr')
 }
 
-export default function Login() {
+export default function Login({setAuthenticated}) {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [open, setOpen] = useState();
@@ -48,31 +42,27 @@ export default function Login() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        const authenticated = await loginUser({
+
+        let authenticated = await loginUser({
             email,
             password
         });
-        // if (token) {
-        //     setToken(token);
-        // } else {
 
         if (!authenticated) {
             setError("Bad credentials !");
             setOpen(true);
-            // return;
+            setAuthenticated(authenticated);
+            return;
         }
 
-        // const licence = await licenceUser(token);
-        //
-        // console.log(licence);
-        //
-        // if (licence) {
-        //     setLicence(licence);
-        // } else {
-        //     setError("No license found, please buy a license on our website.");
-        //     setOpen(true);
-        // }
+        authenticated = await licenceUser();
+        if (!authenticated) {
+            setError("No license found, please buy a license on our website.");
+            setOpen(true);
+        }
+        setAuthenticated(authenticated);
     }
+
     return(
         <div className={"login-wrapper"}>
             <h1>Login</h1>
@@ -111,7 +101,4 @@ export default function Login() {
             <button onClick={openWebSite}>Register</button>
         </div>
     )
-}
-
-Login.propTypes = {
 }

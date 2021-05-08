@@ -5,7 +5,6 @@ const axios = require("axios");
 
 let accessToken = null;
 let licence = null
-let profile = null;
 
 function getAccessToken() {
     return accessToken;
@@ -15,12 +14,8 @@ function getLicence() {
     return licence;
 }
 
-function getProfile() {
-    return profile;
-}
-
 async function setCookie(data, name, expiration) {
-    let result = await ses.cookies.set({
+    return await ses.cookies.set({
         url: "http://localhost:3000", //the url of the cookie.
         name: name, // a name to identify it.
         value: data, // the value that you want to save
@@ -28,131 +23,115 @@ async function setCookie(data, name, expiration) {
     }, function(error) {
         console.log(error);
     });
-
-    console.log(result);
-
-    return result;
 }
 
 async function getCookie(name) {
-    let result = await ses.cookies.get({name: name}, function(error, cookies) {
-        console.log(cookies[0].value); // the value saved on the cookie
-        console.log(error);
-    });
-
-    console.log(result);
-
-    return result;
-}
-
-async function removeCookie(name) {
-    let result = await ses.cookies.remove({
-        url: "http://localhost:3000", //the url of the cookie.
-        name: name, // a name to identify it.
+    return await ses.cookies.get({
+        name: name
     }, function(error) {
         console.log(error);
     });
-
-    console.log(result);
-
-    return result;
 }
 
-function offlineAuthChecking() {
-    console.log("offline AUTH");
-
-    return false;
+async function removeCookie(name) {
+    return await ses.cookies.remove(
+        "http://localhost:3000",
+        name
+    );
 }
 
-async function refreshTokens() {
+async function authVerification() {
     const token = await getCookie("token");
+    const licence = await getCookie("licence");
+    const expiration = new Date();
 
-    console.log("hello there: ", token);
+    // console.log(token, licence);
 
     if (token.length === 0)
         throw new Error("No available token.");
 
-    return;
-    let expiration = new Date();
-    let hour = expiration.getHours();
+    if (licence.length === 0)
+        throw new Error("No available licence.");
 
-    hour = hour + 6;
-    expiration.setHours(hour);
-
-    if (token) {
-        const refreshOptions = {
-            method: "POST",
-            url: `https://account.idealapp.fr/api/sanctum/token`,
-            headers: {
-                "content-type": "application/json",
-                'Access-Control-Allow-Origin': '*',
-            },
-            data: {
-                grant_type: "refresh_token",
-                email: "lucas.marcel@epitech.eu",
-                password: "ideal-lucas",
-                refresh_token: token,
-            },
-        };
-
-        try {
-            const response = await axios(refreshOptions);
-
-            accessToken = response.data.access_token;
-        } catch (error) {
-            await logout();
-
-            throw error;
-        }
-    } else {
-        throw new Error("No available refresh token.");
-    }
+    if (licence[0].expirationDate <= expiration)
+        throw new Error("Licence expired.");
 }
 
 async function loadTokens(credentials) {
+    const expiration = new Date();
+
     const options = {
         method: "POST",
         url: `https://account.idealapp.fr/api/sanctum/token`,
         headers: {
             "content-type": "application/json",
-
+            'Access-Control-Allow-Origin': '*',
         },
-        body: JSON.stringify(credentials),
+        data: JSON.stringify(credentials),
     };
 
     try {
         const response = await axios(options);
 
-        console.log(response);
-
-        return;
-        accessToken = response.data.access_token;
-
+        accessToken = response.data;
+        expiration.setFullYear(expiration.getFullYear() + 1);
+        await setCookie(response.data, "token", expiration)
     } catch (error) {
         await logout();
-
         throw error;
     }
 }
 
+async function loadLicence() {
+    const options = {
+        method: "GET",
+        url: `https://account.idealapp.fr/api/licences`,
+        headers: {
+            Authorization: `Bearer ${getAccessToken()}`,
+            "content-type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+        }
+    };
+
+    try {
+        const response = await axios(options);
+        const expiration = new Date();
+
+        if (response.data.length === 0) {
+            licence = null;
+        } else {
+            licence = response.data;
+            expiration.setFullYear(licence[0]["expired_at"].split('/')[2]);
+            expiration.setMonth(licence[0]["expired_at"].split('/')[1] - 1);
+            await setCookie(JSON.stringify(response.data), "licence", expiration);
+        }
+    } catch (error) {
+        await logout();
+        throw error;
+    }
+
+    if (!getLicence()) {
+        await logout();
+        throw new Error("No Licence found.");
+    }
+}
+
 async function logout() {
-    removeCookie("token");
-    removeCookie("licence");
+    await removeCookie("token");
+    await removeCookie("licence");
 
     accessToken = null;
     licence = null
-    profile = null;
 }
 
 module.exports = {
     getAccessToken,
     getLicence,
-    getProfile,
     setCookie,
     getCookie,
     removeCookie,
-    refreshTokens,
-    offlineAuthChecking,
+    authVerification,
     loadTokens,
+    loadLicence,
     logout,
 };

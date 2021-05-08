@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import './App.css';
@@ -7,48 +7,43 @@ import Login from "./Components/Login/Login"
 import CodeLink from "./Components/CodeLink/CodeLink";
 import authService from "./service/auth-service";
 
-async function authentication() {
-    let noErr = true;
-
-    if (!navigator.onLine)
-        return authService.offlineAuthChecking();
-
+async function authentication({setAuthenticated}) {
     try {
-        console.log("start auth");
-        await authService.refreshTokens();
-        console.log("end auth");
+        await authService.authVerification();
+        setAuthenticated(true);
     } catch (err) {
-        console.log("erroreee: ", err);
-        noErr = false;
+        console.log(err);
+        setAuthenticated(false);
     }
-    console.log("BAGARRE ?", noErr);
-    return noErr;
 }
 
 function App () {
-    let authenticated = authentication();
+    const [authenticated, setAuthenticated] = useState();
 
-    console.log("authenticated", authenticated);
+    (async () => await authentication({setAuthenticated}))();
+
+    if (authenticated === undefined) {
+        return (<div> <p>Loading</p> </div>);
+    }
+
     if (!authenticated) {
-        console.log("LOGIINNN");
-        return <Login/>
+        return <Login setAuthenticated={setAuthenticated} />
     }
-    else {
-        return (
-            <div className={"wrapper"}>
-                <Router>
-                    <Switch>
-                        <Route exact path="/">
-                            <Main/>
-                        </Route>
-                        <Route path="/CodeLink">
-                            <CodeLink/>
-                        </Route>
-                    </Switch>
-                </Router>
-            </div>
-        );
-    }
+
+    return (
+        <div className={"wrapper"}>
+            <Router>
+                <Switch>
+                    <Route exact path="/">
+                        <Main/>
+                    </Route>
+                    <Route path="/CodeLink">
+                        <CodeLink/>
+                    </Route>
+                </Switch>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
