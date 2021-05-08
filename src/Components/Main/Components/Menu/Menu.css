@@ -4,8 +4,8 @@
 
 .new {
     position: absolute;
-    right: 50px;
-    bottom: 50px;
+    width: 100%;
+    top: 0;
 }
 
 .new>label>img {

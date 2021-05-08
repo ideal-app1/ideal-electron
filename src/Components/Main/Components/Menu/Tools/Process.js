@@ -7,7 +7,7 @@ class Process {
     static exec = window.require('child_process');
 
 
-    static runScript(command) {
+    static runScript(command, callback = null) {
 
         console.log('start : ' + command);
 
@@ -20,6 +20,9 @@ class Process {
 
             console.log('stdout: ' + stdout);
             console.log('stderr: ' + stderr);
+            if (callback) {
+                callback();
+            }
         });
     }
 }

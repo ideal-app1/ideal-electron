@@ -1,8 +1,10 @@
 .phone {
+    border: 5px solid #111111;
     background-color: white;
     border-radius: 50px;
     height: 812px !important;
     width: 375px !important;
     align-content: center;
-    overflow: hidden;
+    overflow: auto;
 }
+

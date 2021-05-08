@@ -1,11 +1,15 @@
 
 .widget {
     text-align: center;
-    padding: 10px 50px 10px 50px;
+    padding: 3% 10%;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 20px;
     height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    color: black;
 }
 
 .widget.button {
@@ -22,7 +26,6 @@
 
 .widget.image {
     background-color: lightpink;
-    padding: 100px;
 }
 
 .widget.empty {

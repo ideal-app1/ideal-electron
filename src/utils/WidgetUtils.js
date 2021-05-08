@@ -5,11 +5,13 @@ export const WidgetType = {
 
 export const WidgetGroup = {
     LAYOUT: 'layout',
-    WIDGET: 'widget'
+    MATERIAL: 'material'
 }
 
 export const PropType = {
     TEXTFIELD: 'textfield',
+    NUMFIELD: 'numfield',
     CHECKBOX: 'check',
-    COMBOBOX: 'combo'
+    COMBOBOX: 'combo',
+    FILE: 'file'
 }

@@ -1,16 +1,64 @@
 .widget-properties {
-    background-color: #3c414e;
+    background-color: #333333;
     font-size: 14px;
     height: 98vh;
-    width: 20vh;
+    width: 30vh;
     padding: 2vh !important;
     right: 0;
 }
 
-.MuiFormControl-root {
+.widget-properties.MuiList-root {
+    position: fixed !important;
+    top: 35px;
+}
+
+.widget-properties .MuiListItem-gutters {
+    height: 45px;
+}
+
+.widget-properties .MuiFormControl-root {
     margin-left: 5px !important;
 }
 
-.MuiInputBase-input {
+.widget-properties .MuiInputBase-input {
+    color: white !important;
+}
+
+.widget-properties .MuiOutlinedInput-input {
     padding: 6px 7px !important;
+}
+
+.widget-properties .MuiListSubheader-root {
+    color: ghostwhite !important;
+    font-size: 20px !important;
+}
+
+.property_name {
+    width: 80px;
+    margin-right: 8px;
+    text-align: right;
+}
+
+#no-selection {
+    height: 100%;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    background-color: #292929 !important;
+}
+
+.codelink-button {
+    background-color: #242424 !important;
+    color: #b3b3b3 !important;
+}
+
+#menu- > div.MuiPaper-root.MuiMenu-paper.MuiPopover-paper.MuiPaper-elevation8.MuiPaper-rounded {
+    background-color: #565656 !important;
+    color: white;
+    width: 150px;
+    margin-top: 50px;
 }

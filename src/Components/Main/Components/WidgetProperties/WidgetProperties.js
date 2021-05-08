@@ -2,27 +2,35 @@ import React, {Fragment} from "react";
 import "./WidgetProperties.css"
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import {Button, Checkbox, ListSubheader} from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import Checkbox from "@material-ui/core/Checkbox";
 import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
+
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Link, Route, useLocation} from "react-router-dom";
-
+import Phone from "../Phone/Phone";
 
 var fs = window.require('fs'); // Load the File System to execute our common tasks (CRUD)
 const app = window.require('electron').remote.app;
 
+const { ipcRenderer } = window.require('electron')
 
 const filepathCodelink = {
     filepath: ''
 }
+
 
 class WidgetProperties extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {};
-        
+        this.phone = Phone.getInstance()
     }
 
     static instance = null;
@@ -33,45 +41,80 @@ class WidgetProperties extends React.Component {
         return WidgetProperties.instance;
     }
 
-    handleSelect = properties => {
-        this.setState(properties)
+    handleSelect = id => {
+        this.setState(this.phone.current.findWidgetByID(id))
     }
 
     updateState = (key, value) => {
-        const updateState = {
-            ...this.state,
-            properties: {
-                ...this.state.properties,
-                [key]: {
-                    ...this.state.properties[key],
-                    value: value
-                }
-            }
-        }
-        this.setState(updateState)
-        this.state.update(updateState)
+        this.state.properties[key].value = value
+        this.forceUpdate()
+        this.phone.current.forceUpdate()
     }
 
-    widgetPropType = (key, value) => {
-        switch (value.type) {
+    widgetPropType = (name, prop) => {
+        switch (prop.type) {
             case PropType.TEXTFIELD:
                 return (
                     <TextField
-                        defaultValue={value.value}
+                        defaultValue={prop.value}
                         variant="outlined"
-                        onChange={entry => {this.updateState(key, entry.target.value)}}
+                        onChange={entry => {this.updateState(name, entry.target.value)}}
+                    />
+                )
+            case PropType.NUMFIELD:
+                return (
+                    <TextField
+                        defaultValue={prop.value}
+                        type="number"
+                        variant="outlined"
+                        onChange={entry => {this.updateState(name, parseInt(entry.target.value))}}
                     />
                 )
             case PropType.CHECKBOX:
                 return (
                     <Checkbox
-                        checked={value.value}
+                        checked={prop.value}
                         color="primary"
-                        onChange={entry => {this.updateState(key, entry.target.checked)}}
+                        onChange={entry => {this.updateState(name, entry.target.checked)}}
                     />
                 )
+            case PropType.COMBOBOX:
+                const items = []
+                prop.items.forEach(v => {
+                    if (v.name && v.value)
+                        items.push(<MenuItem key={v.name} value={v.value}>{v.name}</MenuItem>)
+                    else
+                        items.push(<MenuItem key={v} value={v}>{v}</MenuItem>)
+                })
+                return (
+                    <FormControl >
+                        <Select
+                            displayEmpty
+                            value={prop.value}
+                            onChange={event => {this.updateState(name, event.target.value)}}
+                        >
+                            {items}
+                        </Select>
+                    </FormControl>
+                )
+            case PropType.FILE:
+                return (
+                    <Fragment>
+                        {prop.value.split('/').pop()}
+                        <Button
+                            variant="contained"
+                            onClick={
+                                () => {
+                                    const file = ipcRenderer.sendSync('select-file', '')
+                                    if (file)
+                                        this.updateState(name, file[0])
+                                }
+                            }
+                        >Select file</Button>
+                    </Fragment>
+                )
             default:
-                return (value.toString())
+                return (prop.toString())
         }
     }
 
@@ -93,12 +136,14 @@ class WidgetProperties extends React.Component {
             return (
                 <Fragment>
                     <ListSubheader>{this.state.name}</ListSubheader>
-                    <Divider />
-                    <ListItem>group: {this.state.group}</ListItem>
+                    <ListItem><div className={"property_name"}>group:</div>{this.state.group}</ListItem>
                     {
                         Object.entries(this.state.properties).map(([key, value]) => {
                             return (
-                                <ListItem key={this.state._id + key}>{key}: {this.widgetPropType(key, value)}</ListItem>
+                                <ListItem key={this.state._id + key}>
+                                    <div className={"property_name"}>{key}:</div>
+                                    {this.widgetPropType(key, value)}
+                                </ListItem>
                             );
                         })
                     }
@@ -113,13 +158,23 @@ class WidgetProperties extends React.Component {
                                        <Button variant="contained" color="primary">
                                 CodeLink</Button></Link> 
                                 </ListItem> :
+                        (this.state.group === WidgetGroup.MATERIAL) ?
+                            <ListItem>
+                                <Route render={({ history}) => (
+                                    <Button className="codelink-button"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => {history.push('/a')}}>
+                                        CodeLink</Button>
+                                )} />
+                            </ListItem> :
                             <Fragment/>
                             
                     }
                 </Fragment>
             );
         else
-            return ('No Selection');
+            return (<div id={'no-selection'}>No Selection</div>);
     }
 
     render () {

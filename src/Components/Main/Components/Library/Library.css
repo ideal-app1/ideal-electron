@@ -1,15 +1,26 @@
-.library {
-    background-color: #3c414e;
+#library {
+    background-color: #333333;
     height: 100%;
     padding: 1vh !important;
     left: 0;
 }
 
-.MuiListSubheader-root {
+#library .MuiListSubheader-root {
     color: ghostwhite !important;
     font-size: 20px !important;
 }
 
-.MuiList-root {
+#library.MuiList-root {
     position: fixed !important;
+    top: 35px;
+}
+
+#library > li > div {
+    color: black;
+    font-size: 15px;
+}
+
+.widget-button {
+    color: black;
+    font-size: 15px;
 }

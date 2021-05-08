@@ -1,11 +1,37 @@
 const electron = require('electron');
+const {ipcMain, dialog} = require('electron')
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
-
 const path = require('path');
 const url = require('url');
+const Menu = electron.Menu;
+
+const menuTemplate = [
+    {
+        label: 'File',
+        submenu: [
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                click() {
+                }
+            },
+            {
+                label: 'Dev Tools',
+                accelerator: 'CmdOrCtrl+J',
+                click(item, focusedWindow) {
+                    focusedWindow.toggleDevTools();
+                }
+            }
+        ]
+    },
+]
+
+if (process.platform === 'darwin') {
+    menuTemplate.unshift({role:"fileMenu"},);
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,7 +46,8 @@ function createWindow() {
         backgroundColor: '#282c34',
         webPreferences: { 
             enableRemoteModule: true,
-            nodeIntegration: true },
+            nodeIntegration: true 
+        },
         show: false
     });
 
@@ -47,6 +74,9 @@ function createWindow() {
         // when you should delete the corresponding element.
         mainWindow = null
     })
+
+    const mainMenu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(mainMenu);
 }
 
 // This method will be called when Electron has finished
@@ -73,3 +103,13 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('select-file', (event, arg) => {
+    var result = dialog.showOpenDialogSync({
+        properties: ['openFile', 'multiSelections'],
+        filtres: [
+            { name : 'Images', extensions: ['jpg', 'png', 'gif'] }
+        ]
+    })
+    event.returnValue = result
+})
