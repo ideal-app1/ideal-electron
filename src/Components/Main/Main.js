@@ -8,7 +8,6 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 
 import config from "../../flutterCode/config.json";
 
-
 import {
     Link
 } from "react-router-dom";
@@ -29,8 +28,6 @@ class Main extends React.Component {
             <div className="App">
                 <header className="App-header">
                     <DndProvider backend={HTML5Backend}>
-
-
                         <Library/>
                         <Phones/>
                         <WidgetProperties ref={WidgetProperties.getInstance()}/>
