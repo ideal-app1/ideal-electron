@@ -32,7 +32,7 @@ export default function Menu() {
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
             Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart", () => {
                 setLoader(false);
-                JsonManager.saveThis(JSON.stringify({ProjectPathAutoSaved: res.filePaths}), "src/flutterCode/config.json")
+                JsonManager.saveThis({ProjectPathAutoSaved: res.filePaths}, "src/flutterCode/config.json")
             });
         });
     }
