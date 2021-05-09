@@ -8,8 +8,6 @@ const path = require('path');
 const url = require('url');
 const Menu = electron.Menu;
 
-
-
 const menuTemplate = [
     {
         label: 'File',
@@ -39,8 +37,6 @@ if (process.platform === 'darwin') {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-
-
 function createWindow() {
     // Create the browser window.
     //titleBarStyle: 'hidden',
@@ -48,9 +44,10 @@ function createWindow() {
         minWidth: 1000,
         minHeight: 1000,
         backgroundColor: '#282c34',
-        webPreferences: { 
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
             enableRemoteModule: true,
-            nodeIntegration: true 
         },
         show: false
     });
@@ -89,7 +86,6 @@ function createWindow() {
 app.on('ready', createWindow);
 
 
-
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
@@ -111,7 +107,7 @@ app.on('activate', function () {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('select-file', (event, arg) => {
-    var result = dialog.showOpenDialogSync({
+    let result = dialog.showOpenDialogSync({
         properties: ['openFile', 'multiSelections'],
         filtres: [
             { name : 'Images', extensions: ['jpg', 'png', 'gif'] }

@@ -18,9 +18,7 @@ import {CSSTransition} from "react-transition-group";
 
 import Loader from "react-loader-spinner";
 
-
 export default function Menu() {
-
 
     const [LoaderState, setLoader] = React.useState(false);
 
@@ -44,7 +42,6 @@ export default function Menu() {
 
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
-
 
     console.log(LoaderState);
     return (

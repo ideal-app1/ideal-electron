@@ -232,7 +232,7 @@ export const Library = () => {
     }
 
     const groups = [
-        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials},
+        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials, codelink: WidgetGroup.CODELINK},
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}
     ]
 
