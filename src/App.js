@@ -18,7 +18,7 @@ async function authentication({setAuthenticated}) {
 }
 
 function App () {
-    const [authenticated, setAuthenticated] = useState();
+/*    const [authenticated, setAuthenticated] = useState();
 
     (async () => await authentication({setAuthenticated}))();
 
@@ -29,7 +29,7 @@ function App () {
     if (!authenticated) {
         return <Login setAuthenticated={setAuthenticated} />
     }
-
+*/
     return (
         <div className={"wrapper"}>
             <Router>

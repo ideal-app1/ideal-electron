@@ -23,7 +23,7 @@ class FlutterManager {
     static fillProperties(code, props)
     {
         Object.keys(props).map((key) => {
-            const regex = new RegExp(`(\/\\* ${props[key].codeFlage} \\*\/)`)
+            const regex = new RegExp(`(\/\\* ${props[key].codeFlag} \\*\/)`)
             code = code.replace(regex, props[key].value);
         });
         return code;

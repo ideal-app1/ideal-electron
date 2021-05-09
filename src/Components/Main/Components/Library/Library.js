@@ -108,7 +108,7 @@ export const Library = () => {
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_BUTTON_TEXT",
+                    codeFlag: "IDEAL_BUTTON_TEXT",
                 },
                 color: {
                     value: "#2190d9",
@@ -126,17 +126,17 @@ export const Library = () => {
                         "enabled",
                         "disabled"
                     ],
-                    codeFlage: "IDEAL_BUTTON_STATE",
+                    codeFlag: "IDEAL_BUTTON_STATE",
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    codeFlage: "IDEAL_BUTTON_WIDTH",
+                    codeFlag: "IDEAL_BUTTON_WIDTH",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    codeFlage: "IDEAL_BUTTON_HEIGHT",
+                    codeFlag: "IDEAL_BUTTON_HEIGHT",
                 }
             },
             display: function () {
@@ -160,7 +160,7 @@ export const Library = () => {
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_TEXT",
+                    codeFlag: "IDEAL_TEXT",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -186,7 +186,7 @@ export const Library = () => {
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_PLACEHOLDER",
+                    codeFlag: "IDEAL_PLACEHOLDER",
                 },
                 focus: false
             },
