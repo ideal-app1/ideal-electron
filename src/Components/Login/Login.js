@@ -7,8 +7,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import authService from "../../service/auth-service";
 
 async function loginUser(credentials) {
-    console.log(credentials);
-
     try {
         await authService.loadTokens(credentials);
         return true;

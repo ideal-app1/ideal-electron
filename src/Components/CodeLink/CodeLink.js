@@ -13,7 +13,6 @@ const fs = window.require("fs")
 const app = window.require('electron').remote.app;
 
 class CodeLink extends React.Component {
-
     #graph = new LGraph();
 
     constructor(props) {
@@ -116,7 +115,7 @@ class CodeLink extends React.Component {
         return (
             <div>
                 <Grid container className={"CodeLink-Content"}>
-                    <Grid xs={12} className={"CodeLink-bar-menu"}>
+                    <Grid item xs={12} className={"CodeLink-bar-menu"}>
                         <Grid container>
                             <Grid className={"CodeLink-bar-item"}>
                                 <Box>
@@ -140,7 +139,7 @@ class CodeLink extends React.Component {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid xs={2} className={"CodeLink-widget-menu"}>
+                    <Grid item xs={2} className={"CodeLink-widget-menu"}>
                         <Grid container
                               spacing={0}
                               direction="column"
@@ -166,7 +165,7 @@ class CodeLink extends React.Component {
                             </div>
                         </Grid>
                     </Grid>
-                    <Grid xs={10} className={"CodeLink-canvas"}>
+                    <Grid item xs={10} className={"CodeLink-canvas"}>
                         <Box className={"CodeLink-canvas-Box"}>
                             <canvas id="myCanvas" width={1920} height={1080} ref={(canvas) => {
                                 this.canvas = canvas;
