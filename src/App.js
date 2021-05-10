@@ -37,7 +37,7 @@ function App () {
                     <Route exact path="/">
                         <Main/>
                     </Route>
-                    <Route exact path="/codelink/:filepath/:idwidget" component={CodeLink}/>
+                    <Route exact path="/codelink/:id" component={CodeLink}/>
                 </Switch>
             </Router>
         </div>

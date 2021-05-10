@@ -101,8 +101,6 @@ export const Library = () => {
         button: {
             _id: uuid(),
             name: "button",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Button.dart",
             properties: {
                 text: {
@@ -153,8 +151,6 @@ export const Library = () => {
         text: {
             _id: uuid(),
             name: "text",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Text.dart",
             properties: {
                 data: {
@@ -179,8 +175,6 @@ export const Library = () => {
         textfield: {
             _id: uuid(),
             name: "text field",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "TextField.dart",
             properties: {
                 placeholder: {
@@ -197,8 +191,6 @@ export const Library = () => {
         image: {
             _id: uuid(),
             name: "image",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Image.dart",
             properties: {
                 file: {
@@ -232,7 +224,7 @@ export const Library = () => {
     }
 
     const groups = [
-        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials, codelink: WidgetGroup.CODELINK},
+        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials},
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}
     ]
 
@@ -245,9 +237,10 @@ export const Library = () => {
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
                                 <LibraryWidget
+                                    {...widget}
                                     group={group.group}
                                     type={WidgetType.LIBRARY}
-                                    {...widget}
+                                    codelink={'/'}
                                 />
                             </ListItem>
                             <Divider />

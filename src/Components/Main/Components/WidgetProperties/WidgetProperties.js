@@ -11,17 +11,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
-import {Link, Route, useLocation} from "react-router-dom";
+import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
+import Main from "../../Main";
 
-var fs = window.require('fs'); // Load the File System to execute our common tasks (CRUD)
-const app = window.require('electron').remote.app;
-
+const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron')
-
-const filepathCodelink = {
-    filepath: ''
-}
 
 
 class WidgetProperties extends React.Component {
@@ -117,25 +112,59 @@ class WidgetProperties extends React.Component {
         }
     }
 
-    createFile(props) {
-        fs.appendFile(props.codelink, null, { flag: 'wx' }, function (err) {
+    createFile(path) {
+        if (fs.existsSync(path)) {
+            return;
+        }
+        fs.appendFile(path, null, { flag: 'wx' }, function (err) {
             if (err) throw err;
             console.log("It's saved!");
         });
     }
 
     onCodelink = () => {
-        this.state.codelink = app.getAppPath() + this.state._id + this.state.name + ".json";
-        this.createFile(this.state)
-        filepathCodelink.filepath = this.state.codelink
+        this.state.codelink = Main.MainProjectPath + "\\codelink\\" + this.state._id + ".json";
+        console.log(this.state.codelink)
+        this.createFile(this.state.codelink)
+    }
+
+    codeLinkButton = () => {
+        if (this.state.group === WidgetGroup.MATERIAL) {
+            return (
+                <ListItem>
+                    <Route render={({ history}) => (
+                        <Button className="codelink-button"
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    history.push({
+                                        pathname: '/codelink/' + this.state._id,
+                                        state: {
+                                            _id: this.state._id,
+                                            path: this.state.codelink
+                                        }
+                                    })
+                                }}>
+                            CodeLink
+                        </Button>
+                    )} />
+                </ListItem>
+            )
+        } else {
+            return (<Fragment/>)
+        }
     }
 
     onSelection = () => {
-        if (this.state.properties)
+        if (this.state.properties) {
+            this.onCodelink()
             return (
                 <Fragment>
                     <ListSubheader>{this.state.name}</ListSubheader>
-                    <ListItem><div className={"property_name"}>group:</div>{this.state.group}</ListItem>
+                    <ListItem>
+                        <div className={"property_name"}>group:</div>
+                        {this.state.group}
+                    </ListItem>
                     {
                         Object.entries(this.state.properties).map(([key, value]) => {
                             return (
@@ -146,27 +175,11 @@ class WidgetProperties extends React.Component {
                             );
                         })
                     }
-                    {
-                        this.onCodelink()
-                    }
-                    <Divider />
-                    {
-                        (this.state.group === WidgetGroup.MATERIAL) ?
-                            <ListItem>
-                                <Route render={({ history}) => (
-                                    <Button className="codelink-button"
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={() => {history.push(`/codelink/${this.state.codelink}/${this.state._id}`)}}>
-                                        CodeLinknnn</Button>
-                                )} />
-                            </ListItem> :
-                            <Fragment/>
-                            
-                    }
+                    <Divider/>
+                    {this.codeLinkButton()}
                 </Fragment>
             );
-        else
+        } else
             return (<div id={'no-selection'}>No Selection</div>);
     }
 

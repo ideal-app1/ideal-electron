@@ -18,10 +18,8 @@ class CodeLink extends React.Component {
 
     constructor(props) {
         super(props)
-        console.log("props de codelink")
-        console.log(this.props.match.params.filepath)
-        console.log(this.props.match.params.idwidget)
-    }    
+        console.log("codelink", this.props.match.params.id)
+    }
     
     createConstValueNodes = (constValue) => {
 
@@ -70,7 +68,7 @@ class CodeLink extends React.Component {
     init = () => {
         console.log("Ici commence Init function")
         this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
-        let currentpath = this.props.match.params.filepath;
+        let currentpath = this.props.location.state.path;
         console.log(currentpath)
         const data = fs.readFileSync(currentpath,
             {encoding:'utf8', flag:'r'});
@@ -97,7 +95,7 @@ class CodeLink extends React.Component {
 
     savegraph(event) {
         console.log("Début de la save")
-        let currentpath = this.props.match.params.filepath;
+        let currentpath = this.props.location.state.path;
         
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(currentpath, output);
