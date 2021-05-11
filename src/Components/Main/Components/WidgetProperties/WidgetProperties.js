@@ -17,6 +17,7 @@ import Main from "../../Main";
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron')
+const path = require("path")
 
 
 class WidgetProperties extends React.Component {
@@ -123,7 +124,7 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.codelink = Main.MainProjectPath + "\\codelink\\" + this.state._id + ".json";
+        this.state.codelink = path.join(Main.MainProjectPath, "codelink", this.state._id + ".json");
         console.log(this.state.codelink)
         this.createFile(this.state.codelink)
     }

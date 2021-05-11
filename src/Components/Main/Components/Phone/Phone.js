@@ -9,6 +9,7 @@ import JsonManager from "../../Tools/JsonManager";
 import Button from "@material-ui/core/Button";
 import {light} from "@material-ui/core/styles/createPalette";
 const clone = require("rfdc/default")
+const path = require("path")
 
 class Phone extends React.Component {
 
@@ -36,7 +37,7 @@ class Phone extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         //this.state.buffer.push(clone(this.state))
         const finalWidgetList = this.deepConstruct(this.state.idList)
-        JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + "\\Ideal_config.json");
+        JsonManager.saveThis(finalWidgetList, path.join(Main.MainProjectPath, "Ideal_config.json"));
     }
 
     findWidgetByID = id => {

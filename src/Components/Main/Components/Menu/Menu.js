@@ -19,6 +19,7 @@ import {CSSTransition} from "react-transition-group";
 import Loader from "react-loader-spinner";
 
 const path = require('path');
+const fs = window.require('fs');
 
 export default function Menu() {
 
@@ -38,7 +39,8 @@ export default function Menu() {
                 copyCmd = 'copy'
             Process.runScript(copyCmd + " " + path.join('src', 'flutterCode', 'main.dart') + " " + path.join(Main.MainProjectPath, 'lib', 'main.dart'), () => {
                 setLoader(false);
-                JsonManager.saveThis({ProjectPathAutoSaved: res.filePaths[0]}, path.join('src', 'flutterCode', 'config.json'))
+                fs.mkdirSync(path.join(Main.MainProjectPath, 'codelink'));
+                JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
             });
         });
     }
