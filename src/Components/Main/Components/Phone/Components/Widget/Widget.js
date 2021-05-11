@@ -12,6 +12,8 @@ const Widget = props => {
 
     const ref = useRef(null);
 
+    const [state, setState] = useState({dragging: false})
+
     const [{isOver}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
@@ -34,12 +36,13 @@ const Widget = props => {
     const [{isDragging}, drag] = useDrag({
         item: {...props},
         isDragging: monitor => {
-            const didDrop = monitor.didDrop();
-            if (!didDrop) {
-                if (monitor.getItem().source === WidgetType.PHONE) {
-                    phone.current.removeByID(monitor.getItem()._id)
-                }
+            if (state.dragging && monitor.getItem().source === WidgetType.PHONE) {
+                phone.current.removeByID(monitor.getItem()._id)
+                setState({dragging: false})
             }
+        },
+        begin: () => {
+            setState({dragging: true})
         },
         end: (draggedItem, monitor) => {
             const didDrop = monitor.didDrop();
