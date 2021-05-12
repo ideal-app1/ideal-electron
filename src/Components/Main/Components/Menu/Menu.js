@@ -31,13 +31,18 @@ export default function Menu() {
             return;
 
         setLoader(true);
-        Main.MainProjectPath = path.join(res.filePaths[0], 'idealproject');
-        console.log(Main.MainProjectPath)
+        let copyCmd = 'cp';
+        let fileSeparator = '/';
+
+        if (window.navigator.platform === "Win32") {
+            copyCmd = 'copy';
+            fileSeparator = '\\';
+        }
+        Main.MainProjectPath = res.filePaths[0] + fileSeparator + 'idealproject';
+
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
-            let copyCmd = 'cp'
-            if (process.platform === "win32")
-                copyCmd = 'copy'
-            Process.runScript(copyCmd + " " + path.join('src', 'flutterCode', 'main.dart') + " " + path.join(Main.MainProjectPath, 'lib', 'main.dart'), () => {
+
+            Process.runScript(copyCmd + " " + 'src' + fileSeparator + 'flutterCode' + fileSeparator + 'main.dart' + " " + Main.MainProjectPath + fileSeparator + 'lib' + fileSeparator + 'main.dart', () => {
                 setLoader(false);
                 fs.mkdirSync(path.join(Main.MainProjectPath, 'codelink'));
                 JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
