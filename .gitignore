@@ -27,4 +27,4 @@ yarn-error.log*
 package-lock.json
 
 # ideal
-src/flutterCode/config.json
+/src/flutterCode/config.json
