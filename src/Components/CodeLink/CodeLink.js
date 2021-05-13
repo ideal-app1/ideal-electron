@@ -13,18 +13,14 @@ import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
 
-
 class CodeLink extends React.Component {
-
     #graph = new LGraph();
 
     constructor(props) {
         super(props)
-        console.log("props de codelink")
-        console.log(this.props.match.params.filepath)
-        console.log(this.props.match.params.idwidget)
-    }    
-    
+        console.log("codelink", this.props.match.params.id)
+    }
+
 
 
     addNodes = () => {
@@ -34,20 +30,19 @@ class CodeLink extends React.Component {
     init = () => {
         console.log("Ici commence Init function")
         this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
-        let currentpath = this.props.match.params.filepath;
+        let currentpath = this.props.location.state.path;
         console.log(currentpath)
         const data = fs.readFileSync(currentpath,
             {encoding:'utf8', flag:'r'});
   
         // Display the file data
-        if (data.length == 0) {
+        if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
             this.#graph.configure(buffer, false)
-
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
@@ -56,55 +51,84 @@ class CodeLink extends React.Component {
 
     savegraph(event) {
         console.log("Début de la save")
-        let currentpath = this.props.match.params.filepath;
+        let currentpath = this.props.location.state.path;
         
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(currentpath, output);
+    }
+
+    generate = (element) => {
+        return [0, 1, 2].map((value) =>
+            React.cloneElement(element, {
+                key: value,
+            }),
+        );
     }
 
     render() {
         console.log("View codelink")
         return (
             <div>
-                <Navbar fixed="top" bg="dark" variant="dark">
-                    <Navbar.Brand>CodeLink</Navbar.Brand>
-                    <Nav className="mr-auto">
-                        <Nav.Link href="/">Home view</Nav.Link>
-                        <NavDropdown title="Tools" id="collasible-nav-dropdown">
-                            <NavDropdown.Item >
-                                <CodeLinkTree/>
-                            </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Tmp</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
-                        console.log("mdr")
-                        this.#graph.runStep(1)
-                    }}>
-                        Exec
-                    </Button>
-                    <Button variant={"warning"} style={{'marginRight': '2rem'}} onClick={() => {
-                        console.log("SaveFile")
-                        this.savegraph(this.#graph.serialize(serializedLGraph))
-                    }}>
-                        Save
-                    </Button>
-                    <Form inline>
-                        <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                        <Button variant="outline-info">Search</Button>
-                    </Form>
-                </Navbar>
-                <Container fluid className={"CodeLink-Content"}>
-                    <Row className={"CodeLink-canvas"}>
-                        <Col className={"CodeLink-canvas-Box"}>
+                <Grid container className={"CodeLink-Content"}>
+                    <Grid item xs={12} className={"CodeLink-bar-menu"}>
+                        <Grid container>
+                            <Grid className={"CodeLink-bar-item"}>
+                                <Box>
+                                    <h2>CodeLink</h2>
+                                </Box>
+                            </Grid>
+                            <Grid className={"CodeLink-bar-item"}>
+                                <Box marginTop={"1.25rem"}>
+                                    <Button variant="contained" color="primary" href="/">Phone view</Button>
+                                </Box>
+                            </Grid>
+                            <Grid className={"CodeLink-bar-item"}>
+                                <Box marginTop={"1.25rem"}>
+                                    <Button variant="contained" color="secondary" onClick={() => {
+                                        console.log("Exec test Graph")
+                                        this.#graph.runStep(1)
+                                    }}>
+                                        Exec
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={2} className={"CodeLink-widget-menu"}>
+                        <Grid container
+                              spacing={0}
+                              direction="column"
+                              alignItems="center"
+                              justify="center"
+                        >
+                            <Typography variant="h6">
+                                Widget Menu
+                            </Typography>
+                            <div>
+                                <List>
+                                    {this.generate(
+                                        <ListItem>
+                                            <ListItemText
+                                                primary="Widget item Id"
+                                            />
+                                            <ListItemIcon>
+                                                <Loop />
+                                            </ListItemIcon>
+                                        </ListItem>,
+                                    )}
+                                </List>
+                            </div>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={10} className={"CodeLink-canvas"}>
+                        <Box className={"CodeLink-canvas-Box"}>
                             <canvas id="myCanvas" width={1920} height={1080} ref={(canvas) => {
                                 this.canvas = canvas;
                                 this.init()
                             }}/>
-                        </Col>
-                    </Row>
-                </Container>
+                        </Box>
+                    </Grid>
+                </Grid>
             </div>
         );
     }

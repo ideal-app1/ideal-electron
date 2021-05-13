@@ -1,19 +1,29 @@
 
 .CodeLink-Content {
     background-color: #282c34;
+    color: #aaaaaa;
+}
+
+.CodeLink-bar-menu {
+    background-color: #282c34;
+    padding-bottom: 1rem;
+}
+
+.CodeLink-bar-item {
+    margin-left: 2rem;
+}
+
+.CodeLink-widget-menu {
+    background-color: #1c1c1c;
 }
 
 .CodeLink-canvas {
     background-color: #282c34;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
 }
 
 .CodeLink-canvas-Box {
     overflow: auto;
-    max-height: 885px;
-
+    max-height: 900px;
 }
 
 ::-webkit-scrollbar { width: 8px; height: 6px;}

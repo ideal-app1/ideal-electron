@@ -4,9 +4,7 @@ import {useDrop} from "react-dnd";
 import {WidgetGroup, WidgetType} from "../../../../../../utils/WidgetUtils"
 import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
-import {v4 as uuid} from 'uuid';
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
-import WidgetDropPreview from "../WidgetDropPreview/WidgetDropPreview";
 import Phone from "../../Phone";
 
 const Layout = props => {
@@ -19,12 +17,14 @@ const Layout = props => {
             if (monitor.didDrop()) {
                 return;
             }
-            const itemID = phone.current.addToWidgetList(item)
-            const tmpObj = {
-                _id: itemID,
-                list: []
-            }
-            props.list.push(tmpObj)
+            const tmpItem = { list: [] }
+            if (item.source === WidgetType.PHONE)
+                tmpItem._id = item._id
+            else
+                tmpItem._id = phone.current.addToWidgetList(item)
+            console.log(tmpItem)
+            console.log(phone.current.state)
+            props.list.push(tmpItem)
             phone.current.forceUpdate()
         },
         collect: (monitor) => ({

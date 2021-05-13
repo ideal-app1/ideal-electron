@@ -8,6 +8,14 @@
     top: 0;
 }
 
+.new h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7em;
+    margin: 0;
+}
+
 .new>label>img {
     width: 100px;
 }

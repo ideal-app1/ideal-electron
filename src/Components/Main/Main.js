@@ -3,7 +3,6 @@ import {Library} from "./Components/Library/Library";
 import WidgetProperties from "./Components/WidgetProperties/WidgetProperties";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import config from "../../flutterCode/config.json";
 
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
@@ -11,10 +10,18 @@ import Phones from "./Components/Phones/Phones";
 class Main extends React.Component {
 
     static MainProjectPath = "";
+    static fs = window.require('fs');
 
     constructor(props) {
         super(props);
-        Main.MainProjectPath = config.ProjectPathAutoSaved;
+
+        try {
+            var data = require('../../flutterCode/config.json');
+            console.log(data);
+            Main.MainProjectPath = data.ProjectPathAutoSaved;
+        } catch (e) {
+            console.log('ok');
+        }
     }
 
     render() {

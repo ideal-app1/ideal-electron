@@ -101,14 +101,12 @@ export const Library = () => {
         button: {
             _id: uuid(),
             name: "button",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Button.dart",
             properties: {
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_BUTTON_TEXT",
+                    codeFlag: "IDEAL_BUTTON_TEXT",
                 },
                 color: {
                     value: "#2190d9",
@@ -126,17 +124,17 @@ export const Library = () => {
                         "enabled",
                         "disabled"
                     ],
-                    codeFlage: "IDEAL_BUTTON_STATE",
+                    codeFlag: "IDEAL_BUTTON_STATE",
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    codeFlage: "IDEAL_BUTTON_WIDTH",
+                    codeFlag: "IDEAL_BUTTON_WIDTH",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    codeFlage: "IDEAL_BUTTON_HEIGHT",
+                    codeFlag: "IDEAL_BUTTON_HEIGHT",
                 }
             },
             display: function () {
@@ -153,14 +151,12 @@ export const Library = () => {
         text: {
             _id: uuid(),
             name: "text",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Text.dart",
             properties: {
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_TEXT",
+                    codeFlag: "IDEAL_TEXT",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -179,14 +175,12 @@ export const Library = () => {
         textfield: {
             _id: uuid(),
             name: "text field",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "TextField.dart",
             properties: {
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlage: "IDEAL_PLACEHOLDER",
+                    codeFlag: "IDEAL_PLACEHOLDER",
                 },
                 focus: false
             },
@@ -197,8 +191,6 @@ export const Library = () => {
         image: {
             _id: uuid(),
             name: "image",
-            group: WidgetGroup.MATERIAL,
-            codelink: WidgetGroup.CODELINK,
             codePathFile: "Image.dart",
             properties: {
                 file: {
@@ -232,7 +224,7 @@ export const Library = () => {
     }
 
     const groups = [
-        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials, codelink: WidgetGroup.CODELINK},
+        {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials},
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}
     ]
 
@@ -245,9 +237,10 @@ export const Library = () => {
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
                                 <LibraryWidget
+                                    {...widget}
                                     group={group.group}
                                     type={WidgetType.LIBRARY}
-                                    {...widget}
+                                    codelink={'/'}
                                 />
                             </ListItem>
                             <Divider />

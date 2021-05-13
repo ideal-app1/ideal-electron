@@ -18,35 +18,44 @@ import {CSSTransition} from "react-transition-group";
 
 import Loader from "react-loader-spinner";
 
+const path = require('path');
+const fs = window.require('fs');
 
 export default function Menu() {
-
 
     const [LoaderState, setLoader] = React.useState(false);
 
     const newProject = async () => {
         const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
+        if (res.canceled)
+            return;
 
         setLoader(true);
-        Main.MainProjectPath = res.filePaths + "\\idealproject";
+        let copyCmd = 'cp';
+        let fileSeparator = '/';
+
+        if (window.navigator.platform === "Win32") {
+            copyCmd = 'copy';
+            fileSeparator = '\\';
+        }
+        Main.MainProjectPath = res.filePaths[0] + fileSeparator + 'idealproject';
+
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
-            Process.runScript("copy src\\flutterCode\\main.dart " + Main.MainProjectPath + "\\" + "lib\\main.dart", () => {
+
+            Process.runScript(copyCmd + " " + 'src' + fileSeparator + 'flutterCode' + fileSeparator + 'main.dart' + " " + Main.MainProjectPath + fileSeparator + 'lib' + fileSeparator + 'main.dart', () => {
                 setLoader(false);
-                JsonManager.saveThis(JSON.stringify({ProjectPathAutoSaved: res.filePaths}), "src/flutterCode/config.json")
+                fs.mkdirSync(path.join(Main.MainProjectPath, 'codelink'));
+                JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
             });
         });
     }
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(Main.MainProjectPath + "\\Ideal_config.json");
-
-        FlutterManager.witeCode(jsonCode, Main.MainProjectPath + "\\" + "lib\\main.dart");
-
+        const jsonCode = JsonManager.get(path.join(Main.MainProjectPath, 'Ideal_config.json'));
+        FlutterManager.witeCode(jsonCode, path.join(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 
-
-    console.log(LoaderState);
     return (
 
         <div className={"new"}>
@@ -59,8 +68,8 @@ export default function Menu() {
                 {LoaderState ?
                     <Loader
                         className={"loader"}
-                        type="Puff"
-                        color="#00BFFF"
+                        type="TailSpin"
+                        color="#FFF"
                         height={100}
                         width={100}
                         timeout={30000}
