@@ -12,11 +12,11 @@ const convertDartTypeToLiteral = (type) => {
 }
 
 
-const createValue = (constValue) => {
+const createConstValueNode = (constValue, graph) => {
 
-    function Value() {
+    function ConstValueNode() {
 
-        inheritNodeBase(Value)
+        inheritNodeBase(ConstValueNode)
         this.addOutput("value", constValue["type"]);
         this.addProperty("value", constValue["value"]);
 
@@ -26,8 +26,8 @@ const createValue = (constValue) => {
         this.randomName = this.makeId(15);
     }
 
-    Value.title = constValue["type"] + " " + constValue["name"];
-    Value.desc = constValue["type"] + " " + constValue["name"];
+    ConstValueNode.title = constValue["type"] + " " + constValue["name"];
+    ConstValueNode.desc = constValue["type"] + " " + constValue["name"];
 
 
     function handleCaseString(type, value) {
@@ -38,7 +38,7 @@ const createValue = (constValue) => {
     }
 
 
-    Value.prototype.onExecute = function () {
+    ConstValueNode.prototype.onExecute = function () {
         let buffer = "const " + constValue["type"] + " " + this.randomName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 
@@ -46,19 +46,19 @@ const createValue = (constValue) => {
         sharedBuffer.add(buffer);
     }
 
-    Value.prototype.getTitle = function() {
+    ConstValueNode.prototype.getTitle = function() {
         if (this.flags.collapsed) {
             return this.properties.value;
         }
         return this.title;
     };
 
-    Value.prototype.setValue = function(v)
+    ConstValueNode.prototype.setValue = function(v)
     {
         this.setProperty("value",v);
     }
 
-    LiteGraph.registerNodeType("Custom/const/" + constValue["name"], Value);
+    LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstValueNode);
 
 }
-export default createValue
+export default createConstValueNode
