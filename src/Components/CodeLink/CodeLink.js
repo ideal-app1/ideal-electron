@@ -8,6 +8,7 @@ import createMethodNode from "./CodeLinkNodes/MethodNode";
 import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
 import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
 import {Route} from "react-router";
+import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
@@ -24,55 +25,7 @@ class CodeLink extends React.Component {
         console.log(this.props.match.params.idwidget)
     }    
     
-    createConstValueNodes = (constValue) => {
 
-        function ConstantNumber() {
-            this.addOutput("value", constValue["type"]);
-            this.addProperty("value", constValue["value"]);
-            this.widget = this.addWidget(constValue["type"] === "int" ? "number" : constValue["type"],"value",constValue["value"],"value");
-            this.widgets_up = true;
-            this.size = [180, 30];
-        }
-
-        ConstantNumber.title = constValue["type"] + " " + constValue["name"];
-        ConstantNumber.desc = constValue["type"] + " " + constValue["name"];
-
-        ConstantNumber.prototype.onExecute = function() {
-            this.setOutputData(0, parseFloat(this.properties["value"]));
-        };
-
-        ConstantNumber.prototype.getTitle = function() {
-            if (this.flags.collapsed) {
-                return this.properties.value;
-            }
-            return this.title;
-        };
-
-        ConstantNumber.prototype.setValue = function(v)
-        {
-            this.setProperty("value",v);
-        }
-        LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstantNumber);
-    }
-
-    handleClasses = (classObject) => {
-        classObject["methods"].forEach((value) => {
-            createMethodNode(value, classObject["name"], this.#graph);
-        });
-    }
-
-    createEveryNodes = (err, data) => {
-        const parsed = JSON.parse(data);
-
-        parsed["funcs"].forEach((data) => {
-            createFunctionNode(data, this.#graph);
-        });
-        parsed["constValues"].forEach((data) => {
-            createValue(data, this.#graph);
-        });
-        parsed["classes"].forEach(this.handleClasses);
-
-    }
 
     addNodes = () => {
         //LiteGraph.registerNodeType("basic/sumation", createNode() );
@@ -90,14 +43,14 @@ class CodeLink extends React.Component {
         if (data.length == 0) {
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
             this.#graph.configure(buffer, false)
 
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         }
     }
 
