@@ -12,7 +12,7 @@ const convertDartTypeToLiteral = (type) => {
 }
 
 
-const createConstValueNode = (constValue, graph) => {
+const createConstValueNode = (constValue, LCanvas) => {
 
     function ConstValueNode() {
 

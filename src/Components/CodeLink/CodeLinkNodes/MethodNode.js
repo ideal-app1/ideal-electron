@@ -2,7 +2,7 @@ import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "li
 import inheritNodeBase from "./NodeBase";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 
-const createMethodNode = (method, className, graph) => {
+const createMethodNode = (method, className, LCanvas) => {
 //your node constructor class
     function MethodNode() {
         inheritNodeBase(MethodNode)
