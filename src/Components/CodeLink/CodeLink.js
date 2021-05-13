@@ -2,10 +2,9 @@ import React from "react";
 import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
-import createNode from "./CodeLinkNodes/test"
-import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
-import createValue from "./CodeLinkNodes/Value"
-import createSplitter from "./CodeLinkNodes/Splitter";
+import createFunctionNode from './CodeLinkNodes/FunctionNode'
+import createValue from "./CodeLinkNodes/ConstValueNode"
+import createMethodNode from "./CodeLinkNodes/MethodNode";
 import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
 import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
 import {Route} from "react-router";
@@ -56,17 +55,27 @@ class CodeLink extends React.Component {
         LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstantNumber);
     }
 
+    handleClasses = (classObject) => {
+        classObject["methods"].forEach((value) => {
+            createMethodNode(value, classObject["name"], this.#graph);
+        });
+    }
+
     createEveryNodes = (err, data) => {
         const parsed = JSON.parse(data);
 
-        parsed["funcs"].forEach(createBasicFunction);
-        parsed["constValues"].forEach(createValue);
-        createSplitter();
+        parsed["funcs"].forEach((data) => {
+            createFunctionNode(data, this.#graph);
+        });
+        parsed["constValues"].forEach((data) => {
+            createValue(data, this.#graph);
+        });
+        parsed["classes"].forEach(this.handleClasses);
 
     }
 
     addNodes = () => {
-        LiteGraph.registerNodeType("basic/sumation", createNode() );
+        //LiteGraph.registerNodeType("basic/sumation", createNode() );
     }
 
     init = () => {
@@ -81,18 +90,13 @@ class CodeLink extends React.Component {
         if (data.length == 0) {
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            this.sum = LiteGraph.createNode("basic/sumation");
-            this.sum.pos = [500, 500];
-            this.#graph.add(this.sum);
             fs.readFile('data.json', 'utf-8', this.createEveryNodes);
         } else {
             const buffer = JSON.parse(data)
             this.#graph.configure(buffer, false)
+
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            this.sum = LiteGraph.createNode("basic/sumation");
-            this.sum.pos = [500, 500];
-            this.#graph.add(this.sum);
             fs.readFile('data.json', 'utf-8', this.createEveryNodes);
         }
     }
