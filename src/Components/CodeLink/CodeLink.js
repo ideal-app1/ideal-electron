@@ -2,12 +2,13 @@ import React from "react";
 import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
-import createNode from "./CodeLinkNodes/test"
-import createBasicFunction from './CodeLinkNodes/BasicUserFunction'
-import createValue from "./CodeLinkNodes/Value"
-import createSplitter from "./CodeLinkNodes/Splitter";
-import {Box, Grid, Button, Divider, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
-import {Loop} from "@material-ui/icons";
+import createFunctionNode from './CodeLinkNodes/FunctionNode'
+import createValue from "./CodeLinkNodes/ConstValueNode"
+import createMethodNode from "./CodeLinkNodes/MethodNode";
+import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
+import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
+import {Route} from "react-router";
+import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
@@ -19,49 +20,11 @@ class CodeLink extends React.Component {
         super(props)
         console.log("codelink", this.props.match.params.id)
     }
-    
-    createConstValueNodes = (constValue) => {
 
-        function ConstantNumber() {
-            this.addOutput("value", constValue["type"]);
-            this.addProperty("value", constValue["value"]);
-            this.widget = this.addWidget(constValue["type"] === "int" ? "number" : constValue["type"],"value",constValue["value"],"value");
-            this.widgets_up = true;
-            this.size = [180, 30];
-        }
 
-        ConstantNumber.title = constValue["type"] + " " + constValue["name"];
-        ConstantNumber.desc = constValue["type"] + " " + constValue["name"];
-
-        ConstantNumber.prototype.onExecute = function() {
-            this.setOutputData(0, parseFloat(this.properties["value"]));
-        };
-
-        ConstantNumber.prototype.getTitle = function() {
-            if (this.flags.collapsed) {
-                return this.properties.value;
-            }
-            return this.title;
-        };
-
-        ConstantNumber.prototype.setValue = function(v)
-        {
-            this.setProperty("value",v);
-        }
-        LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstantNumber);
-    }
-
-    createEveryNodes = (err, data) => {
-        const parsed = JSON.parse(data);
-
-        parsed["funcs"].forEach(createBasicFunction);
-        parsed["constValues"].forEach(createValue);
-        createSplitter();
-
-    }
 
     addNodes = () => {
-        LiteGraph.registerNodeType("basic/sumation", createNode() );
+        //LiteGraph.registerNodeType("basic/sumation", createNode() );
     }
 
     init = () => {
@@ -76,19 +39,13 @@ class CodeLink extends React.Component {
         if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            this.sum = LiteGraph.createNode("basic/sumation");
-            this.sum.pos = [500, 500];
-            this.#graph.add(this.sum);
-            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
             this.#graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            this.sum = LiteGraph.createNode("basic/sumation");
-            this.sum.pos = [500, 500];
-            this.#graph.add(this.sum);
-            fs.readFile('data.json', 'utf-8', this.createEveryNodes);
+            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         }
     }
 
