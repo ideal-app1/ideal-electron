@@ -3,7 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createConstructorAttributeNode = (param, graph) => {
+const createConstructorAttributeNode = (param, LCanvas) => {
 
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];
@@ -71,14 +71,14 @@ const createConstructorAttributeNode = (param, graph) => {
     }
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        const node = graph.getNodeById(link.origin_id);
+        const node = LCanvas.graph.getNodeById(link.origin_id);
 
         isACallbackParameter(node, index, isConnected);
         console.log("Je suis connecté ? " + isConnected + " du type ? " + type)
         console.log(link)
         console.log(type)
         console.log(ioSlot)
-        console.log(graph.getNodeById(link.origin_id));
+        console.log(LCanvas.graph.getNodeById(link.origin_id));
         console.log("mdr");
 
     }

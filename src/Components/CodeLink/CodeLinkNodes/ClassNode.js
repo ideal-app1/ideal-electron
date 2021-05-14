@@ -3,7 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createClassNode = (NodeInfos, doRegister, graph) => {
+const createClassNode = (NodeInfos, doRegister, LCanvas) => {
 
     ClassNode.title = NodeInfos["name"];
     ClassNode.description = NodeInfos["name"];
