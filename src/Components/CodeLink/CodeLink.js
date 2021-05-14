@@ -14,7 +14,6 @@ class CodeLink extends React.Component {
     #graph = new LGraph();
 
     constructor(props) {
-
         super(props)
         console.log("codelink", this.props.match.params.id)
     }
@@ -27,6 +26,7 @@ class CodeLink extends React.Component {
     init = () => {
         console.log("Ici commence Init function")
         this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
+        CodeLinkNodeLoader.registerLCanvas(this.Lcanvas);
         let currentpath = this.props.location.state.path;
         console.log(currentpath)
         const data = fs.readFileSync(currentpath,
@@ -42,7 +42,12 @@ class CodeLink extends React.Component {
             this.#graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
-            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
+            fs.readFile('data.json', 'utf-8', (err, data) => {
+                const parsed = JSON.parse(data);
+
+                CodeLinkNodeLoader.loadEveryKnownNodes(parsed);
+                CodeLinkNodeLoader.addTheMainWidget("theClass", parsed["classes"]);
+            } );
         }
     }
 
