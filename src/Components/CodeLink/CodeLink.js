@@ -2,13 +2,10 @@ import React from "react";
 import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
-import createFunctionNode from './CodeLinkNodes/FunctionNode'
-import createValue from "./CodeLinkNodes/ConstValueNode"
-import createMethodNode from "./CodeLinkNodes/MethodNode";
-import CodeLinkTree from "./CodeLinkTree/CodeLinkTree";
-import {Button, Col, Container, Form, FormControl, Nav, Navbar, NavDropdown, Row} from 'react-bootstrap';
-import {Route} from "react-router";
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
+import {Box, Grid, Button, Divider, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Loop} from "@material-ui/icons";
+
 
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
@@ -17,10 +14,10 @@ class CodeLink extends React.Component {
     #graph = new LGraph();
 
     constructor(props) {
+
         super(props)
         console.log("codelink", this.props.match.params.id)
     }
-
 
 
     addNodes = () => {
