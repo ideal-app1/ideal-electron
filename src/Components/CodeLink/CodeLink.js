@@ -46,7 +46,7 @@ class CodeLink extends React.Component {
                 const parsed = JSON.parse(data);
 
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed);
-                CodeLinkNodeLoader.addTheMainWidget("theClass", parsed["classes"]);
+                CodeLinkNodeLoader.addTheMainWidgetToView("theClass", parsed["classes"]);
             } );
         }
     }
