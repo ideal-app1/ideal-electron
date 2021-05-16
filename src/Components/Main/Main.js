@@ -10,10 +10,17 @@ import Phones from "./Components/Phones/Phones";
 class Main extends React.Component {
 
     static MainProjectPath = "";
+    static FileSeparator = "/";
+    static CopyCmd = "cp";
     static fs = window.require('fs');
 
     constructor(props) {
         super(props);
+
+        if (window.navigator.platform === "Win32") {
+            Main.CopyCmd = 'copy';
+            Main.FileSeparator = '\\';
+        }
 
         try {
             var data = require('../../flutterCode/config.json');

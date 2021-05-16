@@ -7,6 +7,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
+import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
 
 export const Library = () => {
 
@@ -36,14 +37,8 @@ export const Library = () => {
                     ]
                 }
             },
-            display: function () {
-                return {
-                    style: {
-                        justifyContent: this.properties.justify.value,
-                        alignItems: this.properties.align.value
-                    }
-                }
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Column,
+
         },
         row: {
             _id: uuid(),
@@ -74,15 +69,7 @@ export const Library = () => {
                     type: PropType.NUMFIELD
                 }
             },
-            display: function () {
-                return {
-                    style: {
-                        justifyContent: this.properties.justify.value,
-                        alignItems: this.properties.align.value,
-                        height: this.properties.height.value + "%"
-                    }
-                }
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Row,
         },
         center: {
             _id: uuid(),
@@ -93,7 +80,7 @@ export const Library = () => {
                 justify: "center",
                 align: "center"
             },
-            display: () => {return {}}
+            display: DisplayWidgetsStyle.DisplayKeys.Center
         },
     }
 
@@ -137,16 +124,7 @@ export const Library = () => {
                     codeFlag: "IDEAL_BUTTON_HEIGHT",
                 }
             },
-            display: function () {
-                return {
-                    display: this.properties.text.value,
-                    style: {
-                        backgroundColor: this.properties.state.value === "disabled" ? "lightgray" : this.properties.color.value,
-                        width: this.properties.width.value,
-                        height: this.properties.height.value
-                    }
-                }
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Button
         },
         text: {
             _id: uuid(),
@@ -168,9 +146,7 @@ export const Library = () => {
                     ]
                 }
             },
-            display: function () {
-                return {display: this.properties.data.value}
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Text
         },
         textfield: {
             _id: uuid(),
@@ -184,9 +160,7 @@ export const Library = () => {
                 },
                 focus: false
             },
-            display: function () {
-                return {display: this.properties.placeholder.value}
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Textfield
         },
         image: {
             _id: uuid(),
@@ -210,16 +184,7 @@ export const Library = () => {
                     type: PropType.NUMFIELD
                 }
             },
-            display: function () {
-                return {
-                    display: this.name,
-                    style: {
-                        borderRadius: this.properties.rounded.value ? "20px" : "0",
-                        width: this.properties.width.value,
-                        height: this.properties.height.value
-                    }
-                }
-            }
+            display: DisplayWidgetsStyle.DisplayKeys.Image
         }
     }
 

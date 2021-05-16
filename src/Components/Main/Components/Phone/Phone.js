@@ -16,6 +16,7 @@ class Phone extends React.Component {
     constructor(props) {
         super(props);
         this._id = uuid()
+
         this.state = {
             widgetList: [],
             idList: {
@@ -31,13 +32,30 @@ class Phone extends React.Component {
     static getInstance = () => {
         if (Phone.instance == null)
             Phone.instance = React.createRef();
+
         return Phone.instance;
+    }
+
+    componentDidMount() {
+        if (Main.MainProjectPath !== undefined && JsonManager.exist(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json')) {
+            const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
+
+            this.setState(jsonCode);
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
         //this.state.buffer.push(clone(this.state))
-        const finalWidgetList = this.deepConstruct(this.state.idList)
-        JsonManager.saveThis(finalWidgetList, path.join(Main.MainProjectPath, "Ideal_config.json"));
+
+
+        if (Main.MainProjectPath === undefined) {
+
+            return;
+        }
+
+        const finalWidgetList = this.state
+        JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + Main.FileSeparator + "Ideal_config.json");
+
     }
 
     findWidgetByID = id => {
@@ -130,7 +148,10 @@ class Phone extends React.Component {
         }
     }
 
+
     render() {
+
+
         return (
             <Fragment>
                 <div className={"phone"}>
@@ -143,7 +164,7 @@ class Phone extends React.Component {
                             align: "flex-start"
                         }}
                         list={this.state.idList.list}
-                        display={() => {return {}}}
+                        display={'Center'}
                     />
                 </div>
                 {/*<Button variant="contained" color="primary" onClick={() => {

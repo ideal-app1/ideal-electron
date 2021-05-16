@@ -17,6 +17,7 @@ import {ReactComponent as PlayIcon} from "./icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 
 import Loader from "react-loader-spinner";
+import Phone from "../Phone/Phone";
 
 const path = require('path');
 const fs = window.require('fs');
@@ -25,34 +26,30 @@ export default function Menu() {
 
     const [LoaderState, setLoader] = React.useState(false);
 
+    const phone = Phone.getInstance();
+
     const newProject = async () => {
         const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
         if (res.canceled)
             return;
 
         setLoader(true);
-        let copyCmd = 'cp';
-        let fileSeparator = '/';
 
-        if (window.navigator.platform === "Win32") {
-            copyCmd = 'copy';
-            fileSeparator = '\\';
-        }
-        Main.MainProjectPath = res.filePaths[0] + fileSeparator + 'idealproject';
+        Main.MainProjectPath = res.filePaths[0] + Main.FileSeparator + 'idealproject';
 
         Process.runScript("flutter create " + Main.MainProjectPath, () => {
 
-            Process.runScript(copyCmd + " " + 'src' + fileSeparator + 'flutterCode' + fileSeparator + 'main.dart' + " " + Main.MainProjectPath + fileSeparator + 'lib' + fileSeparator + 'main.dart', () => {
+            Process.runScript(Main.CopyCmd + " " + 'src' + Main.FileSeparator + 'flutterCode' + Main.FileSeparator + 'main.dart' + " " + Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', () => {
                 setLoader(false);
-                fs.mkdirSync(path.join(Main.MainProjectPath, 'codelink'));
+                fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + 'codelink');
                 JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
             });
         });
     }
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(path.join(Main.MainProjectPath, 'Ideal_config.json'));
-        FlutterManager.witeCode(jsonCode, path.join(Main.MainProjectPath, 'lib', 'main.dart'));
+        const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
+        FlutterManager.witeCode(phone.current.deepConstruct(jsonCode), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 

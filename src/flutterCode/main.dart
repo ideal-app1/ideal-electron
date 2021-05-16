@@ -30,8 +30,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  /* IDEAL_START */
-  /* IDEAL_END */
+  /* IDEAL_VARIABLE_START */
+  /* IDEAL_VARIABLE_END */
 
   void _incrementCounter() {
     setState(() {

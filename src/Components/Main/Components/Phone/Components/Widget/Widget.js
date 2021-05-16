@@ -5,6 +5,7 @@ import "../Layout/Layout.css"
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import {WidgetType} from "../../../../../../utils/WidgetUtils";
 import Phone from "../../Phone";
+import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 
 const Widget = props => {
 
@@ -61,13 +62,13 @@ const Widget = props => {
     return (
         <div
             className={"widget " + props.name}
-            style={isOver ? {...props.display().style, backgroundColor: "#323232"} : props.display().style}
+            style={isOver ? {...DisplayWidgetsStyle.Display[props.display](DisplayWidgetsStyle.Display).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
             ref={ref}>
-            {props.display().display}
+            {DisplayWidgetsStyle.Display[props.display](props).display}
         </div>
     );
 }

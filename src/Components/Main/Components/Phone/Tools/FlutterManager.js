@@ -33,6 +33,7 @@ class FlutterManager {
     {
         let child = null;
         let code = "";
+        console.log('---------------------------');
         console.log(widgetArray);
         widgetArray.map((widget) => {
             console.log(widget);
@@ -56,8 +57,8 @@ class FlutterManager {
                 }
                 code = code.replace(regex, variableName);
 
-                if (widget.widgetList && widget.widgetList.length > 0) {
-                    child = FlutterManager.getAllCode(widget.widgetList);
+                if (widget.list && widget.list.length > 0) {
+                    child = FlutterManager.getAllCode(widget.list);
                 }
             }
         });
@@ -73,7 +74,8 @@ class FlutterManager {
     }
 
     static witeCode(jsonData, path) {
-        const code = FlutterManager.getAllCode(jsonData.widgetList);
+        console.log(jsonData);
+        const code = FlutterManager.getAllCode(jsonData.list);
 
         console.log(code);
         let file = FlutterManager.fs.readFileSync(path, 'utf8');

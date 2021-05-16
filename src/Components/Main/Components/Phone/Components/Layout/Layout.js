@@ -6,10 +6,12 @@ import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import Phone from "../../Phone";
+import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 
 const Layout = props => {
 
     const phone = Phone.getInstance()
+    console.log(phone);
 
     const [{isOver, isOverCurrent, getItem}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
@@ -33,8 +35,8 @@ const Layout = props => {
             getItem: monitor.getItem()
         }),
     });
-
     return (
+
         <Grid
             container
             direction={props.properties.direction}
@@ -42,14 +44,16 @@ const Layout = props => {
             alignItems={props.properties.align.value ? props.properties.align.value : props.properties.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
-            style={isOverCurrent ? {...props.display().style, filter: "brightness(85%)"} : {...props.display().style}}
+            style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
             ref={drop}>
             {
+
                 props.list.map(id => {
+                    console.log(phone);
                     const widget = phone.current.findWidgetByID(id._id)
                     if (widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);

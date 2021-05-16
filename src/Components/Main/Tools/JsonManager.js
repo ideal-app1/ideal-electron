@@ -19,6 +19,11 @@ class JsonManager {
         const result = JSON.parse(file);
         return result;
     }
+
+    static exist(path) {
+        return JsonManager.fs.existsSync(path);
+
+    }
 }
 
 export default JsonManager
