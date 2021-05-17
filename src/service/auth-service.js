@@ -15,33 +15,33 @@ function getLicence() {
 }
 
 async function setCookie(data, name, expiration) {
-    return await ses.cookies.set({
+/*    return await ses.cookies.set({
         url: "http://localhost:3000", //the url of the cookie.
         name: name, // a name to identify it.
         value: data, // the value that you want to save
         expirationDate: expiration.getTime()
     }, function(error) {
         console.log(error);
-    });
+    });*/
 }
 
 async function getCookie(name) {
-    return await ses.cookies.get({
+/*    return await ses.cookies.get({
         name: name
     }, function(error) {
         console.log(error);
-    });
+    });*/
 }
 
 async function removeCookie(name) {
-    return await ses.cookies.remove(
+/*    return await ses.cookies.remove(
         "http://localhost:3000",
         name
-    );
+    );*/
 }
 
 async function authVerification() {
-    const token = await getCookie("token");
+/*    const token = await getCookie("token");
     const licence = await getCookie("licence");
     const expiration = new Date();
 
@@ -54,11 +54,11 @@ async function authVerification() {
         throw new Error("No available licence.");
 
     if (licence[0].expirationDate <= expiration)
-        throw new Error("Licence expired.");
+        throw new Error("Licence expired.");*/
 }
 
 async function loadTokens(credentials) {
-    const expiration = new Date();
+/*    const expiration = new Date();
 
     const options = {
         method: "POST",
@@ -79,11 +79,11 @@ async function loadTokens(credentials) {
     } catch (error) {
         await logout();
         throw error;
-    }
+    }*/
 }
 
 async function loadLicence() {
-    const options = {
+/*    const options = {
         method: "GET",
         url: `https://account.idealapp.fr/api/licences`,
         headers: {
@@ -113,18 +113,18 @@ async function loadLicence() {
     if (!getLicence()) {
         await logout();
         throw new Error("No Licence found.");
-    }
+    }*/
 }
 
 async function logout() {
-    await removeCookie("token");
+/*    await removeCookie("token");
     await removeCookie("licence");
 
     accessToken = null;
-    licence = null
+    licence = null*/
 }
 
-module.exports = {
+export default {
     getAccessToken,
     getLicence,
     setCookie,
