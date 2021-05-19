@@ -30,6 +30,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  _MyHomePageState() {
+    /* IDEAL_INITIALISATION_START */
+    /* IDEAL_INITIALISATION_END */
+  }
+
   /* IDEAL_VARIABLE_START */
   /* IDEAL_VARIABLE_END */
 

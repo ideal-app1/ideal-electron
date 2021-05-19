@@ -11,7 +11,6 @@ import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 const Layout = props => {
 
     const phone = Phone.getInstance()
-    console.log(phone);
 
     const [{isOver, isOverCurrent, getItem}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
@@ -24,8 +23,6 @@ const Layout = props => {
                 tmpItem._id = item._id
             else
                 tmpItem._id = phone.current.addToWidgetList(item)
-            console.log(tmpItem)
-            console.log(phone.current.state)
             props.list.push(tmpItem)
             phone.current.forceUpdate()
         },
@@ -53,7 +50,6 @@ const Layout = props => {
             {
 
                 props.list.map(id => {
-                    console.log(phone);
                     const widget = phone.current.findWidgetByID(id._id)
                     if (widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);
