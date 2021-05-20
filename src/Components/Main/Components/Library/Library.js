@@ -167,9 +167,10 @@ export const Library = () => {
             name: "image",
             codePathFile: "Image.dart",
             properties: {
-                file: {
-                    value: "/",
-                    type: PropType.FILE
+                url: {
+                    value: "Placeholder",
+                    type: PropType.TEXTFIELD,
+                    codeFlag: "IDEAL_URL",
                 },
                 rounded: {
                     value: true,
@@ -177,11 +178,13 @@ export const Library = () => {
                 },
                 width: {
                     value: 200,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlag: "IDEAL_IMAGE_WIDTH",
                 },
                 height: {
                     value: 200,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    codeFlag: "IDEAL_IMAGE_HEIGHT",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image

@@ -26,6 +26,7 @@ const inheritNodeBase = (func) => {
     func.prototype.isOutputACallback = isOutputACallback;
 
     function addNewEntry(value) {
+        console.log("J'ai ajouté une entry!")
         func.prototype.callbackTracker.push(value);
     }
 

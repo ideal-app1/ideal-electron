@@ -71,7 +71,7 @@ const createMethodNode = (method, className, LCanvas) => {
             buffer = handleAParam(node, buffer);
         }
         buffer = endBuffer(buffer);
-        sharedBuffer.add(buffer);
+        sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
     LiteGraph.registerNodeType(className +" methods/" + method["name"], MethodNode);
