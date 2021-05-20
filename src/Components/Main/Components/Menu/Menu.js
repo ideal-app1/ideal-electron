@@ -7,13 +7,12 @@ import "./Dropdrownmenu.css"
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
 import FlutterManager from "../Phone/Tools/FlutterManager";
-/*import {ReactComponent as BoltIcon} from "./icons/bolt.svg";
-import {ReactComponent as CogIcon} from "./icons/cog.svg";
-import {ReactComponent as ArrowIcon} from "./icons/arrow.svg";
-import {ReactComponent as PlusIcon} from "./icons/plus.svg";
-import {ReactComponent as ChevronIcon} from "./icons/chevron.svg";
-import {ReactComponent as CaretIcon} from "./icons/caret.svg";
-import {ReactComponent as PlayIcon} from "./icons/play.svg";*/
+import BoltIcon from "../../../../../assets/icon.svg";
+import CogIcon from "./Assets/Icons/cog.svg";
+import PlusIcon from "./Assets/Icons/plus.svg";
+import ChevronIcon from "./Assets/Icons/chevron.svg";
+import CaretIcon from "./Assets/Icons/caret.svg";
+import PlayIcon from "./Assets/Icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 
 import Loader from "react-loader-spinner";
@@ -59,9 +58,7 @@ export default function Menu() {
 
             <Navbar>
                 <h1>IDEAL</h1>
-                {/*<NavItem icon={<PlusIcon onClick={newProject}/>}>
-
-                </NavItem>
+                <NavItem icon={<PlusIcon onClick={newProject}/>}/>
                 {LoaderState ?
                     <Loader
                         className={"loader"}
@@ -71,10 +68,10 @@ export default function Menu() {
                         width={100}
                         timeout={30000}
                     /> : ""}
-                <NavItem icon={<ChevronIcon onClick={runProject}/>}/>
+                <NavItem icon={<ChevronIcon onClick={runProject} />}/>
                 <NavItem icon={<CaretIcon/>}>
                     <Dropdown/>
-                </NavItem>*/}
+                </NavItem>
             </Navbar>
         </div>
     );
@@ -128,8 +125,7 @@ function Dropdown() {
 
     return (
         <div className="dropdown" style={{height: menuHeight}} ref={dropdownRef}>
-
-{/*            <CSSTransition
+            <CSSTransition
                 in={activeMenu === 'main'}
                 timeout={500}
                 classNames="menu-primary"
@@ -158,7 +154,7 @@ function Dropdown() {
                     <DropdownItem>Option 2</DropdownItem>
                     <DropdownItem>Option 3</DropdownItem>
                 </div>
-            </CSSTransition>*/}
+            </CSSTransition>
         </div>
     );
 }

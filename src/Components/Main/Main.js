@@ -23,9 +23,9 @@ class Main extends React.Component {
         }
 
         try {
-            /*var data = require('../../flutterCode/config.json');
+            var data = require('../../flutterCode/config.json');
             console.log(data);
-            Main.MainProjectPath = data.ProjectPathAutoSaved;*/
+            Main.MainProjectPath = data.ProjectPathAutoSaved;
         } catch (e) {
             console.log('ok');
         }

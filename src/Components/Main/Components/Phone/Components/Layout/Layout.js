@@ -11,7 +11,6 @@ import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 const Layout = props => {
 
     const phone = Phone.getInstance()
-    console.log(phone);
 
     const [{isOver, isOverCurrent, getItem}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
@@ -44,16 +43,14 @@ const Layout = props => {
             alignItems={props.properties.align.value ? props.properties.align.value : props.properties.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
-            //style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
+            style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
             ref={drop}>
             {
-
                 props.list.map(id => {
-                    console.log(phone);
                     const widget = phone.current.findWidgetByID(id._id)
                     if (widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);
