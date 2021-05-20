@@ -77,7 +77,7 @@ async function loadTokens(credentials) {
         expiration.setFullYear(expiration.getFullYear() + 1);
         await setCookie(response.data, "token", expiration)
     } catch (error) {
-        await logout();
+        await clearInfo();
         throw error;
     }
 }
@@ -106,22 +106,32 @@ async function loadLicence() {
             await setCookie(JSON.stringify(response.data), "licence", expiration);
         }
     } catch (error) {
-        await logout();
+        await clearInfo();
         throw error;
     }
 
     if (!getLicence()) {
-        await logout();
+        await clearInfo();
         throw new Error("No Licence found.");
     }
 }
+
+async function clearInfo() {
+    await removeCookie("token");
+    await removeCookie("licence");
+
+    accessToken = null;
+    licence = null;
+}
+
 
 async function logout() {
     await removeCookie("token");
     await removeCookie("licence");
 
     accessToken = null;
-    licence = null
+    licence = null;
+    window.location.href = "/";
 }
 
 module.exports = {

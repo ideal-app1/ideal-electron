@@ -15,6 +15,7 @@ import {ReactComponent as ChevronIcon} from "./icons/chevron.svg";
 import {ReactComponent as CaretIcon} from "./icons/caret.svg";
 import {ReactComponent as PlayIcon} from "./icons/play.svg";
 import {CSSTransition} from "react-transition-group";
+import authService from "../../../../service/auth-service";
 
 import Loader from "react-loader-spinner";
 import Phone from "../Phone/Phone";
@@ -126,6 +127,65 @@ function Dropdown() {
         );
     }
 
+    function Discord() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://discord.gg/4T9DGFvA')
+    }
+
+    function Feedback() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
+    }
+
+    function DocumentationLink() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://docs.idealapp.fr')
+    }
+
+    function DiscordButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Discord}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function FeedbackButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Feedback}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function DocButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={DocumentationLink}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function LogoutAuth() {
+        authService.logout();
+    }
+
+    function LogoutButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={LogoutAuth}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
     return (
         <div className="dropdown" style={{height: menuHeight}} ref={dropdownRef}>
 
@@ -136,7 +196,7 @@ function Dropdown() {
                 unmountOnExit
                 onEnter={calcHeight}>
                 <div className="menu">
-                    <DropdownItem leftIcon={<BoltIcon/>}>Help</DropdownItem>
+                    <LogoutButton leftIcon={<BoltIcon/>}>Logout</LogoutButton>
                     <DropdownItem
                         leftIcon={<CogIcon/>}
                         goToMenu="settings">
@@ -153,10 +213,9 @@ function Dropdown() {
                 onEnter={calcHeight}>
                 <div className="menu">
                     <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}/>
-                    <DropdownItem>Option 1</DropdownItem>
-                    <DropdownItem>Option 2</DropdownItem>
-                    <DropdownItem>Option 2</DropdownItem>
-                    <DropdownItem>Option 3</DropdownItem>
+                    <FeedbackButton>Feedback</FeedbackButton>
+                    <DocButton>Documentation</DocButton>
+                    <DiscordButton>Report bug / Need help</DiscordButton>
                 </div>
             </CSSTransition>
         </div>
