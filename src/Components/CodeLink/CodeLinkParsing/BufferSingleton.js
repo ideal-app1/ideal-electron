@@ -1,12 +1,18 @@
-let _buffer = "";
+let _buffer = {code:"", LValue: ""};
 
 const SharedBuffer = {
-    add: item => {
-        _buffer += item;
-        console.log(_buffer);
+    addCode: item => {
+        _buffer.code += item;
+
+    },
+    addLValue: item => {
+        _buffer.LValue += item;
     },
     erase: () => {
-        _buffer = ""
+        _buffer = {code:"", LValue: ""}
+    },
+    get: () => {
+        return _buffer;
     }
 }
 

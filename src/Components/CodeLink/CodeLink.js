@@ -5,6 +5,9 @@ import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, Divider, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {Loop} from "@material-ui/icons";
+import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
+import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
+import Main from "../Main/Main";
 
 
 const fs = window.require("fs")
@@ -88,7 +91,13 @@ class CodeLink extends React.Component {
                                 <Box marginTop={"1.25rem"}>
                                     <Button variant="contained" color="secondary" onClick={() => {
                                         console.log("Exec test Graph")
-                                        this.#graph.runStep(1)
+                                        console.log(this.#graph)
+                                        BufferSingleton.erase();
+                                        this.#graph.runStep(1);
+                                        const variableName = this.props.match.params.id.replace(/[^a-z]+/g, "");
+                                        const buffer = BufferSingleton.get();
+                                        FlutterManager.witeCodeLink(variableName + buffer.LValue + ' = () {\n' + buffer.code + '\n};\n', Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+                                        console.log(BufferSingleton.get());
                                     }}>
                                         Exec
                                     </Button>

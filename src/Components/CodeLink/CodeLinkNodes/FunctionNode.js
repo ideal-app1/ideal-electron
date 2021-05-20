@@ -104,7 +104,8 @@ const createFunctionNode = (func, LCanvas) => {
             buffer = handleAParam(node, buffer);
         }
         buffer = endBuffer(buffer);
-        sharedBuffer.add(buffer);
+        console.log(func);
+        sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/* IDEAL_IMPORT_START */
+/* IDEAL_IMPORT_END */
+
 void main() {
   runApp(MyApp());
 }
@@ -31,6 +34,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   _MyHomePageState() {
+    /* IDEAL_INITIALISATION_CODELINK_START */
+    /* IDEAL_INITIALISATION_CODELINK_END */
     /* IDEAL_INITIALISATION_START */
     /* IDEAL_INITIALISATION_END */
   }

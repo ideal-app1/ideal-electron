@@ -26,7 +26,9 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
     }
 
     ConstructorAttributeNode.prototype.onExecute = function () {
-
+        console.log("onExecute attr");
+        console.log(param);
+        sharedBuffer.addLValue(param["name"]);
     }
     console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"])
     LiteGraph.registerNodeType(currentClass + " constructor's attributes/" + param["name"], ConstructorAttributeNode);

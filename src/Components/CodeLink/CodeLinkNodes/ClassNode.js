@@ -17,6 +17,7 @@ const createClassNode = (NodeInfos, doRegister, LCanvas) => {
     }
 
     ClassNode.prototype.onExecute = function () {
+        console.log("onExecute class");
         this.setOutputData(0, this);
     }
 

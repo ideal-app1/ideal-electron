@@ -39,6 +39,7 @@ const createConstValueNode = (constValue, LCanvas) => {
 
 
     ConstValueNode.prototype.onExecute = function () {
+
         let buffer = "const " + constValue["type"] + " " + this.randomName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 
