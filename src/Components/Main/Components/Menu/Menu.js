@@ -49,7 +49,7 @@ export default function Menu() {
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
-        FlutterManager.witeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 

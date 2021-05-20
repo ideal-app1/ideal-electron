@@ -14,9 +14,9 @@ const createFunctionNode = (func, LCanvas) => {
             this.addInput(param["name"] + "(" + param["type"] + ")", ""/*param["type"]*/);
         })
 
-        if (func["return"] !== "void") {
+        //if (func["return"] !== "void") {
             this.addOutput(func["return"], ""/*func["return"]*/);
-        }
+        //}
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
         this.randomName = this.makeId(15);
@@ -39,17 +39,11 @@ const createFunctionNode = (func, LCanvas) => {
     function setInputCallbackProperty(node, index, isConnected, annotation) {
         if (annotation.parameters.length !== 2 ||
             parseInt(annotation.parameters[0].value) !== index + 1) {
-            console.log("ciao ");
-            console.log(annotation.parameters.length)
-            console.log(annotation.parameters[0].value)
-            console.log(index)
-            console.log(annotation.parameters.length !== 2);
-            console.log(parseInt(annotation.parameters[0].value) !== index + 1)
             return;
         }
         if (annotation.parameters[1].value === "true") {
             if (isConnected) {
-                console.log("Lets go add an entry")
+                console.log("Je suis " + func["name"] + " Lets go add an entry")
                 node.addNewEntry(true);
             } else {
                 node.removeAnEntry(true);
@@ -63,13 +57,28 @@ const createFunctionNode = (func, LCanvas) => {
         }
     }
 
+    function parameterIsFunction(node, index, isConnect) {
+        if (func["parameters"][index]["type"].toUpperCase().search("FUNC") == -1) {
+            if (isConnect) {
+                node.addNewEntry(false);
+            } else {
+                node.removeAnEntry(false);
+            }
+        } else {
+            if (isConnect) {
+                node.addNewEntry(true);
+            } else {
+                node.removeAnEntry(true);
+            }
+        }
+
+    }
+
     function isACallbackParameter(node, index, isConnected) {
         func.annotations.forEach((annotation) => {
             if (annotation.name === "CallbackParameter") {
-                console.log("Oui name")
                 setInputCallbackProperty(node, index, isConnected, annotation);
             } else {
-                console.log("Non. " + annotation.name)
             }
         });
     }
@@ -87,7 +96,7 @@ const createFunctionNode = (func, LCanvas) => {
 
     }
 
-    FunctionNode.prototype.onExecute = function () {
+    FunctionNode.prototype.createCode = function () {
         console.log("This is my tracker: ");
         console.log(this.callbackTracker);
         let buffer = "const " + func["return"] + " " + this.randomName + " = " + this.title + "(";
@@ -107,6 +116,25 @@ const createFunctionNode = (func, LCanvas) => {
         console.log(func);
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
+    }
+
+    FunctionNode.prototype.createCallback = function () {
+        let buffer = 'const dynamic ' + this.randomName + ' = ' + func['name'] + ';'
+        sharedBuffer.addCode(buffer);
+        this.setOutputData(0, this);
+    }
+
+    FunctionNode.prototype.onExecute = function () {
+        if (this.callbackTracker.find((val) => val === true) !== undefined) {
+            console.log("goooo NOT UNDEF")
+            this.createCallback();
+        } else {
+            console.log("UNDEF")
+            console.log(this.callbackTracker)
+            this.createCode();
+        }
+        console.log("WHAT IS MY FUNC IMPORT ? " + func['import']);
+        sharedBuffer.addImport(func['import']);
     }
 
     LiteGraph.registerNodeType("Custom Functions/" + func["name"], FunctionNode);

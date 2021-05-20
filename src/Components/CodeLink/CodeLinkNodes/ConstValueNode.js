@@ -32,7 +32,7 @@ const createConstValueNode = (constValue, LCanvas) => {
 
     function handleCaseString(type, value) {
         if (type.toUpperCase() == "String".toUpperCase()) {
-            return ('"' + value + '"');
+            return ("'" + value + "'");
         }
         return value
     }
@@ -40,11 +40,14 @@ const createConstValueNode = (constValue, LCanvas) => {
 
     ConstValueNode.prototype.onExecute = function () {
 
+        console.log("wot")
+        console.log(constValue)
+        console.log("stopwot")
         let buffer = "const " + constValue["type"] + " " + this.randomName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 
         this.setOutputData(0, this);
-        sharedBuffer.add(buffer);
+        sharedBuffer.addCode(buffer);
     }
 
     ConstValueNode.prototype.getTitle = function() {

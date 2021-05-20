@@ -101,21 +101,21 @@ class FlutterManager {
         return {code: code, valiablesNames: valiablesNames, codeInit: codeInit};
     }
 
-    static witeCodeLink(code, path) {
+    static writeCodeLink(code, path) {
         let file = FlutterManager.fs.readFileSync(path, 'utf8');
 
         file = file.replace(/(\/\* IDEAL_INITIALISATION_CODELINK_START \*\/)((.|\s)+?)(\/\* IDEAL_INITIALISATION_CODELINK_END \*\/)/gm, "/* IDEAL_INITIALISATION_CODELINK_START */\n" + code + "\n/* IDEAL_INITIALISATION_CODELINK_END */\n");
         FlutterManager.fs.writeFileSync(path, file);
     }
 
-    static witeCodeImport(code, path) {
+    static writeCodeImport(code, path) {
         let file = FlutterManager.fs.readFileSync(path, 'utf8');
 
         file = file.replace(/(\/\* IDEAL_IMPORT_START \*\/)((.|\s)+?)(\/\* IDEAL_IMPORT_END \*\/)/gm, "/* IDEAL_IMPORT_START */\n" + code + "\n/* IDEAL_IMPORT_END */\n");
         FlutterManager.fs.writeFileSync(path, file);
     }
 
-    static witeCode(jsonData, path) {
+    static writeCode(jsonData, path) {
         const code = FlutterManager.getAllCode([jsonData]);
 
         console.log(code.code);
