@@ -3,7 +3,7 @@ import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializ
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
-import {Box, Grid, Button, Divider, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {Loop} from "@material-ui/icons";
 
 
@@ -107,18 +107,18 @@ class CodeLink extends React.Component {
                                 Widget Menu
                             </Typography>
                             <div>
-                                <List>
-                                    {this.generate(
-                                        <ListItem>
-                                            <ListItemText
-                                                primary="Widget item Id"
-                                            />
-                                            <ListItemIcon>
-                                                <Loop />
-                                            </ListItemIcon>
-                                        </ListItem>,
-                                    )}
-                                </List>
+                            {/*    <List>*/}
+                            {/*        {this.generate(*/}
+                            {/*            <ListItem>*/}
+                            {/*                <ListItemText*/}
+                            {/*                    primary="Widget item Id"*/}
+                            {/*                />*/}
+                            {/*                <ListItemIcon>*/}
+                            {/*                    <Loop />*/}
+                            {/*                </ListItemIcon>*/}
+                            {/*            </ListItem>,*/}
+                            {/*        )}*/}
+                            {/*    </List>*/}
                             </div>
                         </Grid>
                     </Grid>

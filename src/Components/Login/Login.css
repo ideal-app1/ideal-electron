@@ -1,6 +1,43 @@
+
+.login-background {
+}
+
 .login-wrapper {
+    color: #282c34;
+    margin-top: 5rem;
+    border: #8e8e8e;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.login-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #8e8e8e;
+    background-color: #cccccc;
+    color: #282c34;
+    border: #8e8e8e;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.login-header-title {
+    background-color: indianred;
+    color: #eeeeee;
+    border: #8e8e8e;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.login-input {
+    color: #eeeeee;
+    padding: 0.5rem;
+}
+
+.login-submit {
+    padding-top: 2rem;
+}
+
+.login-redirect {
+    padding-top: 2rem;
 }
