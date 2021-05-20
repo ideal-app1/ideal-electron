@@ -1,0 +1,8 @@
+version: 2.3.0
+files:
+  - url: ElectronReact-Setup-2.3.0.exe
+    sha512: AzKP1KKiC0K+jxhuMIcXQP8t5c37oEKgs/pDNyk3NabNWVFASdJNT6/pKe3EnVYlkrUHtsLmmuMGZVRSidonsA==
+    size: 77859080
+path: ElectronReact-Setup-2.3.0.exe
+sha512: AzKP1KKiC0K+jxhuMIcXQP8t5c37oEKgs/pDNyk3NabNWVFASdJNT6/pKe3EnVYlkrUHtsLmmuMGZVRSidonsA==
+releaseDate: '2021-05-20T16:38:28.368Z'

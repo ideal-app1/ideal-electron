@@ -6,6 +6,9 @@ class DisplayWidgetsStyle extends React.Component {
 
     static Display = {
         'Column': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 style: {
                     justifyContent: widget.properties.justify.value,
@@ -14,6 +17,9 @@ class DisplayWidgetsStyle extends React.Component {
             };
         },
         'Row': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 style: {
                     justifyContent: widget.properties.justify.value,
@@ -23,10 +29,16 @@ class DisplayWidgetsStyle extends React.Component {
             };
         },
         'Center': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
             };
         },
         'Button': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 display: widget.properties.text.value,
                 style: {
@@ -37,16 +49,25 @@ class DisplayWidgetsStyle extends React.Component {
             };
         },
         'Text': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 display: widget.properties.data.value
             };
         },
         'Textfield': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 display: widget.properties.placeholder.value
             };
         },
         'Image': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
             return {
                 display: widget.name,
                 style: {
