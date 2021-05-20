@@ -23,8 +23,6 @@ const Layout = props => {
                 tmpItem._id = item._id
             else
                 tmpItem._id = phone.current.addToWidgetList(item)
-            console.log(tmpItem)
-            console.log(phone.current.state)
             props.list.push(tmpItem)
             phone.current.forceUpdate()
         },

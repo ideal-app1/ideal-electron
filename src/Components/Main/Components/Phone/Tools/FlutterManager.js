@@ -33,10 +33,10 @@ class FlutterManager {
     {
         let child = null;
         let code = "";
-        console.log('---------------------------');
-        console.log(widgetArray);
+        let valiablesNames = [];
+        let codeInit = "";
+
         widgetArray.map((widget) => {
-            console.log(widget);
             if (widget.codePathFile) {
                 let tmp = "";
                 if ((tmp = FlutterManager.getCode(widget.codePathFile)) == null) {
@@ -45,42 +45,60 @@ class FlutterManager {
                 }
 
                 tmp = FlutterManager.fillProperties(tmp, widget.properties);
-                if (widgetArray.length > 1) {
-                    tmp += ",\n";
-                }
+
                 code += tmp;
 
+                const initRegex = new RegExp(/(\/\* IDEAL_INITIALISATION_START \*\/)((.|\s)+?)(\/\* IDEAL_INITIALISATION_END \*\/)/gm);
+                const found = code.match(initRegex);
+                found[0] = found[0];
+                code = code.replace(found[0], '');
                 const regex = new RegExp(`(\/\\* IDEAL_VARIABLE_NAME \\*\/)`);
                 const variableName = widget._id.replace(/[^a-z]+/g, "");
-                if (FlutterManager.RootVariableName == "") {
+                valiablesNames.push(variableName);
+                if (FlutterManager.RootVariableName === "") {
                     FlutterManager.RootVariableName = variableName;
                 }
                 code = code.replace(regex, variableName);
+                codeInit += found[0].replace(regex, variableName);
+                codeInit = codeInit.replace('\/\* IDEAL_INITIALISATION_START \*\/', '');
+                codeInit = codeInit.replace('\/\* IDEAL_INITIALISATION_END \*\/', '');
 
+
+                console.log(code);
+                console.log(codeInit);
                 if (widget.list && widget.list.length > 0) {
                     child = FlutterManager.getAllCode(widget.list);
                 }
             }
         });
 
-        console.log(code);
         if (child) {
-            code = code.replace(/(\/\* IDEAL_CHILD \*\/)/gm, child + "\n");
+            let variablesString = '';
+
+
+            child.valiablesNames.map((variable) => {
+                variablesString += variable + ',\n'
+            })
+            codeInit = codeInit.replace(/(\/\* IDEAL_CHILD \*\/)/gm, variablesString + "\n");
+            code = child.code + code;
+            codeInit = child.codeInit + codeInit;
+
         }
 
 
 
-        return code;
+        return {code: code, valiablesNames: valiablesNames, codeInit: codeInit};
     }
 
     static witeCode(jsonData, path) {
-        console.log(jsonData);
-        const code = FlutterManager.getAllCode(jsonData.list);
+        const code = FlutterManager.getAllCode([jsonData]);
 
-        console.log(code);
+        console.log(code.code);
+        console.log(code.codeInit);
         let file = FlutterManager.fs.readFileSync(path, 'utf8');
 
-        file = file.replace(/(\/\* IDEAL_VARIABLE_START \*\/)((.|\s)+?)(\/\* IDEAL_VARIABLE_END \*\/)/gm, "/* IDEAL_VARIABLE_START */\n" + code + "\n/* IDEAL_VARIABLE_END */\n");
+        file = file.replace(/(\/\* IDEAL_VARIABLE_START \*\/)((.|\s)+?)(\/\* IDEAL_VARIABLE_END \*\/)/gm, "/* IDEAL_VARIABLE_START */\n" + code.code + "\n/* IDEAL_VARIABLE_END */\n");
+        file = file.replace(/(\/\* IDEAL_INITIALISATION_START \*\/)((.|\s)+?)(\/\* IDEAL_INITIALISATION_END \*\/)/gm, "/* IDEAL_INITIALISATION_START */\n" + code.codeInit + "\n/* IDEAL_INITIALISATION_END */\n");
 
 
         file = file.replace(/(\/\* IDEAL_BODY_START \*\/)((.|\s)+?)(\/\* IDEAL_BODY_END \*\/)/gm, "/* IDEAL_BODY_START */\n" + FlutterManager.RootVariableName + "\n/* IDEAL_BODY_END */\n");
