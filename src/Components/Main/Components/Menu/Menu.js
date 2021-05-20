@@ -137,6 +137,11 @@ function Dropdown() {
         shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
     }
 
+    function DocumentationLink() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://docs.idealapp.fr')
+    }
+
     function DiscordButton(props) {
         return (
             <a href="#" className="menu-item" onClick={Discord}>
@@ -150,6 +155,16 @@ function Dropdown() {
     function FeedbackButton(props) {
         return (
             <a href="#" className="menu-item" onClick={Feedback}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function DocButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={DocumentationLink}>
                 <span className="icon-button">{props.leftIcon}</span>
                 {props.children}
                 <span className="icon-right">{props.rightIcon}</span>
@@ -199,6 +214,7 @@ function Dropdown() {
                 <div className="menu">
                     <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}/>
                     <FeedbackButton>Feedback</FeedbackButton>
+                    <DocButton>Documentation</DocButton>
                     <DiscordButton>Report bug / Need help</DiscordButton>
                 </div>
             </CSSTransition>
