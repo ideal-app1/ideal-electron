@@ -134,7 +134,7 @@ async function logout() {
     window.location.href = "/";
 }
 
-module.exports = {
+export default {
     getAccessToken,
     getLicence,
     setCookie,
