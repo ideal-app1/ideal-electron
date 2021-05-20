@@ -5,6 +5,9 @@ import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import {Loop} from "@material-ui/icons";
+import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
+import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
+import Main from "../Main/Main";
 
 
 const fs = window.require("fs")
@@ -45,7 +48,7 @@ class CodeLink extends React.Component {
             fs.readFile('data.json', 'utf-8', (err, data) => {
                 const parsed = JSON.parse(data);
 
-                CodeLinkNodeLoader.loadEveryKnownNodes(parsed);
+                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, this.props.match.params.id.replace(/[^a-z]+/g, ""));
                 CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
             } );
         }
@@ -88,7 +91,16 @@ class CodeLink extends React.Component {
                                 <Box marginTop={"1.25rem"}>
                                     <Button variant="contained" color="secondary" onClick={() => {
                                         console.log("Exec test Graph")
-                                        this.#graph.runStep(1)
+                                        console.log(this.#graph)
+                                        BufferSingleton.erase();
+                                        this.#graph.runStep(1);
+                                        const variableName = this.props.match.params.id.replace(/[^a-z]+/g, "");
+                                        const buffer = BufferSingleton.get();
+                                        console.log("LE BUFFOS")
+                                        console.log(buffer.import);
+                                        FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+                                        FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+                                        console.log(BufferSingleton.get());
                                     }}>
                                         Exec
                                     </Button>

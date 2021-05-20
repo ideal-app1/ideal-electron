@@ -38,16 +38,11 @@ const createAttributes = (widget, constructor, requiredOnly = true) => {
     constructor.parameters.forEach((constructorParameter) => {
         const tmpPos = [pos[0], pos[1]];
         if (requiredOnly === true && constructorParameter.isRequired !== "true") {
-            console.log("NoN.");
-            console.log(constructorParameter)
             return;
         }
-        console.log("j'invoque " + widget + " constructor's attributes/" + constructorParameter["name"])
         const attribute = LiteGraph.createNode(widget + " constructor's attributes/" + constructorParameter["name"]);
         attribute.pos = tmpPos;
         LCanvas.graph.add(attribute);
-        console.log("size ? ")
-        console.log(attribute.size)
         pos[1] += attribute.size[1] + 50;
     })
 }
@@ -56,7 +51,9 @@ const CodeLinkNodeLoader = {
     registerLCanvas: canvasToRegister => {
       LCanvas = canvasToRegister;
     },
-    loadEveryKnownNodes: (parsed) => {
+
+    //TODO remove varName to something more clever
+    loadEveryKnownNodes: (parsed, varName) => {
 
         const constructor = getConstructor('TextButton', parsed["classes"]);
 
@@ -74,7 +71,7 @@ const CodeLinkNodeLoader = {
 
         parsed["classes"].forEach((classObject) => {
             if (classObject["name"] === "TextButton") {
-                createClassNode(classObject, true, LCanvas);
+                createClassNode(classObject, true, LCanvas, varName);
                 classObject["methods"].forEach((value) => {
                     createMethodNode(value, classObject["name"], LCanvas);
                 });

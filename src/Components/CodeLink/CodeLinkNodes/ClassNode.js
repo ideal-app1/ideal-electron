@@ -3,7 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createClassNode = (NodeInfos, doRegister, LCanvas) => {
+const createClassNode = (NodeInfos, doRegister, LCanvas, varName) => {
 
     ClassNode.title = NodeInfos["name"];
     ClassNode.description = NodeInfos["name"];
@@ -14,10 +14,14 @@ const createClassNode = (NodeInfos, doRegister, LCanvas) => {
 
         this.properties = {precision: 1};
         this.randomName = this.makeId(15);
+        this.varName = varName;
     }
 
     ClassNode.prototype.onExecute = function () {
+        console.log("onExecute class");
         this.setOutputData(0, this);
+        console.log("WHAT IS MY IMPORT ? " + NodeInfos['import']);
+        sharedBuffer.addImport(NodeInfos['import']);
     }
 
     if (doRegister)
