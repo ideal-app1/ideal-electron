@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import Main from "./Components/Main/Main";
 import Login from "./Components/Login/Login"
-import CodeLink from "./Components/CodeLink/CodeLink";
+import CodeLink from "./Components/CodeLink/CodeLink"
 import authService from "./service/auth-service";
 
 async function authentication({setAuthenticated}) {
