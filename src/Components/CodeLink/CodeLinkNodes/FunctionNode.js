@@ -8,15 +8,21 @@ const createFunctionNode = (func, LCanvas) => {
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
 
-    function FunctionNode() {
-        inheritNodeBase(FunctionNode)
+    function handleInputsOutputs()  {
+        let nbOfParameters = 0;
+
         func["parameters"].forEach((param) => {
             this.addInput(param["name"] + "(" + param["type"] + ")", ""/*param["type"]*/);
+            nbOfParameters++;
         })
+        this.nbOfParameters = nbOfParameters;
+        this.addOutput(func["return"], ""/*func["return"]*/);
+    }
 
-        //if (func["return"] !== "void") {
-            this.addOutput(func["return"], ""/*func["return"]*/);
-        //}
+
+    function FunctionNode() {
+        inheritNodeBase(FunctionNode);
+        handleInputsOutputs();
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
         this.randomName = this.makeId(15);
@@ -87,12 +93,6 @@ const createFunctionNode = (func, LCanvas) => {
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         isACallbackParameter(node, index, isConnected);
-        console.log("Je suis connecté ? " + isConnected + " du type ? " + type)
-        console.log(link)
-        console.log(type)
-        console.log(ioSlot)
-        console.log(LCanvas.graph.getNodeById(link.origin_id));
-        console.log("mdr");
 
     }
 
@@ -103,22 +103,27 @@ const createFunctionNode = (func, LCanvas) => {
         const nbOfInputs = func["parameters"].length;
         let node = undefined;
 
-        console.log(nbOfInputs)
         for (let i = 0; i < nbOfInputs; i++) {
             node = this.getInputData(i);
             if (node === undefined) {
-                console.log("In func " + this.title + ", arg nb " + i + ", is undef")
                 continue;
             }
             buffer = handleAParam(node, buffer);
         }
         buffer = endBuffer(buffer);
-        console.log(func);
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
 
+    Function.prototype.createCallbackWrapper = function () {
+
+        /*for (let i = 0; i < nbOfInputs; i++) {
+             this.getInputData(i);
+        }*/
+    }
+
     FunctionNode.prototype.createCallback = function () {
+
         let buffer = 'const dynamic ' + this.randomName + ' = ' + func['name'] + ';'
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);

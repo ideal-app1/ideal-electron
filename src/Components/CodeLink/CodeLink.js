@@ -8,6 +8,7 @@ import {Loop} from "@material-ui/icons";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
+const { ipcRenderer } = window.require('electron')
 
 
 const fs = window.require("fs")
@@ -24,6 +25,11 @@ class CodeLink extends React.Component {
 
     addNodes = () => {
         //LiteGraph.registerNodeType("basic/sumation", createNode() );
+    }
+
+
+    ipcEnabling = () => {
+        ipcRenderer.send('send-socket-message', {"coucou": "mdr"});
     }
 
     init = () => {
@@ -86,6 +92,12 @@ class CodeLink extends React.Component {
                                 <Box marginTop={"1.25rem"}>
                                     <Button variant="contained" color="primary" href="/">Phone view</Button>
                                 </Box>
+                                <Button onClick={() => {
+                                    this.ipcEnabling();
+                                }
+                                }>
+                                    IPC
+                                </Button>
                             </Grid>
                             <Grid className={"CodeLink-bar-item"}>
                                 <Box marginTop={"1.25rem"}>

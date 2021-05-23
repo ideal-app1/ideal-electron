@@ -42,12 +42,6 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         parameterIsFunction(node, index, isConnected);
-        console.log("Je suis connecté ? " + isConnected + " du type ? " + type)
-        console.log(link)
-        console.log(type)
-        console.log(ioSlot)
-        console.log(LCanvas.graph.getNodeById(link.origin_id));
-        console.log("mdr");
 
     }
 
