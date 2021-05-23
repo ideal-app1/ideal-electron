@@ -33,7 +33,6 @@ function CodeLink(props) {
 
     useEffect(() => {
         app.allowRendererProcessReuse = false;
-        console.log("EFFECT! " + counter);
         init();
     });
     const addNodes = () => {
@@ -46,37 +45,24 @@ function CodeLink(props) {
     }
 
     const init = () => {
-        console.log("Ici commence Init function")
         Lcanvas = new LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = props.location.state.path;
-        console.log(currentpath)
         const data = fs.readFileSync(currentpath,
             {encoding: 'utf8', flag: 'r'});
 
         // Display the file data
         if (data.length === 0) {
-            console.log("NO DATA");
             LiteGraph.clearRegisteredTypes()
             addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
-            console.log("DATA");
             const buffer = JSON.parse(data)
-            console.log("DATA2");
-
             //graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
-            console.log("DATA3");
-
             addNodes()
-            console.log("DATA4");
-
             fs.readFile('data.json', 'utf-8', (err, data) => {
-                console.log("LOADING BEFORE")
                 const parsed = JSON.parse(data);
-                console.log("LOADING")
-                console.log(parsed);
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
                 CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
             });
@@ -85,7 +71,6 @@ function CodeLink(props) {
 
     const savegraph = (event) =>
     {
-        console.log("Début de la save")
         let currentpath = props.location.state.path;
 
         let output = JSON.stringify(event, null, 4);
@@ -127,17 +112,12 @@ function CodeLink(props) {
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
-                                    console.log("Exec test Graph")
-                                    console.log(graph)
                                     BufferSingleton.erase();
                                     graph.runStep(1);
                                     const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
                                     const buffer = BufferSingleton.get();
-                                    console.log("LE BUFFOS")
-                                    console.log(buffer.import);
                                     FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
                                     FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
-                                    console.log(BufferSingleton.get());
                                 }}>
                                     Exec
                                 </Button>
