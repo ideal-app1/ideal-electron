@@ -41,6 +41,7 @@ class Phone extends React.Component {
             const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
 
             this.setState(jsonCode);
+            this._id = jsonCode.idList._id
         }
     }
 
@@ -49,7 +50,6 @@ class Phone extends React.Component {
         if (Main.MainProjectPath === "") {
             return;
         }
-
         const finalWidgetList = this.state
         JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + Main.FileSeparator + "Ideal_config.json");
 
@@ -79,7 +79,7 @@ class Phone extends React.Component {
     deepConstruct = idItem => {
         if (!idItem)
             return null
-        let finalListItem = {list:[]}
+        let finalListItem = {}
         if (idItem._id !== this._id)
                 finalListItem = this.findWidgetByID(idItem._id)
         finalListItem.list = []

@@ -1,5 +1,5 @@
 import React from "react";
-import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
+import { LiteGraph } from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
@@ -9,15 +9,14 @@ import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
 
-
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
 
 class CodeLink extends React.Component {
-    #graph = new LGraph();
 
     constructor(props) {
         super(props)
+        this.graph = new LiteGraph.LGraph();
         console.log("codelink", this.props.match.params.id)
     }
 
@@ -28,7 +27,7 @@ class CodeLink extends React.Component {
 
     init = () => {
         console.log("Ici commence Init function")
-        this.Lcanvas = new LGraphCanvas(this.canvas, this.#graph);
+        this.Lcanvas = new LiteGraph.LGraphCanvas(this.canvas, this.graph);
         CodeLinkNodeLoader.registerLCanvas(this.Lcanvas);
         let currentpath = this.props.location.state.path;
         console.log(currentpath)
@@ -42,7 +41,7 @@ class CodeLink extends React.Component {
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
-            this.#graph.configure(buffer, false)
+            this.graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
             this.addNodes()
             fs.readFile('data.json', 'utf-8', (err, data) => {
@@ -91,9 +90,9 @@ class CodeLink extends React.Component {
                                 <Box marginTop={"1.25rem"}>
                                     <Button variant="contained" color="secondary" onClick={() => {
                                         console.log("Exec test Graph")
-                                        console.log(this.#graph)
+                                        console.log(this.graph)
                                         BufferSingleton.erase();
-                                        this.#graph.runStep(1);
+                                        this.graph.runStep(1);
                                         const variableName = this.props.match.params.id.replace(/[^a-z]+/g, "");
                                         const buffer = BufferSingleton.get();
                                         console.log("LE BUFFOS")
