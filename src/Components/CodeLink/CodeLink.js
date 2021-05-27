@@ -19,8 +19,6 @@ function CodeLink(props) {
     let canvas = null;
     let graph = new LGraph();
     let Lcanvas = null;
-    const [counter, setCounter] = useState(0);
-
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -40,8 +38,26 @@ function CodeLink(props) {
     }
 
 
-    const ipcEnabling = () => {
-        ipcRenderer.send('send-socket-message', {"coucou": "mdr"});
+    const sendData = () => {
+        const buffer = BufferSingleton.get();
+
+        console.log("SEND ");
+        console.log('send-socket-message', {
+            'request-type': 'creator',
+            'parameters': {
+                'imports': Array.from(buffer.import),
+                'code': buffer.code
+            }
+        });
+        ipcRenderer.send('send-socket-message', {
+            'request-type': 'creator',
+            'parameters': {
+                'imports': Array.from(buffer.import),
+                'code': buffer.code
+            }
+        });
+        //FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
     const init = () => {
@@ -99,15 +115,6 @@ function CodeLink(props) {
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="primary" href="/">Phone view</Button>
                             </Box>
-                            <Button onClick={() => {
-                                ipcEnabling();
-                            }
-                            }>
-                                IPC
-                            </Button>
-                            <Button onClick={() => {    setCounter(counter + 1);}}>
-                                counter
-                            </Button>
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
@@ -115,9 +122,7 @@ function CodeLink(props) {
                                     BufferSingleton.erase();
                                     graph.runStep(1);
                                     const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
-                                    const buffer = BufferSingleton.get();
-                                    FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-                                    FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+                                    sendData();
                                 }}>
                                     Exec
                                 </Button>
