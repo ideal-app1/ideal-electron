@@ -83,7 +83,9 @@ class CodeLink extends React.Component {
                             </Grid>
                             <Grid className={"CodeLink-bar-item"}>
                                 <Box marginTop={"1.25rem"}>
-                                    <Button variant="contained" color="primary" href="/">Phone view</Button>
+                                    <Button variant="contained" color="primary" onClick={() => {this.props.history.push('/')}}>
+                                        Phone view
+                                    </Button>
                                 </Box>
                             </Grid>
                             <Grid className={"CodeLink-bar-item"}>
