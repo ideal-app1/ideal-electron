@@ -29,10 +29,8 @@ const SocketIPC = () => {
 
     const enableIPC = () => {
         ipcMain.on('send-socket-message', (event, arg) => {
-            socketClient.write(JSON.stringify({
-                'request-type': 'index',
-                'parameters': ["C:\\Users\\ImPar\\OneDrive\\Documents\\codelink-dart-indexer\\lib\\testdir"],
-            }));
+            console.log(arg);
+            socketClient.write(JSON.stringify(arg));
         });
     }
 
