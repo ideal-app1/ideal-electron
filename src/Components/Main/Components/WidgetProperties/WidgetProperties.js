@@ -14,6 +14,7 @@ import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
 import Main from "../../Main";
+import { InputAdornment } from '@material-ui/core';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron')
@@ -62,6 +63,9 @@ class WidgetProperties extends React.Component {
                         defaultValue={prop.value}
                         type="number"
                         variant="outlined"
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                        }}
                         onChange={entry => {this.updateState(name, parseInt(entry.target.value))}}
                     />
                 )

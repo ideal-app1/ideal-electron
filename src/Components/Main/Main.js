@@ -6,10 +6,12 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
+import Modal from './Components/Dialog/Modal';
 
 class Main extends React.Component {
 
     static MainProjectPath = "";
+    static FlutterSDK = ""
     static FileSeparator = "/";
     static CopyCmd = "cp";
     static fs = window.require('fs');
@@ -26,6 +28,7 @@ class Main extends React.Component {
             var data = require('../../flutterCode/config.json');
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
+            Main.FlutterSDK = data.FlutterSDK;
         } catch (e) {
             console.log('ok');
         }
@@ -35,6 +38,7 @@ class Main extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
+                    <Modal ref={Modal.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
                         <Library/>
                         <Phones/>

@@ -55,6 +55,10 @@ export default merge(baseConfig, {
           'sass-loader'
         ],
       },
+      {
+        test: /\.dart$/,
+        type: 'asset/source'
+      },
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,

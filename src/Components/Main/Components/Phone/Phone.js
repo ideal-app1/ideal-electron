@@ -23,9 +23,17 @@ class Phone extends React.Component {
                 _id: this._id,
                 list: []
             },
-            //buffer: []
+            //history: []
+            //clipboard: {}
         };
     }
+
+    //TODO
+    /*
+    - Add list of 10 previous states
+    - Add undo redo
+    - Add context menu for copy cut paste
+     */
 
     static instance = null;
 

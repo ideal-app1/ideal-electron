@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 import Main from "./Components/Main/Main";
@@ -30,17 +31,25 @@ function App () {
         return <Login setAuthenticated={setAuthenticated} />
     }
 
+    const darkTheme = createMuiTheme({
+        palette: {
+            type: 'dark',
+        },
+    });
+
     return (
-        <div className={"wrapper"}>
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <Main/>
-                    </Route>
-                    <Route exact path="/codelink/:id" component={CodeLink}/>
-                </Switch>
-            </Router>
-        </div>
+        <ThemeProvider theme={darkTheme}>
+            <div className={"wrapper"}>
+                <Router>
+                    <Switch>
+                        <Route exact path="/">
+                            <Main/>
+                        </Route>
+                        <Route exact path="/codelink/:id" component={CodeLink}/>
+                    </Switch>
+                </Router>
+            </div>
+        </ThemeProvider>
     );
 }
 

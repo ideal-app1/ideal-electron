@@ -18,34 +18,55 @@ import authService from "../../../../service/auth-service";
 
 import Loader from "react-loader-spinner";
 import Phone from "../Phone/Phone";
+import Modal from '../Dialog/Modal';
+import CreateProject from '../Dialog/Components/CreateProject/CreateProject';
+import FlutterSDK from '../Dialog/Components/FlutterSDK/FlutterSDK';
 
 const path = require('path');
 const fs = window.require('fs');
+
+const mainDartCode = require("../../../../flutterCode/main.dart")
 
 export default function Menu() {
 
     const [LoaderState, setLoader] = React.useState(false);
 
     const phone = Phone.getInstance();
+    const modal = Modal.getInstance()
 
     const newProject = async () => {
-        const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
-        if (res.canceled)
-            return;
+
+        if (!Main.FlutterSDK) {
+            const project = await modal.current.createModal(<FlutterSDK/>)
+            console.log(project)
+            Main.FlutterSDK = project.dir + Main.FileSeparator + "flutter";
+        }
+
+        const project = await modal.current.createModal(<CreateProject/>);
+
+        console.log(project)
 
         setLoader(true);
 
-        Main.MainProjectPath = res.filePaths[0] + Main.FileSeparator + 'idealproject';
+        Main.MainProjectPath = project.dir + Main.FileSeparator + project.name;
 
-        Process.runScript("flutter create " + Main.MainProjectPath, () => {
-
-            Process.runScript(Main.CopyCmd + " " + 'src' + Main.FileSeparator + 'flutterCode' + Main.FileSeparator + 'main.dart' + " " + Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', () => {
-                setLoader(false);
-                fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + 'codelink');
-                JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
-            });
+        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
+            fs.writeFileSync(Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', mainDartCode)
+            fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + 'codelink');
+            JsonManager.saveThis({
+                ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterSDK: Main.FlutterSDK
+            }, path.join('src', 'flutterCode', 'config.json'));
+            phone.current.forceUpdate();
+            setLoader(false);
         });
     }
+
+    //TODO
+    /*
+    - Add dialog for flutter SDK (choose bin path)
+    - Add dialog for project creation (choose path and project name)
+     */
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');

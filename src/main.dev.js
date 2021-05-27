@@ -163,8 +163,14 @@ ipcMain.on('select-file', (event, arg) => {
   })
 });
 
-ipcMain.on('runCommand', async (event, arg) => {
+ipcMain.on('select-directory', async (event, arg) => {
   event.returnValue = await dialog.showOpenDialog({
     properties: ['openDirectory']
+  });
+});
+
+ipcMain.on('select-directory-hidden', async (event, arg) => {
+  event.returnValue = await dialog.showOpenDialog({
+    properties: ['openDirectory', 'showHiddenFiles']
   });
 });

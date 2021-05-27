@@ -69,6 +69,10 @@ export default merge(baseConfig, {
         ],
       },
       {
+        test: /\.dart$/,
+        type: 'asset/source'
+      },
+      {
         test: /\.global\.css$/,
         use: [
           {
