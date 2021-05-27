@@ -97,8 +97,8 @@ class CodeLink extends React.Component {
                                         const buffer = BufferSingleton.get();
                                         console.log("LE BUFFOS")
                                         console.log(buffer.import);
-                                        FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-                                        FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+                                        FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart');
+                                        FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart')
                                         console.log(BufferSingleton.get());
                                     }}>
                                         Exec

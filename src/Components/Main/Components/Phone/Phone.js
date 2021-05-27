@@ -45,8 +45,8 @@ class Phone extends React.Component {
     }
 
     componentDidMount() {
-        if (Main.MainProjectPath !== "" && JsonManager.exist(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json')) {
-            const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
+        if (Main.MainProjectPath !== "" && JsonManager.exist(Main.MainProjectPath + Main.Sep + 'Ideal_config.json')) {
+            const jsonCode = JsonManager.get(Main.MainProjectPath + Main.Sep + 'Ideal_config.json');
 
             this.setState(jsonCode);
             this._id = jsonCode.idList._id
@@ -59,7 +59,7 @@ class Phone extends React.Component {
             return;
         }
         const finalWidgetList = this.state
-        JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + Main.FileSeparator + "Ideal_config.json");
+        JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + Main.Sep + "Ideal_config.json");
 
     }
 

@@ -21,7 +21,6 @@ import Modal from '../Dialog/Modal';
 import CreateProject from '../Dialog/Components/CreateProject/CreateProject';
 import FlutterSDK from '../Dialog/Components/FlutterSDK/FlutterSDK';
 
-const path = require('path');
 const fs = window.require('fs');
 
 const mainDartCode = require("../../../../flutterCode/main.dart")
@@ -34,28 +33,28 @@ export default function Menu() {
     const newProject = async () => {
         if (!Main.FlutterSDK) {
             const project = await modal.current.createModal(<FlutterSDK/>);
-            Main.FlutterSDK = project.dir + Main.FileSeparator + "bin" + Main.FileSeparator + "flutter";
+            Main.FlutterSDK = project.dir + Main.Sep + "bin" + Main.Sep + "flutter";
         }
         const project = await modal.current.createModal(<CreateProject/>);
         modal.current.setLoading(true);
-        Main.MainProjectPath = project.dir + Main.FileSeparator + project.name;
+        Main.MainProjectPath = project.dir + Main.Sep + project.name;
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.writeFileSync(Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', mainDartCode)
-            fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + 'codelink');
+            fs.writeFileSync(Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart', mainDartCode)
+            fs.mkdirSync(Main.MainProjectPath + Main.Sep + 'codelink');
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterSDK: Main.FlutterSDK
-            }, path.join('src', 'flutterCode', 'config.json'));
+            }, Main.IdealDir + Main.Sep + "config.json");
             phone.current.forceUpdate();
             modal.current.setLoading(false);
         });
     }
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+        const jsonCode = JsonManager.get(Main.MainProjectPath + Main.Sep + 'Ideal_config.json');
+        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart');
+        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
     }
 
     return (
