@@ -2,6 +2,8 @@ import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import './Modal.css';
 
+import Loading from './Components/Loading/Loading'
+
 class Modal extends React.Component {
 
     constructor(props) {
@@ -37,7 +39,13 @@ class Modal extends React.Component {
         })
     }
 
+    setLoading = bool => {
+        this.setState({...this.state, loading: bool})
+    }
+
     render() {
+        if (this.state.loading)
+            return (<Loading/>)
         return (
             <Dialog open={this.state.open} onClose={() => {this.handleClose()}}>
                 {this.state.modal}

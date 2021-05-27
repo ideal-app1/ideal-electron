@@ -16,7 +16,6 @@ import PlayIcon from "./Assets/Icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 import authService from "../../../../service/auth-service";
 
-import Loader from "react-loader-spinner";
 import Phone from "../Phone/Phone";
 import Modal from '../Dialog/Modal';
 import CreateProject from '../Dialog/Components/CreateProject/CreateProject';
@@ -29,25 +28,16 @@ const mainDartCode = require("../../../../flutterCode/main.dart")
 
 export default function Menu() {
 
-    const [LoaderState, setLoader] = React.useState(false);
-
     const phone = Phone.getInstance();
     const modal = Modal.getInstance()
 
     const newProject = async () => {
-
         if (!Main.FlutterSDK) {
-            const project = await modal.current.createModal(<FlutterSDK/>)
-            console.log(project)
-            Main.FlutterSDK = project.dir + Main.FileSeparator + "flutter";
+            const project = await modal.current.createModal(<FlutterSDK/>);
+            Main.FlutterSDK = project.dir + Main.FileSeparator + "bin" + Main.FileSeparator + "flutter";
         }
-
         const project = await modal.current.createModal(<CreateProject/>);
-
-        console.log(project)
-
-        setLoader(true);
-
+        modal.current.setLoading(true);
         Main.MainProjectPath = project.dir + Main.FileSeparator + project.name;
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
@@ -58,15 +48,9 @@ export default function Menu() {
                 FlutterSDK: Main.FlutterSDK
             }, path.join('src', 'flutterCode', 'config.json'));
             phone.current.forceUpdate();
-            setLoader(false);
+            modal.current.setLoading(false);
         });
     }
-
-    //TODO
-    /*
-    - Add dialog for flutter SDK (choose bin path)
-    - Add dialog for project creation (choose path and project name)
-     */
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
@@ -75,21 +59,10 @@ export default function Menu() {
     }
 
     return (
-
         <div className={"new"}>
-
             <Navbar>
                 <h1>IDEAL</h1>
                 <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                {LoaderState ?
-                    <Loader
-                        className={"loader"}
-                        type="TailSpin"
-                        color="#FFF"
-                        height={100}
-                        width={100}
-                        timeout={30000}
-                    /> : ""}
                 <NavItem icon={<ChevronIcon onClick={runProject} />}/>
                 <NavItem icon={<CaretIcon/>}>
                     <Dropdown/>

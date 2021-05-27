@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import {
     DialogActions,
-    DialogContent,
+    DialogContent, DialogContentText,
     DialogTitle,
     InputAdornment,
     TextField
@@ -25,6 +25,9 @@ const FlutterSDK = () => {
         <Fragment>
             <DialogTitle>{"Set Flutter SDK"}</DialogTitle>
             <DialogContent>
+                <DialogContentText>
+                    Please select your flutter directory
+                </DialogContentText>
                 <TextField
                     label="Directory"
                     variant={"outlined"}

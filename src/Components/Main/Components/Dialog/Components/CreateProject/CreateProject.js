@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import {
     DialogActions,
-    DialogContent,
+    DialogContent, DialogContentText,
     DialogTitle,
     InputAdornment,
     ListItem,
@@ -29,6 +29,9 @@ const CreateProject = () => {
             <DialogTitle>{"Create a project"}</DialogTitle>
             <DialogContent>
                 <List>
+                    <DialogContentText>
+                        Please select where the project should be created and choose its name
+                    </DialogContentText>
                     <ListItem>
                         <TextField
                             label="Directory"
