@@ -46,7 +46,7 @@ export default function Menu() {
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterSDK: Main.FlutterSDK
             }, Main.IdealDir + Main.Sep + "config.json");
-            phone.current.forceUpdate();
+            phone.current.resetState();
             modal.current.setLoading(false);
         });
     }

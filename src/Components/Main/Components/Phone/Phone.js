@@ -44,6 +44,17 @@ class Phone extends React.Component {
         return Phone.instance;
     }
 
+    resetState() {
+        this._id = uuid()
+        this.setState({
+            widgetList: [],
+            idList: {
+                _id: this._id,
+                list: []
+            },
+        })
+    }
+
     componentDidMount() {
         if (Main.MainProjectPath !== "" && JsonManager.exist(Main.MainProjectPath + Main.Sep + 'Ideal_config.json')) {
             const jsonCode = JsonManager.get(Main.MainProjectPath + Main.Sep + 'Ideal_config.json');

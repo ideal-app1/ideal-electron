@@ -29,12 +29,13 @@ class Main extends React.Component {
         }
 
         try {
-            const path = app.getPath('documents') + Main.Sep + 'Ideal' + Main.Sep + 'config.json';
+            const path = app.getPath('documents') + Main.Sep + 'Ideal';
             console.log(path);
-            const data = JsonManager.get(path);
+            const data = JsonManager.get(path + Main.Sep + 'config.json');
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
             Main.FlutterSDK = data.FlutterSDK;
+            Main.IdealDir = path;
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');
             Main.IdealDir = app.getPath('documents') + Main.Sep + 'Ideal';
