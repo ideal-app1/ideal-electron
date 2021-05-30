@@ -191,6 +191,14 @@ export const Library = () => {
         }
     }
 
+    //TODO
+    /*
+    - Add new widgets and their properties, display and flutter code file
+    - Add modifiable ID name for the widgets (to be used as variable names in codelink)
+    - Improve the display of the widgets in the library (create drawers for the groups, add a search bar...)
+
+     */
+
     const groups = [
         {name: "Materials", group: WidgetGroup.MATERIAL, widgets: materials},
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}

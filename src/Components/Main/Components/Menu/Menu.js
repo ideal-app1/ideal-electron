@@ -57,6 +57,35 @@ export default function Menu() {
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
     }
 
+    //TODO
+    /*
+    // Menu
+        - Fix svg size issues
+        - Improve dropdown menu
+
+    // Load of a project
+        - Load a project, set the correct state and path
+        - Have the previous projects in a "recent project" list
+        - Detect if a project was removed or moved and remove it from the list
+        - Order the list by most to least recent projects
+
+     // Emulators
+        - List of Emulators
+        - Select an emulator
+        - Refresh list
+
+     // Phone view
+        - Improve how the phone looks
+        - Make an iphone and an android with the possibility to choose
+
+     // Dark theme
+        - Add an option for dark theme
+
+     // Hot reload
+        - Add a hot reload button
+        - Search how to implement hot reload
+     */
+
     return (
         <div className={"new"}>
             <Navbar>

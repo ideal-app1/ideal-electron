@@ -20,7 +20,13 @@ module.exports = {
       },
     },
     'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
+      '@typescript-eslint/parser': ['.ts', '.tsx'], // Change to .js files
     },
   },
 };
+
+//TODO
+/*
+ - Use eslint to impose a general coding style to follow
+ - Configure parsers options
+ */
