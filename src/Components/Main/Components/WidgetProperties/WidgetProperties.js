@@ -115,6 +115,8 @@ class WidgetProperties extends React.Component {
 
     createFile(path) {
         if (fs.existsSync(path)) {
+            console.log("EXIST FILE");
+            console.log(path);
             return;
         }
         fs.appendFile(path, null, { flag: 'wx' }, function (err) {
@@ -124,9 +126,12 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.codelink = path.join(Main.MainProjectPath, "codelink", this.state._id + ".json");
+        this.state.codelink = path.join(Main.MainProjectPath, ".ideal_project", "codelink");
+
+        let fullPath = path.join(this.state.codelink, this.state._id + '.json');
+
         console.log(this.state.codelink)
-        this.createFile(this.state.codelink)
+        this.createFile(fullPath)
     }
 
     codeLinkButton = () => {
@@ -139,7 +144,7 @@ class WidgetProperties extends React.Component {
                                 color="primary"
                                 onClick={() => {
                                     history.push({
-                                        pathname: '/codelink/' + this.state._id,
+                                        pathname: 'codelink/' + this.state._id,
                                         state: {
                                             _id: this.state._id,
                                             path: this.state.codelink

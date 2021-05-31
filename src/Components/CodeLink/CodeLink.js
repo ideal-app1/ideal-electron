@@ -10,15 +10,17 @@ import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
 import Phone from "../Main/Components/Phone/Phone";
 const { ipcRenderer } = window.require('electron')
-
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
+const path = require('path');
+
 
 function CodeLink(props) {
 
     let canvas = null;
     let graph = new LGraph();
     let Lcanvas = null;
+    let widget = null;
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -26,29 +28,19 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
+        widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     }
 
+    useConstructor();
     useEffect(() => {
         app.allowRendererProcessReuse = false;
         init();
     });
-    const addNodes = () => {
-        //LiteGraph.registerNodeType("basic/sumation", createNode() );
-    }
-
 
     const sendData = () => {
         const buffer = BufferSingleton.get();
 
-        console.log("SEND ");
-        console.log('send-socket-message', {
-            'request-type': 'creator',
-            'parameters': {
-                'imports': Array.from(buffer.import),
-                'code': buffer.code
-            }
-        });
         ipcRenderer.send('send-socket-message', {
             'request-type': 'creator',
             'parameters': {
@@ -63,20 +55,16 @@ function CodeLink(props) {
     const init = () => {
         Lcanvas = new LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
-        let currentpath = props.location.state.path;
-        const data = fs.readFileSync(currentpath,
-            {encoding: 'utf8', flag: 'r'});
+        let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
+        console.log("PATH ? " + currentpath);
+        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
 
-        // Display the file data
         if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
-            addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
-            //graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
-            addNodes()
             fs.readFile('data.json', 'utf-8', (err, data) => {
                 const parsed = JSON.parse(data);
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
@@ -101,6 +89,25 @@ function CodeLink(props) {
         );
     }
 
+    const writeCodeLinkData = () => {
+        let CLPath = path.join(props.location.state.path, 'CodeLinkCode_' + props.match.params.id + '.json');
+        let buffer = BufferSingleton.get();
+
+        fs.writeFileSync(CLPath, JSON.stringify({
+                    'imports': Array.from(buffer.import),
+                    'code': buffer.code
+            }
+        ));
+    }
+
+    const saveCodeLinkData = () => {
+        BufferSingleton.erase();
+        graph.runStep(1);
+        const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
+        console.log('LE PATH ' + props.location.state.path);
+        writeCodeLinkData();
+    }
+
     return (
         <div>
             <Grid container className={"CodeLink-Content"}>
@@ -119,12 +126,9 @@ function CodeLink(props) {
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
-                                    BufferSingleton.erase();
-                                    graph.runStep(1);
-                                    const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
-                                    sendData();
+                                    saveCodeLinkData();
                                 }}>
-                                    Exec
+                                    Save
                                 </Button>
                             </Box>
                         </Grid>

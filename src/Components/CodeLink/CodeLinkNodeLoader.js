@@ -13,7 +13,6 @@ const getConstructor = (widget, data) => {
 
     });
 
-
     if (!widgetData) {
         console.log("Error - The class was not found.");
         //TODO implement an error when the widget is not found.
