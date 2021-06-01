@@ -6,8 +6,9 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
-import Modal from './Components/Dialog/Modal';
+import Modal from './Components/Modal/Modal';
 import JsonManager from './Tools/JsonManager';
+import Path from '../../utils/Path';
 
 const app = window.require('electron').remote.app;
 
@@ -29,16 +30,16 @@ class Main extends React.Component {
         }
 
         try {
-            const path = app.getPath('documents') + Main.Sep + 'Ideal';
+            const path = Path.build(app.getPath('documents'), 'Ideal');
             console.log(path);
-            const data = JsonManager.get(path + Main.Sep + 'config.json');
+            const data = JsonManager.get(Path.build(path, 'config.json'));
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
             Main.FlutterSDK = data.FlutterSDK;
             Main.IdealDir = path;
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');
-            Main.IdealDir = app.getPath('documents') + Main.Sep + 'Ideal';
+            Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
             if (!Main.fs.existsSync(Main.IdealDir))
                 Main.fs.mkdirSync(Main.IdealDir);
         }
