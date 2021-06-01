@@ -22,6 +22,10 @@ const SocketIPC = () => {
             }
 
         });
+        socketClient.on('error', () => {
+
+        });
+
         socketClient.on('end', () => {
             console.log('disconnected from server');
         });

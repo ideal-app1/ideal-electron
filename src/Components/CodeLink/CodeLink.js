@@ -21,6 +21,7 @@ function CodeLink(props) {
     let graph = new LGraph();
     let Lcanvas = null;
     let widget = null;
+    let dirPath = null;
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -28,15 +29,19 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
+        if (fs.existsSync(dirPath) === false) {
+            fs.mkdirSync(dirPath);
+        }
         widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     }
 
-    useConstructor();
     useEffect(() => {
+        dirPath = path.join(props.location.state.path, props.match.params.id);
         app.allowRendererProcessReuse = false;
         init();
     });
+    useConstructor();
 
     const sendData = () => {
         const buffer = BufferSingleton.get();
@@ -78,7 +83,7 @@ function CodeLink(props) {
         let currentpath = props.location.state.path;
 
         let output = JSON.stringify(event, null, 4);
-        fs.writeFileSync(currentpath, output);
+        fs.writeFileSync(path.join(dirPath, props.match.params.id + '.json'), output);
     }
 
     const generate = (element) => {
@@ -90,7 +95,7 @@ function CodeLink(props) {
     }
 
     const writeCodeLinkData = () => {
-        let CLPath = path.join(props.location.state.path, 'CodeLinkCode_' + props.match.params.id + '.json');
+        let CLPath = path.join(dirPath, 'CodeLinkCode_' + props.match.params.id + '.json');
         let buffer = BufferSingleton.get();
 
         fs.writeFileSync(CLPath, JSON.stringify({
@@ -100,7 +105,9 @@ function CodeLink(props) {
         ));
     }
 
+
     const saveCodeLinkData = () => {
+
         BufferSingleton.erase();
         graph.runStep(1);
         const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
