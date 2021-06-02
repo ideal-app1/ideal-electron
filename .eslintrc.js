@@ -24,9 +24,3 @@ module.exports = {
     },
   },
 };
-
-//TODO
-/*
- - Use eslint to impose a general coding style to follow
- - Configure parsers options
- */

@@ -15,14 +15,12 @@ import List from '@material-ui/core/List';
 
 const app = window.require("electron")
 
-const CreateProject = () => {
+const CreateProject = props => {
 
     const [values, setValues] = React.useState({
         dir: '',
         name: 'idealproject'
     });
-
-    const modal = Modal.getInstance();
 
     return (
         <Fragment>
@@ -68,7 +66,7 @@ const CreateProject = () => {
                 </List>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => {modal.current.handleClose(values)}} color="primary" autoFocus>
+                <Button onClick={() => {props.handleClose(values)}} color="primary" autoFocus>
                     Create
                 </Button>
             </DialogActions>

@@ -6,7 +6,7 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
-import Modal from './Components/Modal/Modal';
+import Dialog from './Components/Dialog/Dialog';
 import JsonManager from './Tools/JsonManager';
 import Path from '../../utils/Path';
 
@@ -49,7 +49,7 @@ class Main extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    <Modal ref={Modal.getInstance()}/>
+                    <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
                         <Library/>
                         <Phones/>

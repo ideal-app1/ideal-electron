@@ -4,12 +4,10 @@ import Layout from "./Components/Layout/Layout";
 import {v4 as uuid} from "uuid";
 import {WidgetType} from "../../../../utils/WidgetUtils";
 import Main from "../../Main";
-import { MapInteractionCSS } from 'react-map-interaction';
+import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
-import Button from "@material-ui/core/Button";
-import {light} from "@material-ui/core/styles/createPalette";
-const clone = require("rfdc/default")
-const path = require("path")
+
+const clone = require("rfdc/default");
 
 class Phone extends React.Component {
 
@@ -24,16 +22,9 @@ class Phone extends React.Component {
                 list: []
             },
             //history: []
-            //clipboard: {}
+            clipboard: {}
         };
     }
-
-    //TODO
-    /*
-    - Add list of 10 previous states
-    - Add undo redo
-    - Add context menu for copy cut paste
-     */
 
     static instance = null;
 
@@ -52,13 +43,13 @@ class Phone extends React.Component {
                 _id: this._id,
                 list: []
             },
+            clipboard: {}
         })
     }
 
     componentDidMount() {
-        if (Main.MainProjectPath !== "" && JsonManager.exist(Main.MainProjectPath + Main.Sep + 'Ideal_config.json')) {
-            const jsonCode = JsonManager.get(Main.MainProjectPath + Main.Sep + 'Ideal_config.json');
-
+        if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
+            const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
             this.setState(jsonCode);
             this._id = jsonCode.idList._id
         }
@@ -69,8 +60,9 @@ class Phone extends React.Component {
         if (Main.MainProjectPath === "") {
             return;
         }
-        const finalWidgetList = this.state
-        JsonManager.saveThis(finalWidgetList, Main.MainProjectPath + Main.Sep + "Ideal_config.json");
+        const finalWidgetList = this.state;
+        //console.log(this.state);
+        JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
 
     }
 
@@ -164,10 +156,7 @@ class Phone extends React.Component {
         }
     }
 
-
     render() {
-
-
         return (
             <Fragment>
                 <div className={"phone"}>

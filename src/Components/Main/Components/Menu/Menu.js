@@ -17,28 +17,28 @@ import {CSSTransition} from "react-transition-group";
 import authService from "../../../../service/auth-service";
 
 import Phone from "../Phone/Phone";
-import Modal from '../Modal/Modal';
-import CreateProject from '../Modal/Components/CreateProject/CreateProject';
-import FlutterSDK from '../Modal/Components/FlutterSDK/FlutterSDK';
+import Dialog from '../Dialog/Dialog';
+import Modal from '../Dialog/Components/Modal/Modal';
+import CreateProject from '../Dialog/Components/Modal/Components/CreateProject/CreateProject';
+import FlutterSDK from '../Dialog/Components/Modal/Components/FlutterSDK/FlutterSDK';
+import Loading from '../Dialog/Components/Loading/Loading';
 
-import Path from '../../../../utils/Path'
-
+import Path from '../../../../utils/Path';
 const fs = window.require('fs');
-
 const mainDartCode = require("../../../../flutterCode/main.dart")
 
 export default function Menu() {
 
     const phone = Phone.getInstance();
-    const modal = Modal.getInstance()
+    const dialog = Dialog.getInstance();
 
     const newProject = async () => {
         if (!Main.FlutterSDK) {
-            const project = await modal.current.createModal(<FlutterSDK/>);
+            const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
             Main.FlutterSDK = Path.build(project.dir, "bin", "flutter");
         }
-        const project = await modal.current.createModal(<CreateProject/>);
-        modal.current.setLoading(true);
+        const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
+        dialog.current.createDialog(<Loading/>);
         Main.MainProjectPath = Path.build(project.dir, project.name);
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
@@ -47,9 +47,9 @@ export default function Menu() {
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterSDK: Main.FlutterSDK
-            }, Main.IdealDir, "config.json");
+            }, Path.build(Main.IdealDir, "config.json"));
             phone.current.resetState();
-            modal.current.setLoading(false);
+            dialog.current.unsetDialog();
         });
     }
 
@@ -58,35 +58,6 @@ export default function Menu() {
         FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
     }
-
-    //TODO
-    /*
-    // Menu
-        - Fix svg size issues
-        - Improve dropdown menu
-
-    // Load of a project
-        - Load a project, set the correct state and path
-        - Have the previous projects in a "recent project" list
-        - Detect if a project was removed or moved and remove it from the list
-        - Order the list by most to least recent projects
-
-     // Emulators
-        - List of Emulators
-        - Select an emulator
-        - Refresh list
-
-     // Phone view
-        - Improve how the phone looks
-        - Make an iphone and an android with the possibility to choose
-
-     // Dark theme
-        - Add an option for dark theme
-
-     // Hot reload
-        - Add a hot reload button
-        - Search how to implement hot reload
-     */
 
     return (
         <div className={"new"}>

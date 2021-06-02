@@ -13,13 +13,11 @@ import Modal from '../../Modal';
 
 const app = window.require("electron")
 
-const FlutterSDK = () => {
+const FlutterSDK = props => {
 
     const [values, setValues] = React.useState({
         dir: ''
     });
-
-    const modal = Modal.getInstance();
 
     return (
         <Fragment>
@@ -50,7 +48,7 @@ const FlutterSDK = () => {
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => {modal.current.handleClose(values)}} color="primary" autoFocus>
+                <Button onClick={() => {props.handleClose(values)}} color="primary" autoFocus>
                     Set
                 </Button>
             </DialogActions>

@@ -6,10 +6,13 @@ import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import {WidgetType} from "../../../../../../utils/WidgetUtils";
 import Phone from "../../Phone";
 import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
+import Dialog from '../../../Dialog/Dialog';
+import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 
 const Widget = props => {
 
-    const phone = Phone.getInstance()
+    const phone = Phone.getInstance();
+    const dialog = Dialog.getInstance();
 
     const ref = useRef(null);
 
@@ -67,6 +70,10 @@ const Widget = props => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
+            onContextMenu={(event => {
+                event.preventDefault();
+                dialog.current.createDialog(<ContextMenu event={event} id={props._id}/>)
+            })}
             ref={ref}>
             {DisplayWidgetsStyle.Display[props.display](props).display}
         </div>
