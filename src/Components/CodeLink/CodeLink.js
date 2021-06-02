@@ -1,5 +1,5 @@
-import React from "react";
-import { LiteGraph } from "litegraph.js"
+import React, {useEffect, useState} from "react";
+import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
@@ -8,60 +8,76 @@ import {Loop} from "@material-ui/icons";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
+import Phone from "../Main/Components/Phone/Phone";
+const { ipcRenderer } = window.require('electron')
 
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
 
-class CodeLink extends React.Component {
+function CodeLink(props) {
 
-    constructor(props) {
-        super(props)
-        this.graph = new LiteGraph.LGraph();
-        console.log("codelink", this.props.match.params.id)
+    let canvas = null;
+    let graph = new LiteGraph.LGraph();
+    let Lcanvas = null;
+    const [counter, setCounter] = useState(0);
+
+
+    const useConstructor = () => {
+        const [hasBeenCalled, setHasBeenCalled] = useState(false);
+        const phone = Phone.getInstance();
+
+        if (hasBeenCalled) return;
+
+        setHasBeenCalled(true);
     }
 
-
-    addNodes = () => {
+    useEffect(() => {
+        app.allowRendererProcessReuse = false;
+        init();
+    });
+    const addNodes = () => {
         //LiteGraph.registerNodeType("basic/sumation", createNode() );
     }
 
-    init = () => {
-        console.log("Ici commence Init function")
-        this.Lcanvas = new LiteGraph.LGraphCanvas(this.canvas, this.graph);
-        CodeLinkNodeLoader.registerLCanvas(this.Lcanvas);
-        let currentpath = this.props.location.state.path;
-        console.log(currentpath)
+
+    const ipcEnabling = () => {
+        ipcRenderer.send('send-socket-message', {"coucou": "mdr"});
+    }
+
+    const init = () => {
+        Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
+        CodeLinkNodeLoader.registerLCanvas(Lcanvas);
+        let currentpath = props.location.state.path;
         const data = fs.readFileSync(currentpath,
-            {encoding:'utf8', flag:'r'});
-  
+            {encoding: 'utf8', flag: 'r'});
+
         // Display the file data
         if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
-            this.addNodes()
+            addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
-            this.graph.configure(buffer, false)
+            //graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
-            this.addNodes()
+            addNodes()
             fs.readFile('data.json', 'utf-8', (err, data) => {
                 const parsed = JSON.parse(data);
-
-                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, this.props.match.params.id.replace(/[^a-z]+/g, ""));
+                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
                 CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
-            } );
+            });
         }
     }
 
-    savegraph(event) {
-        console.log("Début de la save")
-        let currentpath = this.props.location.state.path;
-        
+    const savegraph = (event) =>
+    {
+        let currentpath = props.location.state.path;
+
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(currentpath, output);
     }
 
-    generate = (element) => {
+    const generate = (element) => {
         return [0, 1, 2].map((value) =>
             React.cloneElement(element, {
                 key: value,
@@ -69,57 +85,59 @@ class CodeLink extends React.Component {
         );
     }
 
-    render() {
-        console.log("View codelink")
-        return (
-            <div>
-                <Grid container className={"CodeLink-Content"}>
-                    <Grid item xs={12} className={"CodeLink-bar-menu"}>
-                        <Grid container>
-                            <Grid className={"CodeLink-bar-item"}>
-                                <Box>
-                                    <h2>CodeLink</h2>
-                                </Box>
-                            </Grid>
-                            <Grid className={"CodeLink-bar-item"}>
-                                <Box marginTop={"1.25rem"}>
-                                    <Button variant="contained" color="primary" onClick={() => {this.props.history.push('/')}}>
-                                        Phone view
-                                    </Button>
-                                </Box>
-                            </Grid>
-                            <Grid className={"CodeLink-bar-item"}>
-                                <Box marginTop={"1.25rem"}>
-                                    <Button variant="contained" color="secondary" onClick={() => {
-                                        console.log("Exec test Graph")
-                                        console.log(this.graph)
-                                        BufferSingleton.erase();
-                                        this.graph.runStep(1);
-                                        const variableName = this.props.match.params.id.replace(/[^a-z]+/g, "");
-                                        const buffer = BufferSingleton.get();
-                                        console.log("LE BUFFOS")
-                                        console.log(buffer.import);
-                                        FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart');
-                                        FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.Sep + 'lib' + Main.Sep + 'main.dart')
-                                        console.log(BufferSingleton.get());
-                                    }}>
-                                        Exec
-                                    </Button>
-                                </Box>
-                            </Grid>
+    return (
+        <div>
+            <Grid container className={"CodeLink-Content"}>
+                <Grid item xs={12} className={"CodeLink-bar-menu"}>
+                    <Grid container>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box>
+                                <h2>CodeLink</h2>
+                            </Box>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
+                                <Button variant="contained" color="primary" onClick={() => {this.props.history.push('/')}}>
+                                    Phone view
+                                </Button>
+                            </Box>
+                            <Button onClick={() => {
+                                ipcEnabling();
+                            }
+                            }>
+                                IPC
+                            </Button>
+                            <Button onClick={() => {    setCounter(counter + 1);}}>
+                                counter
+                            </Button>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
+                                <Button variant="contained" color="secondary" onClick={() => {
+                                    BufferSingleton.erase();
+                                    graph.runStep(1);
+                                    const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
+                                    const buffer = BufferSingleton.get();
+                                    FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+                                    FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+                                }}>
+                                    Exec
+                                </Button>
+                            </Box>
                         </Grid>
                     </Grid>
-                    <Grid item xs={2} className={"CodeLink-widget-menu"}>
-                        <Grid container
-                              spacing={0}
-                              direction="column"
-                              alignItems="center"
-                              justify="center"
-                        >
-                            <Typography variant="h6">
-                                Widget Menu
-                            </Typography>
-                            <div>
+                </Grid>
+                <Grid item xs={2} className={"CodeLink-widget-menu"}>
+                    <Grid container
+                          spacing={0}
+                          direction="column"
+                          alignItems="center"
+                          justify="center"
+                    >
+                        <Typography variant="h6">
+                            Widget Menu
+                        </Typography>
+                        <div>
                             {/*    <List>*/}
                             {/*        {this.generate(*/}
                             {/*            <ListItem>*/}
@@ -132,21 +150,22 @@ class CodeLink extends React.Component {
                             {/*            </ListItem>,*/}
                             {/*        )}*/}
                             {/*    </List>*/}
-                            </div>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={10} className={"CodeLink-canvas"}>
-                        <Box className={"CodeLink-canvas-Box"}>
-                            <canvas id="myCanvas" width={1920} height={1080} ref={(canvas) => {
-                                this.canvas = canvas;
-                                this.init()
-                            }}/>
-                        </Box>
+                        </div>
                     </Grid>
                 </Grid>
-            </div>
-        );
-    }
+                <Grid item xs={10} className={"CodeLink-canvas"}>
+                    <Box className={"CodeLink-canvas-Box"}>
+                        <canvas id="myCanvas" width={1920} height={1080} ref={(canvasRef) => {
+                            canvas = canvasRef;
+                            //init()
+                        }}/>
+                    </Box>
+                </Grid>
+            </Grid>
+        </div>
+    );
+
+
 }
 
 export default CodeLink
