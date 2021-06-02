@@ -15,6 +15,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 const electron = require('electron');
+const {SocketIPC} = require('./SocketIPC');
 //const Menu = electron.Menu;
 
 const {ipcMain, dialog} = require('electron')
@@ -153,6 +154,10 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
+
+//ipcMain.on('')
+
+//SocketIPC();
 
 ipcMain.on('select-file', (event, arg) => {
   event.returnValue = dialog.showOpenDialogSync({

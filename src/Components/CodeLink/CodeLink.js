@@ -97,7 +97,7 @@ function CodeLink(props) {
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="primary" onClick={() => {this.props.history.push('/')}}>
+                                <Button variant="contained" color="primary" onClick={() => {props.history.push('/')}}>
                                     Phone view
                                 </Button>
                             </Box>
