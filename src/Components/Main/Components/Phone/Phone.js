@@ -61,7 +61,7 @@ class Phone extends React.Component {
             return;
         }
         const finalWidgetList = this.state;
-        //console.log(this.state);
+        console.log(this.state);
         JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
 
     }
@@ -70,6 +70,15 @@ class Phone extends React.Component {
         for (let i = 0; i < this.state.widgetList.length; i++) {
             if (this.state.widgetList[i]._id === id)
                 return this.state.widgetList[i]
+        }
+    }
+
+    removeWidgetByID = id => {
+        for (let i = 0; i < this.state.widgetList.length; i++) {
+            if (this.state.widgetList[i]._id === id) {
+                this.state.widgetList.splice(i, 1);
+                return;
+            }
         }
     }
 
@@ -133,24 +142,39 @@ class Phone extends React.Component {
         }
     }
 
-    findByID = id => {
-        return this.deepFind(id, this.state.idList)
+    deepFlatten = (idItem) => {
+        if (!idItem)
+            return [];
+        let flattenList = [];
+        for (let i = 0; i < idItem.list.length; i++) {
+            flattenList.push(idItem.list[i]._id);
+            flattenList = flattenList.concat(this.deepFlatten(idItem.list[i]))
+        }
+        return flattenList;
     }
 
+    flattenByID = id => {
+        const widget = this.deepFind(id, this.state.idList);
+        return this.deepFlatten(widget.child);
+    }
+
+    findByID = id => {
+        return this.deepFind(id, this.state.idList);
+    }
 
     removeByID = id => {
-        this.deepRemove(id, this.state.idList)
+        return this.deepRemove(id, this.state.idList);
     }
 
-    moveByID = (id, idDest) => {
+    moveByID = (id, idDest, list) => {
         const dest = this.deepFind(idDest, this.state.idList)
         for (let i = 0; i < dest.parent.list.length; i++) {
             if (dest.parent.list[i]._id === dest.child._id) {
                 const idItem = {
                     _id: id,
-                    list: []
+                    list: list || []
                 }
-                dest.parent.list.splice(i, 0, idItem)
+                dest.parent.list.splice(i, 0, idItem);
                 return;
             }
         }
@@ -170,6 +194,7 @@ class Phone extends React.Component {
                         }}
                         list={this.state.idList.list}
                         display={'Center'}
+                        root
                     />
                 </div>
                 {/*<Button variant="contained" color="primary" onClick={() => {

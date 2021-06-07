@@ -72,7 +72,8 @@ const Widget = props => {
             }}
             onContextMenu={(event => {
                 event.preventDefault();
-                dialog.current.createDialog(<ContextMenu event={event} id={props._id}/>)
+                event.stopPropagation();
+                dialog.current.createDialog(<ContextMenu event={event} widget={props}/>)
             })}
             ref={ref}>
             {DisplayWidgetsStyle.Display[props.display](props).display}
