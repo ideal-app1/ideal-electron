@@ -29,6 +29,7 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
+        dirPath = path.join(props.location.state.path, props.match.params.id);
         if (fs.existsSync(dirPath) === false) {
             fs.mkdirSync(dirPath);
         }
@@ -37,10 +38,12 @@ function CodeLink(props) {
     }
 
     useEffect(() => {
-        dirPath = path.join(props.location.state.path, props.match.params.id);
+        console.log('Join ? ');
+        console.log(dirPath);
         app.allowRendererProcessReuse = false;
         init();
     });
+
     useConstructor();
 
     const sendData = () => {
