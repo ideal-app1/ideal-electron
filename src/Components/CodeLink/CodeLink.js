@@ -10,17 +10,18 @@ import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
 import Phone from "../Main/Components/Phone/Phone";
 const { ipcRenderer } = window.require('electron')
-
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
+const path = require('path');
+
 
 function CodeLink(props) {
 
     let canvas = null;
     let graph = new LGraph();
     let Lcanvas = null;
-    const [counter, setCounter] = useState(0);
-
+    let widget = null;
+    let dirPath = null;
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -28,39 +29,47 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
+        if (fs.existsSync(dirPath) === false) {
+            fs.mkdirSync(dirPath);
+        }
+        widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     }
 
     useEffect(() => {
+        dirPath = path.join(props.location.state.path, props.match.params.id);
         app.allowRendererProcessReuse = false;
         init();
     });
-    const addNodes = () => {
-        //LiteGraph.registerNodeType("basic/sumation", createNode() );
-    }
+    useConstructor();
 
+    const sendData = () => {
+        const buffer = BufferSingleton.get();
 
-    const ipcEnabling = () => {
-        ipcRenderer.send('send-socket-message', {"coucou": "mdr"});
+        ipcRenderer.send('send-socket-message', {
+            'request-type': 'creator',
+            'parameters': {
+                'imports': Array.from(buffer.import),
+                'code': buffer.code
+            }
+        });
+        //FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
     const init = () => {
         Lcanvas = new LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
-        let currentpath = props.location.state.path;
-        const data = fs.readFileSync(currentpath,
-            {encoding: 'utf8', flag: 'r'});
+        let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
+        console.log("PATH ? " + currentpath);
+        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
 
-        // Display the file data
         if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
-            addNodes()
             fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
         } else {
             const buffer = JSON.parse(data)
-            //graph.configure(buffer, false)
             LiteGraph.clearRegisteredTypes()
-            addNodes()
             fs.readFile('data.json', 'utf-8', (err, data) => {
                 const parsed = JSON.parse(data);
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
@@ -74,7 +83,7 @@ function CodeLink(props) {
         let currentpath = props.location.state.path;
 
         let output = JSON.stringify(event, null, 4);
-        fs.writeFileSync(currentpath, output);
+        fs.writeFileSync(path.join(dirPath, props.match.params.id + '.json'), output);
     }
 
     const generate = (element) => {
@@ -83,6 +92,27 @@ function CodeLink(props) {
                 key: value,
             }),
         );
+    }
+
+    const writeCodeLinkData = () => {
+        let CLPath = path.join(dirPath, 'CodeLinkCode_' + props.match.params.id + '.json');
+        let buffer = BufferSingleton.get();
+
+        fs.writeFileSync(CLPath, JSON.stringify({
+                    'imports': Array.from(buffer.import),
+                    'code': buffer.code
+            }
+        ));
+    }
+
+
+    const saveCodeLinkData = () => {
+
+        BufferSingleton.erase();
+        graph.runStep(1);
+        const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
+        console.log('LE PATH ' + props.location.state.path);
+        writeCodeLinkData();
     }
 
     return (
@@ -99,27 +129,13 @@ function CodeLink(props) {
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="primary" href="/">Phone view</Button>
                             </Box>
-                            <Button onClick={() => {
-                                ipcEnabling();
-                            }
-                            }>
-                                IPC
-                            </Button>
-                            <Button onClick={() => {    setCounter(counter + 1);}}>
-                                counter
-                            </Button>
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
-                                    BufferSingleton.erase();
-                                    graph.runStep(1);
-                                    const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
-                                    const buffer = BufferSingleton.get();
-                                    FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-                                    FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+                                    saveCodeLinkData();
                                 }}>
-                                    Exec
+                                    Save
                                 </Button>
                             </Box>
                         </Grid>
