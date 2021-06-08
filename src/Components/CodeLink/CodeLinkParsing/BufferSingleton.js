@@ -1,5 +1,5 @@
-let _buffer = {code:"", import: "", LValue: ""};
-let _importSet = new Set();
+let _buffer = {code:"", import: new Set(), LValue: ""};
+
 
 const SharedBuffer = {
     addCode: item => {
@@ -7,16 +7,10 @@ const SharedBuffer = {
 
     },
     addImport: item => {
-      _importSet.add(item);
-      console.log("SALUT")
-      console.log(_importSet);
-      //_buffer.import = "";
-      _importSet.forEach((val) => {
-        console.log("print value");
-        console.log(val)
-      })
-        _buffer.import += "import '" + item + "';\n";
 
+        _buffer.import.add(item);
+        console.log("Here is my set");
+        console.log(_buffer.import);
         /*for (const v in _importSet.values()) {
             console.log(v);
             _buffer.import += 'import ' + v + '.dart' + "\n";
@@ -27,8 +21,7 @@ const SharedBuffer = {
         _buffer.LValue += item;
     },
     erase: () => {
-        _buffer = {code:"", import: '', LValue: ""}
-        _importSet.clear();
+        _buffer = {code:"", import: new Set(), LValue: ""}
     },
     get: () => {
         return _buffer;

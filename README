@@ -1,0 +1,4 @@
+## HOW TO MAKE IDEAL WORKS:
+npm install
+npm install -g electron
+npm install -g foreman

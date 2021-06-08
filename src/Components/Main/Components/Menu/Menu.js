@@ -42,15 +42,44 @@ export default function Menu() {
 
             Process.runScript(Main.CopyCmd + " " + 'src' + Main.FileSeparator + 'flutterCode' + Main.FileSeparator + 'main.dart' + " " + Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', () => {
                 setLoader(false);
-                fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + 'codelink');
+                fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + '.ideal_project' + Main.FileSeparator + 'codelink', {recursive: true});
                 JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
             });
         });
     }
 
+    const getACodeLinkData = (fullData, file) => {
+        const data =  JSON.parse(fs.readFileSync(file).toString());
+
+        data.imports.forEach((elem) => fullData.imports.add(elem));
+        fullData.functions.push(data.code);
+
+    }
+
+    const getEveryCodeLinkData = (fullData, dirPath) => {
+        const filesInDirectory = fs.readdirSync(dirPath);
+        for (const file of filesInDirectory) {
+            const absolute = path.join(dirPath, file);
+            if (fs.statSync(absolute).isDirectory()) {
+                getEveryCodeLinkData(fullData, absolute);
+            } else if (path.extname(absolute) === ".json" &&
+                       path.basename(absolute).startsWith('CodeLinkCode_')) {
+                getACodeLinkData(fullData, absolute);
+            }
+        }
+    }
+
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+
+        const data = {
+            'imports': new Set(),
+            'functions': [],
+        }
+
+        getEveryCodeLinkData(data, path.join(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        console.log(data);
+        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 
@@ -128,17 +157,17 @@ function Dropdown() {
     }
 
     function Discord() {
-        const { shell } = window.require('electron');
+        const {shell} = window.require('electron');
         shell.openExternal('https://discord.gg/4T9DGFvA')
     }
 
     function Feedback() {
-        const { shell } = window.require('electron');
+        const {shell} = window.require('electron');
         shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
     }
 
     function DocumentationLink() {
-        const { shell } = window.require('electron');
+        const {shell} = window.require('electron');
         shell.openExternal('https://docs.idealapp.fr')
     }
 
