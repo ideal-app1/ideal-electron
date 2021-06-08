@@ -29,6 +29,8 @@ class Main extends React.Component {
             Main.Sep = '\\';
         }
 
+        new Path();
+
         try {
             const path = Path.build(app.getPath('documents'), 'Ideal');
             console.log(path);

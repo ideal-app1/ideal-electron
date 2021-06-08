@@ -1,13 +1,11 @@
 import React from 'react';
 
-class Path extends React.Component {
+class Path {
 
     static Sep = "/";
     static CopyCmd = "cp";
 
-    constructor(props) {
-        super(props);
-        console.log('test');
+    constructor() {
         if (window.navigator.platform === "Win32") {
             Path.CopyCmd = 'copy';
             Path.Sep = '\\';
