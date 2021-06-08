@@ -6,6 +6,7 @@ import {WidgetType} from "../../../../utils/WidgetUtils";
 import Main from "../../Main";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
+import Button from '@material-ui/core/Button';
 
 const clone = require("rfdc/default");
 
@@ -21,7 +22,7 @@ class Phone extends React.Component {
                 _id: this._id,
                 list: []
             },
-            //history: []
+            // history: {pos: 0, list: []},
             clipboard: {}
         };
     }
@@ -43,6 +44,7 @@ class Phone extends React.Component {
                 _id: this._id,
                 list: []
             },
+            // history: {pos: 0, list: []},
             clipboard: {}
         })
     }
@@ -56,7 +58,12 @@ class Phone extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        //this.state.buffer.push(clone(this.state))
+        /*console.log(this.state)
+        const history = this.state.history;
+        if (history.list.length > 5)
+            history.shift();
+        history.pos = history.list.length;
+        history.list.push({...clone(this.state), history: {}})*/
         if (Main.MainProjectPath === "") {
             return;
         }
@@ -198,7 +205,8 @@ class Phone extends React.Component {
                     />
                 </div>
                 {/*<Button variant="contained" color="primary" onClick={() => {
-                    this.setState(this.state.buffer[this.state.buffer.length - 2])
+                    const history = this.state.history;
+                    this.setState({...history.list[history.pos], history: {...history, pos: history.pos - 1}})
                 }}>
                     BACK
                 </Button>*/}

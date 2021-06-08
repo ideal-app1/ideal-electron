@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import "../Modal/Modal.css"
+import React from 'react';
+import "./Loading.css";
 import Loader from 'react-loader-spinner';
 
 const Loading = () => {
