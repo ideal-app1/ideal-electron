@@ -14,6 +14,7 @@ import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
 import Main from "../../Main";
+import { InputAdornment } from '@material-ui/core';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron')
@@ -24,7 +25,7 @@ class WidgetProperties extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = { widget: {} };
         this.phone = Phone.getInstance()
     }
 
@@ -37,11 +38,15 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        this.setState(this.phone.current.findWidgetByID(id))
+        this.setState({ widget: this.phone.current.findWidgetByID(id) })
+    }
+
+    unsetState = () => {
+        this.setState({ widget: {} })
     }
 
     updateState = (key, value) => {
-        this.state.properties[key].value = value
+        this.state.widget.properties[key].value = value
         this.forceUpdate()
         this.phone.current.forceUpdate()
     }
@@ -62,6 +67,9 @@ class WidgetProperties extends React.Component {
                         defaultValue={prop.value}
                         type="number"
                         variant="outlined"
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                        }}
                         onChange={entry => {this.updateState(name, parseInt(entry.target.value))}}
                     />
                 )
@@ -117,16 +125,14 @@ class WidgetProperties extends React.Component {
         if (fs.existsSync(path)) {
             return;
         }
-
         fs.appendFile(path, null, { flag: 'wx' }, function (err) {
-            if (err) {
-                throw err;
-            }
+            if (err) throw err;
+            console.log("It's saved!");
         });
     }
 
     onCodelink = () => {
-        this.state.codelink = Main.MainProjectPath + Main.FileSeparator + ".ideal_project" + Main.FileSeparator + "codelink" + Main.FileSeparator + this.state._id;
+        this.state.widget.codelink = path.join(Main.MainProjectPath, "codelink", this.state.widget._id + ".json");
         let fullPath = this.state.codelink + Main.FileSeparator + this.state._id + '.json';
 
         fs.mkdirSync(this.state.codelink, {recursive: true});
@@ -134,7 +140,7 @@ class WidgetProperties extends React.Component {
     }
 
     codeLinkButton = () => {
-        if (this.state.group === WidgetGroup.MATERIAL) {
+        if (this.state.widget.group === WidgetGroup.MATERIAL) {
             return (
                 <ListItem>
                     <Route render={({ history}) => (
@@ -142,13 +148,11 @@ class WidgetProperties extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                    console.log('Code link');
-                                    console.log(this.state.codelink);
                                     history.push({
-                                        pathname: 'codelink/' + this.state._id,
+                                        pathname: '/codelink/' + this.state.widget._id,
                                         state: {
-                                            _id: this.state._id,
-                                            path: this.state.codelink
+                                            _id: this.state.widget._id,
+                                            path: this.state.widget.codelink
                                         }
                                     })
                                 }}>
@@ -163,19 +167,19 @@ class WidgetProperties extends React.Component {
     }
 
     onSelection = () => {
-        if (this.state.properties) {
+        if (this.state.widget.properties) {
             this.onCodelink()
             return (
                 <Fragment>
-                    <ListSubheader>{this.state.name}</ListSubheader>
+                    <ListSubheader>{this.state.widget.name}</ListSubheader>
                     <ListItem>
                         <div className={"property_name"}>group:</div>
-                        {this.state.group}
+                        {this.state.widget.group}
                     </ListItem>
                     {
-                        Object.entries(this.state.properties).map(([key, value]) => {
+                        Object.entries(this.state.widget.properties).map(([key, value]) => {
                             return (
-                                <ListItem key={this.state._id + key}>
+                                <ListItem key={this.state.widget._id + key}>
                                     <div className={"property_name"}>{key}:</div>
                                     {this.widgetPropType(key, value)}
                                 </ListItem>

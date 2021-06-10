@@ -6,10 +6,13 @@ import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import {WidgetType} from "../../../../../../utils/WidgetUtils";
 import Phone from "../../Phone";
 import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
+import Dialog from '../../../Dialog/Dialog';
+import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 
 const Widget = props => {
 
-    const phone = Phone.getInstance()
+    const phone = Phone.getInstance();
+    const dialog = Dialog.getInstance();
 
     const ref = useRef(null);
 
@@ -62,11 +65,16 @@ const Widget = props => {
     return (
         <div
             className={"widget " + props.name}
-            style={isOver ? {...DisplayWidgetsStyle.Display[props.display](DisplayWidgetsStyle.Display).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
+            style={isOver ? {...DisplayWidgetsStyle.Display[props.display](props).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
                 event.stopPropagation()
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
+            onContextMenu={(event => {
+                event.preventDefault();
+                event.stopPropagation();
+                dialog.current.createDialog(<ContextMenu event={event} widget={props}/>)
+            })}
             ref={ref}>
             {DisplayWidgetsStyle.Display[props.display](props).display}
         </div>

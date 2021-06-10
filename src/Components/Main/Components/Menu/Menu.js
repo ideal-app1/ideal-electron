@@ -7,44 +7,49 @@ import "./Dropdrownmenu.css"
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
 import FlutterManager from "../Phone/Tools/FlutterManager";
-import {ReactComponent as BoltIcon} from "./icons/bolt.svg";
-import {ReactComponent as CogIcon} from "./icons/cog.svg";
-import {ReactComponent as ArrowIcon} from "./icons/arrow.svg";
-import {ReactComponent as PlusIcon} from "./icons/plus.svg";
-import {ReactComponent as ChevronIcon} from "./icons/chevron.svg";
-import {ReactComponent as CaretIcon} from "./icons/caret.svg";
-import {ReactComponent as PlayIcon} from "./icons/play.svg";
+import BoltIcon from "../../../../../assets/icon.svg";
+import CogIcon from "./Assets/Icons/cog.svg";
+import PlusIcon from "./Assets/Icons/plus.svg";
+import ChevronIcon from "./Assets/Icons/chevron.svg";
+import CaretIcon from "./Assets/Icons/caret.svg";
+import PlayIcon from "./Assets/Icons/play.svg";
 import {CSSTransition} from "react-transition-group";
 import authService from "../../../../service/auth-service";
 
-import Loader from "react-loader-spinner";
 import Phone from "../Phone/Phone";
+import Dialog from '../Dialog/Dialog';
+import Modal from '../Dialog/Components/Modal/Modal';
+import CreateProject from '../Dialog/Components/Modal/Components/CreateProject/CreateProject';
+import FlutterSDK from '../Dialog/Components/Modal/Components/FlutterSDK/FlutterSDK';
+import Loading from '../Dialog/Components/Loading/Loading';
 
-const path = require('path');
+import Path from '../../../../utils/Path';
 const fs = window.require('fs');
+const mainDartCode = require("../../../../flutterCode/main.dart")
 
 export default function Menu() {
 
-    const [LoaderState, setLoader] = React.useState(false);
-
     const phone = Phone.getInstance();
+    const dialog = Dialog.getInstance();
 
     const newProject = async () => {
-        const res = await window.require("electron").ipcRenderer.sendSync('runCommand');
-        if (res.canceled)
-            return;
+        if (!Main.FlutterSDK) {
+            const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
+            Main.FlutterSDK = Path.build(project.dir, "bin", "flutter");
+        }
+        const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
+        dialog.current.createDialog(<Loading/>);
+        Main.MainProjectPath = Path.build(project.dir, project.name);
 
-        setLoader(true);
-
-        Main.MainProjectPath = res.filePaths[0] + Main.FileSeparator + 'idealproject';
-
-        Process.runScript("flutter create " + Main.MainProjectPath, () => {
-
-            Process.runScript(Main.CopyCmd + " " + 'src' + Main.FileSeparator + 'flutterCode' + Main.FileSeparator + 'main.dart' + " " + Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart', () => {
-                setLoader(false);
-                fs.mkdirSync(Main.MainProjectPath + Main.FileSeparator + '.ideal_project' + Main.FileSeparator + 'codelink', {recursive: true});
-                JsonManager.saveThis({ProjectPathAutoSaved: Main.MainProjectPath}, path.join('src', 'flutterCode', 'config.json'))
-            });
+        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
+            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
+            fs.mkdirSync(Path.build(Main.MainProjectPath, 'codelink'));
+            JsonManager.saveThis({
+                ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterSDK: Main.FlutterSDK
+            }, Path.build(Main.IdealDir, "config.json"));
+            phone.current.resetState();
+            dialog.current.unsetDialog();
         });
     }
 
@@ -70,7 +75,9 @@ export default function Menu() {
     }
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
 
         const data = {
             'imports': new Set(),
@@ -84,24 +91,11 @@ export default function Menu() {
     }
 
     return (
-
         <div className={"new"}>
-
             <Navbar>
                 <h1>IDEAL</h1>
-                <NavItem icon={<PlusIcon onClick={newProject}/>}>
-
-                </NavItem>
-                {LoaderState ?
-                    <Loader
-                        className={"loader"}
-                        type="TailSpin"
-                        color="#FFF"
-                        height={100}
-                        width={100}
-                        timeout={30000}
-                    /> : ""}
-                <NavItem icon={<ChevronIcon onClick={runProject}/>}/>
+                <NavItem icon={<PlusIcon onClick={newProject}/>}/>
+                <NavItem icon={<ChevronIcon onClick={runProject} />}/>
                 <NavItem icon={<CaretIcon/>}>
                     <Dropdown/>
                 </NavItem>
@@ -157,17 +151,17 @@ function Dropdown() {
     }
 
     function Discord() {
-        const {shell} = window.require('electron');
+        const { shell } = window.require('electron');
         shell.openExternal('https://discord.gg/4T9DGFvA')
     }
 
     function Feedback() {
-        const {shell} = window.require('electron');
+        const { shell } = window.require('electron');
         shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
     }
 
     function DocumentationLink() {
-        const {shell} = window.require('electron');
+        const { shell } = window.require('electron');
         shell.openExternal('https://docs.idealapp.fr')
     }
 
@@ -217,7 +211,6 @@ function Dropdown() {
 
     return (
         <div className="dropdown" style={{height: menuHeight}} ref={dropdownRef}>
-
             <CSSTransition
                 in={activeMenu === 'main'}
                 timeout={500}

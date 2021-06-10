@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 import Main from "./Components/Main/Main";
 import Login from "./Components/Login/Login"
-import CodeLink from "./Components/CodeLink/CodeLink"
+import CodeLink from "./Components/CodeLink/CodeLink";
 import authService from "./service/auth-service";
 
 async function authentication({setAuthenticated}) {
@@ -18,29 +19,37 @@ async function authentication({setAuthenticated}) {
 }
 
 function App () {
-     const [authenticated, setAuthenticated] = useState();
+    const [authenticated, setAuthenticated] = useState();
 
-     (async () => await authentication({setAuthenticated}))();
+    (async () => await authentication({setAuthenticated}))();
 
-     if (authenticated === undefined) {
-         return (<div> <p>Loading</p> </div>);
-     }
+    if (authenticated === undefined) {
+        return (<div> <p>Loading</p> </div>);
+    }
 
-     if (!authenticated) {
-         return <Login setAuthenticated={setAuthenticated} />
-     }
+    if (!authenticated) {
+        return <Login setAuthenticated={setAuthenticated} />
+    }
+
+    const darkTheme = createMuiTheme({
+        palette: {
+            type: 'dark',
+        },
+    });
 
     return (
-        <div className={"wrapper"}>
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <Main/>
-                    </Route>
-                    <Route exact path="/codelink/:id" component={CodeLink}/>
-                </Switch>
-            </Router>
-        </div>
+        <ThemeProvider theme={darkTheme}>
+            <div className={"wrapper"}>
+                <Router>
+                    <Switch>
+                        <Route exact path="/">
+                            <Main/>
+                        </Route>
+                        <Route exact path="/codelink/:id" component={CodeLink}/>
+                    </Switch>
+                </Router>
+            </div>
+        </ThemeProvider>
     );
 }
 

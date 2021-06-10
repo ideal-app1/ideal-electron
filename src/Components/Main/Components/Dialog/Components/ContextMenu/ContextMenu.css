@@ -1,0 +1,24 @@
+#context-menu .MuiMenu-paper {
+    padding: 4px;
+}
+
+#context-menu .MuiMenu-list {
+    padding: 0;
+}
+
+.MuiListItem-button {
+    border-radius: 2px !important;
+    margin: 2px !important;
+}
+
+.MuiListItem-button:hover.danger {
+    background-color: #ed4245 !important;
+}
+
+.disabled {
+    color: #8e8e8e !important;
+}
+
+.MuiListItem-button:hover.disabled {
+    background-color: unset !important;
+}

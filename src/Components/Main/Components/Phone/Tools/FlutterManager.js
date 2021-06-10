@@ -51,7 +51,8 @@ class FlutterManager {
             if (widget.codePathFile) {
                 let tmp = "";
                 if ((tmp = FlutterManager.getCode(widget.codePathFile)) == null) {
-                    tmp = FlutterManager.fs.readFileSync("src\\flutterCode" + "\\" + widget.codePathFile, 'utf8');
+                    tmp = require("../../../../../flutterCode/" + widget.codePathFile);
+                    //tmp = FlutterManager.fs.readFileSync("src\\flutterCode" + "\\" + widget.codePathFile, 'utf8');
                     FlutterManager.FileCodeAlreadyOpen.push({file: widget.codePathFile, code: tmp});
                 }
 

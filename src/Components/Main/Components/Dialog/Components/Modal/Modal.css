@@ -1,0 +1,10 @@
+
+.MuiDialog-paper {
+    background-color: #333333 !important;
+    width: 40% !important;
+    height: 35% !important;
+}
+
+.MuiSvgIcon-root {
+    cursor: pointer;
+}

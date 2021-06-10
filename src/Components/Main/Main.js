@@ -6,11 +6,18 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
+import Dialog from './Components/Dialog/Dialog';
+import JsonManager from './Tools/JsonManager';
+import Path from '../../utils/Path';
+
+const app = window.require('electron').remote.app;
 
 class Main extends React.Component {
 
+    static IdealDir = "";
     static MainProjectPath = "";
-    static FileSeparator = "/";
+    static FlutterSDK = "";
+    static Sep = "/";
     static CopyCmd = "cp";
     static fs = window.require('fs');
 
@@ -19,15 +26,24 @@ class Main extends React.Component {
 
         if (window.navigator.platform === "Win32") {
             Main.CopyCmd = 'copy';
-            Main.FileSeparator = '\\';
+            Main.Sep = '\\';
         }
 
+        new Path();
+
         try {
-            var data = require('../../flutterCode/config.json');
+            const path = Path.build(app.getPath('documents'), 'Ideal');
+            console.log(path);
+            const data = JsonManager.get(Path.build(path, 'config.json'));
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
+            Main.FlutterSDK = data.FlutterSDK;
+            Main.IdealDir = path;
         } catch (e) {
-            console.log('ok');
+            console.log('Config does not exist, trying to create Ideal folder');
+            Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
+            if (!Main.fs.existsSync(Main.IdealDir))
+                Main.fs.mkdirSync(Main.IdealDir);
         }
     }
 
@@ -35,6 +51,7 @@ class Main extends React.Component {
         return (
             <div className="App">
                 <header className="App-header">
+                    <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
                         <Library/>
                         <Phones/>

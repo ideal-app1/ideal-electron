@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
+import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
@@ -18,7 +18,7 @@ const path = require('path');
 function CodeLink(props) {
 
     let canvas = null;
-    let graph = new LGraph();
+    let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
     let dirPath = path.join(props.location.state.path, props.match.params.id);
@@ -60,7 +60,7 @@ function CodeLink(props) {
     }
 
     const init = () => {
-        Lcanvas = new LGraphCanvas(canvas, graph);
+        Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
         console.log("PATH ? " + currentpath);
@@ -139,7 +139,9 @@ function CodeLink(props) {
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="primary" href="/">Phone view</Button>
+                                <Button variant="contained" color="primary" onClick={() => {props.history.push('/')}}>
+                                    Phone view
+                                </Button>
                             </Box>
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>

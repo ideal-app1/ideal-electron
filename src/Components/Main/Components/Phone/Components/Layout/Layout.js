@@ -7,12 +7,15 @@ import {Grid} from "@material-ui/core";
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
 import Phone from "../../Phone";
 import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
+import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
+import Dialog from '../../../Dialog/Dialog';
 
 const Layout = props => {
 
-    const phone = Phone.getInstance()
+    const phone = Phone.getInstance();
+    const dialog = Dialog.getInstance();
 
-    const [{isOver, isOverCurrent, getItem}, drop] = useDrop({
+    const [{isOver, isOverCurrent}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
             if (monitor.didDrop()) {
@@ -28,27 +31,30 @@ const Layout = props => {
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
-            isOverCurrent: monitor.isOver({ shallow: true }),
-            getItem: monitor.getItem()
+            isOverCurrent: monitor.isOver({ shallow: true })
         }),
     });
-    return (
 
+    return (
         <Grid
             container
             direction={props.properties.direction}
-            justify={props.properties.justify.value ? props.properties.justify.value : props.properties.justify}
-            alignItems={props.properties.align.value ? props.properties.align.value : props.properties.align}
+            justify={props.properties.justify.value || props.properties.justify}
+            alignItems={props.properties.align.value || props.properties.align}
             className={"layout " + props.name}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
-                event.stopPropagation()
+                event.stopPropagation();
                 WidgetProperties.getInstance().current.handleSelect(props._id)
             }}
+            onContextMenu={(event => {
+                event.preventDefault();
+                event.stopPropagation();
+                dialog.current.createDialog(<ContextMenu event={event} widget={props}/>)
+            })}
             ref={drop}>
             {
-
                 props.list.map(id => {
                     const widget = phone.current.findWidgetByID(id._id)
                     if (widget.group === WidgetGroup.MATERIAL) {
@@ -63,7 +69,5 @@ const Layout = props => {
         </Grid>
     );
 };
-
-//{WidgetDropPreview(getItem, isOverCurrent)}
 
 export default Layout
