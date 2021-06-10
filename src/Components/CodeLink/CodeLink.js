@@ -21,7 +21,7 @@ function CodeLink(props) {
     let graph = new LGraph();
     let Lcanvas = null;
     let widget = null;
-    let dirPath = null;
+    let dirPath = path.join(props.location.state.path, props.match.params.id);
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -29,7 +29,6 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
-        dirPath = path.join(props.location.state.path, props.match.params.id);
         if (fs.existsSync(dirPath) === false) {
             fs.mkdirSync(dirPath);
         }
@@ -69,7 +68,12 @@ function CodeLink(props) {
 
         if (data.length === 0) {
             LiteGraph.clearRegisteredTypes()
-            fs.readFile('data.json', 'utf-8', CodeLinkNodeLoader.loadEveryKnownNodes);
+            fs.readFile('data.json', 'utf-8', (err, data) => {
+                const parsed = JSON.parse(data);
+
+
+                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
+            });
         } else {
             const buffer = JSON.parse(data)
             LiteGraph.clearRegisteredTypes()
@@ -98,6 +102,11 @@ function CodeLink(props) {
     }
 
     const writeCodeLinkData = () => {
+
+        console.log('Null ? ');
+        console.log(dirPath)
+        console.log('CodeLinkCode_' + props.match.params.id + '.json')
+        console.log(props.match.params.id);
         let CLPath = path.join(dirPath, 'CodeLinkCode_' + props.match.params.id + '.json');
         let buffer = BufferSingleton.get();
 
