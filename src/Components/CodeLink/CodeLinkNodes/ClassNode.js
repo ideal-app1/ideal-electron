@@ -18,9 +18,7 @@ const createClassNode = (NodeInfos, doRegister, LCanvas, varName) => {
     }
 
     ClassNode.prototype.onExecute = function () {
-        console.log("onExecute class");
         this.setOutputData(0, this);
-        console.log("WHAT IS MY IMPORT ? " + NodeInfos['import']);
         sharedBuffer.addImport(NodeInfos['import']);
     }
 

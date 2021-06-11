@@ -21,7 +21,6 @@ function CodeLink(props) {
     let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
-    let dirPath = path.join(props.location.state.path, props.match.params.id);
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -29,8 +28,8 @@ function CodeLink(props) {
 
         if (hasBeenCalled) return;
 
-        if (fs.existsSync(dirPath) === false) {
-            fs.mkdirSync(dirPath);
+        if (fs.existsSync(props.location.state.path) === false) {
+            fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
@@ -73,10 +72,13 @@ function CodeLink(props) {
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
             });
         } else {
+
             const buffer = JSON.parse(data)
+
             LiteGraph.clearRegisteredTypes()
             fs.readFile('data.json', 'utf-8', (err, data) => {
                 const parsed = JSON.parse(data);
+
                 CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
                 CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
             });
@@ -88,7 +90,7 @@ function CodeLink(props) {
         let currentpath = props.location.state.path;
 
         let output = JSON.stringify(event, null, 4);
-        fs.writeFileSync(path.join(dirPath, props.match.params.id + '.json'), output);
+        fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
     }
 
     const generate = (element) => {
@@ -101,11 +103,7 @@ function CodeLink(props) {
 
     const writeCodeLinkData = () => {
 
-        console.log('Null ? ');
-        console.log(dirPath)
-        console.log('CodeLinkCode_' + props.match.params.id + '.json')
-        console.log(props.match.params.id);
-        let CLPath = path.join(dirPath, 'CodeLinkCode_' + props.match.params.id + '.json');
+        let CLPath = path.join(props.location.state.path, 'CodeLinkCode_' + props.match.params.id + '.json');
         let buffer = BufferSingleton.get();
 
         fs.writeFileSync(CLPath, JSON.stringify({
