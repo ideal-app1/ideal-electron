@@ -57,7 +57,7 @@ export default function Menu() {
         const data =  JSON.parse(fs.readFileSync(file).toString());
 
         data.imports.forEach((elem) => fullData.imports.add(elem));
-        fullData.functions.push(data.code);
+        fullData.functions.push(data.function);
 
     }
 
