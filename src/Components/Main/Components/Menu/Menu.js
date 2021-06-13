@@ -53,11 +53,41 @@ export default function Menu() {
         });
     }
 
-    const runProject = (event) => {
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+    const getACodeLinkData = (fullData, file) => {
+        const data =  JSON.parse(fs.readFileSync(file).toString());
+
+        data.imports.forEach((elem) => fullData.imports.add(elem));
+        fullData.functions.push(data.code);
+
     }
+
+    const getEveryCodeLinkData = (fullData, dirPath) => {
+        const filesInDirectory = fs.readdirSync(dirPath);
+        for (const file of filesInDirectory) {
+            const absolute = path.join(dirPath, file);
+            if (fs.statSync(absolute).isDirectory()) {
+                getEveryCodeLinkData(fullData, absolute);
+            } else if (path.extname(absolute) === ".json" &&
+              path.basename(absolute).startsWith('CodeLinkCode_')) {
+                getACodeLinkData(fullData, absolute);
+            }
+        }
+    }
+
+    const runProject = (event) => {
+        const jsonCode = JsonManager.get(Main.MainProjectPath + Main.FileSeparator + 'Ideal_config.json');
+
+        const data = {
+            'imports': new Set(),
+            'functions': [],
+        }
+
+        getEveryCodeLinkData(data, path.join(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        console.log(data);
+        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+    }
+
 
     return (
         <div className={"new"}>
