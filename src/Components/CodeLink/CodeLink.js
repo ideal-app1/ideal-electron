@@ -108,7 +108,10 @@ function CodeLink(props) {
 
         fs.writeFileSync(CLPath, JSON.stringify({
               'imports': Array.from(buffer.import),
-              'code': buffer.code
+              'function': {
+                  'name': props.match.params.id.replace(/[^a-z]+/g, ""),
+                  'code': buffer.code
+              }
           }
         ));
     }
@@ -119,7 +122,6 @@ function CodeLink(props) {
         BufferSingleton.erase();
         graph.runStep(1);
         const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
-        console.log('LE PATH ' + props.location.state.path);
         writeCodeLinkData();
     }
 
