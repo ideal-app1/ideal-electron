@@ -4,3 +4,6 @@ npm install
 (if npm install fails: npm install --legacy-peer-deps)
 npm install -g electron
 npm install -g foreman
+
+## START IDEAL
+npm start
