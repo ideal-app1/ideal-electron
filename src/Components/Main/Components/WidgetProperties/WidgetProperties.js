@@ -127,15 +127,16 @@ class WidgetProperties extends React.Component {
         }
         fs.appendFile(path, null, { flag: 'wx' }, function (err) {
             if (err) throw err;
-            console.log("It's saved!");
+            console.log("It's saved here " + path);
         });
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = path.join(Main.MainProjectPath, "codelink", this.state.widget._id + ".json");
-        let fullPath = this.state.codelink + Main.FileSeparator + this.state._id + '.json';
+        this.state.widget.codelink =  Main.MainProjectPath + Main.Sep + ".ideal_project" + Main.Sep + "codelink" + Main.Sep + this.state.widget._id;
+        let fullPath = this.state.widget.codelink + Main.Sep + this.state.widget._id + '.json';
 
-        fs.mkdirSync(this.state.codelink, {recursive: true});
+        console.log("Go créer un fichier ici " + this.state.widget.codelink);
+        fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
     }
 
