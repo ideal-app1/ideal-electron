@@ -1,23 +1,18 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
-import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText, TextField} from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
-import {Loop} from "@material-ui/icons";
+import {Box, Grid, Button, ListItem} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
-import Main from "../Main/Main";
 import Phone from "../Main/Components/Phone/Phone";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import LibraryWidget from "../Main/Components/Library/Components/LibraryWidget/LibraryWidget";
-import {WidgetType} from "../../utils/WidgetUtils";
+import CodeLinkWidgetList from "./CodeLinkWidgetList/CodeLinkWidgetList";
+
 const { ipcRenderer } = window.require('electron')
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
 const path = require('path');
-
 
 function CodeLink(props) {
 
@@ -25,12 +20,11 @@ function CodeLink(props) {
     let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
-    let phone = null;
-    let searchQuery = '';
+    let widgetList = null;
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        phone = Phone.getInstance();
+        const phone = Phone.getInstance();
 
         if (hasBeenCalled) return;
 
@@ -38,6 +32,8 @@ function CodeLink(props) {
             fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
+        widgetList = phone.current.getWidgetIdList();
+        console.log("TA GRAND MERE LA RENE DES PUTES:", widgetList);
         setHasBeenCalled(true);
     }
 
@@ -101,9 +97,9 @@ function CodeLink(props) {
 
     const generate = (element) => {
         return [0, 1, 2].map((value) =>
-          React.cloneElement(element, {
-              key: value,
-          }),
+            React.cloneElement(element, {
+                key: value,
+            }),
         );
     }
 
@@ -113,12 +109,11 @@ function CodeLink(props) {
         let buffer = BufferSingleton.get();
 
         fs.writeFileSync(CLPath, JSON.stringify({
-              'imports': Array.from(buffer.import),
-              'code': buffer.code
-          }
+                'imports': Array.from(buffer.import),
+                'code': buffer.code
+            }
         ));
     }
-
 
     const saveCodeLinkData = () => {
 
@@ -129,76 +124,7 @@ function CodeLink(props) {
         writeCodeLinkData();
     }
 
-    const filterWidgets = (widgets, query) => {
-        if (!query) {
-            return widgets;
-        }
-
-        return widgets.filter((widget) => {
-            const id = widget._id.toLowerCase();
-            return id.includes(query);
-        });
-    };
-
-    const setSearchQuery = (value) => {
-        searchQuery = value;
-    }
-
-    const search = () => {
-        return (
-            <div>
-                <input
-                    id="header-search"
-                    type="text"
-                    placeholder="Search widgets"
-                    value={searchQuery}
-                    onChange={e => {
-                        e.preventDefault();
-                        setSearchQuery(e.target.value);
-                    }}
-                />
-            </div>
-        );
-    }
-
-    const printWidgetList = () => {
-        if (Phone.getInstance().current == null)
-            return;
-
-        const widgetList = Phone.getInstance().current.getWidgetIdList();
-
-        if (widgetList == null)
-            return;
-
-        const filteredWidgets = filterWidgets(widgetList, searchQuery);
-
-        return (
-            <Grid container
-                  spacing={0}
-                  direction="row"
-                  alignItems="center"
-                  justify="center"
-            >
-                <Fragment key={"Widget Menu"}>
-                    <ListSubheader>{"Widget Menu"}</ListSubheader>
-                    <br />
-                    {search()}
-                    <div className={"CodeLink-widget-content"}>
-                    {
-                        filteredWidgets.map(widget => (
-                            <Fragment key={widget._id.toString()}>
-                                <ListItem>
-                                    <Button variant="contained" color="secondary" onClick={() => {}}>Load<br/>{widget._id}</Button>
-                                </ListItem>
-                                <Divider />
-                            </Fragment>
-                        ))
-                    }
-                    </div>
-                </Fragment>
-            </Grid>
-        );
-    }
+    console.log("TA GRAND FILS FE:", widgetList);
 
     return (
         <div>
@@ -238,7 +164,7 @@ function CodeLink(props) {
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
-                                   saveCodeLinkData();
+                                    saveCodeLinkData();
                                 }}>
                                     Exec
                                 </Button>
@@ -247,7 +173,17 @@ function CodeLink(props) {
                     </Grid>
                 </Grid>
                 <Grid item xs={2} className={"CodeLink-widget-menu"}>
-                    {printWidgetList()}
+                    <Grid container
+                          spacing={0}
+                          direction="row"
+                          alignItems="center"
+                          justify="center"
+                    >
+                        { widgetList
+                            ? <CodeLinkWidgetList widgetList={widgetList} />
+                            : <p>No result</p>
+                        }
+                    </Grid>
                 </Grid>
                 <Grid item xs={10} className={"CodeLink-canvas"}>
                     <Box className={"CodeLink-canvas-Box"}>
