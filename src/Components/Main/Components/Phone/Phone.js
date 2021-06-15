@@ -187,6 +187,10 @@ class Phone extends React.Component {
         }
     }
 
+    getWidgetIdList = () => {
+        return this.state.idList.list;
+    }
+
     render() {
         return (
             <Fragment>

@@ -17,6 +17,12 @@
     background-color: #1c1c1c;
 }
 
+.CodeLink-widget-content {
+    margin-top: 15px;
+    overflow: auto;
+    max-height: 800px;
+}
+
 .CodeLink-canvas {
     background-color: #282c34;
 }

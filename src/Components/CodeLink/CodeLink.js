@@ -1,14 +1,18 @@
-import React, {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
-import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText, TextField} from "@material-ui/core";
+import Divider from "@material-ui/core/Divider";
 import {Loop} from "@material-ui/icons";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
 import Phone from "../Main/Components/Phone/Phone";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import LibraryWidget from "../Main/Components/Library/Components/LibraryWidget/LibraryWidget";
+import {WidgetType} from "../../utils/WidgetUtils";
 const { ipcRenderer } = window.require('electron')
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
@@ -21,10 +25,12 @@ function CodeLink(props) {
     let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
+    let phone = null;
+    let searchQuery = '';
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        const phone = Phone.getInstance();
+        phone = Phone.getInstance();
 
         if (hasBeenCalled) return;
 
@@ -123,6 +129,77 @@ function CodeLink(props) {
         writeCodeLinkData();
     }
 
+    const filterWidgets = (widgets, query) => {
+        if (!query) {
+            return widgets;
+        }
+
+        return widgets.filter((widget) => {
+            const id = widget._id.toLowerCase();
+            return id.includes(query);
+        });
+    };
+
+    const setSearchQuery = (value) => {
+        searchQuery = value;
+    }
+
+    const search = () => {
+        return (
+            <div>
+                <input
+                    id="header-search"
+                    type="text"
+                    placeholder="Search widgets"
+                    value={searchQuery}
+                    onChange={e => {
+                        e.preventDefault();
+                        setSearchQuery(e.target.value);
+                    }}
+                />
+            </div>
+        );
+    }
+
+    const printWidgetList = () => {
+        if (Phone.getInstance().current == null)
+            return;
+
+        const widgetList = Phone.getInstance().current.getWidgetIdList();
+
+        if (widgetList == null)
+            return;
+
+        const filteredWidgets = filterWidgets(widgetList, searchQuery);
+
+        return (
+            <Grid container
+                  spacing={0}
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+            >
+                <Fragment key={"Widget Menu"}>
+                    <ListSubheader>{"Widget Menu"}</ListSubheader>
+                    <br />
+                    {search()}
+                    <div className={"CodeLink-widget-content"}>
+                    {
+                        filteredWidgets.map(widget => (
+                            <Fragment key={widget._id.toString()}>
+                                <ListItem>
+                                    <Button variant="contained" color="secondary" onClick={() => {}}>Load<br/>{widget._id}</Button>
+                                </ListItem>
+                                <Divider />
+                            </Fragment>
+                        ))
+                    }
+                    </div>
+                </Fragment>
+            </Grid>
+        );
+    }
+
     return (
         <div>
             <Grid container className={"CodeLink-Content"}>
@@ -139,15 +216,24 @@ function CodeLink(props) {
                                     Phone view
                                 </Button>
                             </Box>
-                            <Button onClick={() => {
-                                ipcEnabling();
-                            }
-                            }>
-                                IPC
-                            </Button>
-                            <Button onClick={() => {    setCounter(counter + 1);}}>
-                                counter
-                            </Button>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
+                                <Button variant="contained" color="secondary" onClick={() => {
+                                    ipcEnabling();
+                                }}>
+                                    IPC
+                                </Button>
+                            </Box>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
+                                <Button variant="contained" color="secondary" onClick={() => {
+                                    setCounter(counter + 1);
+                                }}>
+                                    counter
+                                </Button>
+                            </Box>
                         </Grid>
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
@@ -161,30 +247,7 @@ function CodeLink(props) {
                     </Grid>
                 </Grid>
                 <Grid item xs={2} className={"CodeLink-widget-menu"}>
-                    <Grid container
-                          spacing={0}
-                          direction="column"
-                          alignItems="center"
-                          justify="center"
-                    >
-                        <Typography variant="h6">
-                            Widget Menu
-                        </Typography>
-                        <div>
-                            {/*    <List>*/}
-                            {/*        {this.generate(*/}
-                            {/*            <ListItem>*/}
-                            {/*                <ListItemText*/}
-                            {/*                    primary="Widget item Id"*/}
-                            {/*                />*/}
-                            {/*                <ListItemIcon>*/}
-                            {/*                    <Loop />*/}
-                            {/*                </ListItemIcon>*/}
-                            {/*            </ListItem>,*/}
-                            {/*        )}*/}
-                            {/*    </List>*/}
-                        </div>
-                    </Grid>
+                    {printWidgetList()}
                 </Grid>
                 <Grid item xs={10} className={"CodeLink-canvas"}>
                     <Box className={"CodeLink-canvas-Box"}>
@@ -197,8 +260,6 @@ function CodeLink(props) {
             </Grid>
         </div>
     );
-
-
 }
 
 export default CodeLink
