@@ -9,7 +9,7 @@ function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setF
 
         return widgets.filter((widget) => {
             const id = widget._id.toLowerCase();
-            return id.includes(query);
+            return id.includes(query.toLowerCase());
         });
     }
 
@@ -21,11 +21,11 @@ function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setF
                     type="text"
                     placeholder="Search widgets"
                     value={searchQuery}
-                    color={"#aaaaaa"}
+                    style={{color: '#aaaaaa'}}
                     onChange={e => {
                         e.preventDefault();
                         setSearchQuery(e.target.value);
-                        setFilteredWidgets(filterWidgets(widgetList, searchQuery));
+                        setFilteredWidgets(filterWidgets(widgetList, e.target.value));
                     }}
                 />
             </div>
@@ -35,4 +35,4 @@ function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setF
     return search();
 }
 
-export default Search;
+export default CodeLinkWidgetListSearch;

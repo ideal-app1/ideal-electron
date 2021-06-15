@@ -26,14 +26,14 @@ function CodeLink(props) {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
         const phone = Phone.getInstance();
 
+        widgetList = phone.current.getWidgetIdList();
+
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
-        widgetList = phone.current.getWidgetIdList();
-        console.log("TA GRAND MERE LA RENE DES PUTES:", widgetList);
         setHasBeenCalled(true);
     }
 
@@ -123,8 +123,6 @@ function CodeLink(props) {
         console.log('LE PATH ' + props.location.state.path);
         writeCodeLinkData();
     }
-
-    console.log("TA GRAND FILS FE:", widgetList);
 
     return (
         <div>
