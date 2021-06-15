@@ -64,7 +64,7 @@ export default function Menu() {
         const data =  JSON.parse(fs.readFileSync(file).toString());
 
         data.imports.forEach((elem) => fullData.imports.add(elem));
-        fullData.functions.push(data.code);
+        fullData.functions.push(data.function);
 
     }
 
@@ -75,7 +75,7 @@ export default function Menu() {
             if (fs.statSync(absolute).isDirectory()) {
                 getEveryCodeLinkData(fullData, absolute);
             } else if (path.extname(absolute) === ".json" &&
-                       path.basename(absolute).startsWith('CodeLinkCode_')) {
+              path.basename(absolute).startsWith('CodeLinkCode_')) {
                 getACodeLinkData(fullData, absolute);
             }
         }
@@ -85,7 +85,6 @@ export default function Menu() {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
-
         const data = {
             'imports': new Set(),
             'functions': [],
