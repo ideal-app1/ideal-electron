@@ -109,7 +109,7 @@ function CodeLink(props) {
         fs.writeFileSync(CLPath, JSON.stringify({
               'imports': Array.from(buffer.import),
               'function': {
-                  'name': props.match.params.id.replace(/[^a-z]+/g, ""),
+                  'name': props.match.params.id.replace(/[^a-z]+/g, "") + 'CodeLink',
                   'code': buffer.code
               }
           }
