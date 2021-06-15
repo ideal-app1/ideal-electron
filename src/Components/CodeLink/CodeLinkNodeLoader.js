@@ -13,7 +13,6 @@ const getConstructor = (widget, data) => {
 
     });
 
-
     if (!widgetData) {
         console.log("Error - The class was not found.");
         //TODO implement an error when the widget is not found.
@@ -33,7 +32,7 @@ const createMainWidget = (className) => {
 
 const createAttributes = (widget, constructor, requiredOnly = true) => {
 
-    const pos = [500, 300];
+    const pos = [500, 250];
 
     constructor.parameters.forEach((constructorParameter) => {
         const tmpPos = [pos[0], pos[1]];
@@ -44,7 +43,7 @@ const createAttributes = (widget, constructor, requiredOnly = true) => {
         attribute.pos = tmpPos;
         LCanvas.graph.add(attribute);
         pos[1] += attribute.size[1] + 50;
-    })
+    });
 }
 
 const CodeLinkNodeLoader = {
