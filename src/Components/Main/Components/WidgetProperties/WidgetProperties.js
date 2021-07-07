@@ -141,7 +141,6 @@ class WidgetProperties extends React.Component {
         }
         fs.appendFile(path, null, { flag: 'wx' }, function (err) {
             if (err) throw err;
-            console.log("It's saved here " + path);
         });
     }
 
@@ -149,7 +148,6 @@ class WidgetProperties extends React.Component {
         this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
 
-        console.log("Go créer un fichier ici " + this.state.widget.codelink);
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
     }
