@@ -31,8 +31,8 @@ import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
 import CaretIcon from "./Assets/Icons/caret.svg";
-import PlayIcon from "./Assets/Icons/back-arrow.svg";
-import FlashIcon from "./Assets/Icons/flash.svg";
+//import PlayIcon from "./Assets/Icons/back-arrow.svg";
+//import FlashIcon from "./Assets/Icons/flash.svg";
 
 export default function Menu() {
 

@@ -39,6 +39,7 @@ a {
 .navbar {
     background-color: #333333;
     padding: 0 1rem;
+    border: 1px solid #1c1c1c;
 }
 
 /* <ul> */
