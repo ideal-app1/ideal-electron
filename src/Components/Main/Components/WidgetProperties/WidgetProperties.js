@@ -14,19 +14,30 @@ import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
 import Main from "../../Main";
+import Path from "../../../../utils/Path";
+import MenuFunctions from '../../Tools/MenuFunctions';
 import { InputAdornment } from '@material-ui/core';
 
 const fs = window.require('fs');
-const { ipcRenderer } = window.require('electron')
-const path = require("path")
+const { ipcRenderer } = window.require('electron');
 
 
 class WidgetProperties extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { widget: {} };
-        this.phone = Phone.getInstance()
+        this.state = { widget: null };
+        this.phone = Phone.getInstance();
+        const menuFunc = new MenuFunctions();
+        this.shortcuts = {
+            cut: menuFunc.cut,
+            copy: menuFunc.copy,
+            paste: menuFunc.paste
+        };
+        ipcRenderer.on('handle-shortcut', (event, arg) => {
+            if (this.state.widget && this.shortcuts[arg])
+                this.shortcuts[arg](this.state)
+        });
     }
 
     static instance = null;
@@ -38,27 +49,30 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        this.setState({ widget: this.phone.current.findWidgetByID(id) })
+        const widget = this.phone.current.findWidgetByID(id);
+        if (!widget)
+            return;
+        this.setState({ widget: widget })
     }
 
     unsetState = () => {
-        this.setState({ widget: {} })
+        this.setState({ widget: null })
     }
 
-    updateState = (key, value) => {
-        this.state.widget.properties[key].value = value
+    updateState = (prop, value) => {
+        prop.value = value
         this.forceUpdate()
         this.phone.current.forceUpdate()
     }
 
-    widgetPropType = (name, prop) => {
+    widgetPropType = prop => {
         switch (prop.type) {
             case PropType.TEXTFIELD:
                 return (
                     <TextField
                         defaultValue={prop.value}
                         variant="outlined"
-                        onChange={entry => {this.updateState(name, entry.target.value)}}
+                        onChange={entry => {this.updateState(prop, entry.target.value)}}
                     />
                 )
             case PropType.NUMFIELD:
@@ -70,7 +84,7 @@ class WidgetProperties extends React.Component {
                         InputProps={{
                             endAdornment: <InputAdornment position="end">px</InputAdornment>,
                         }}
-                        onChange={entry => {this.updateState(name, parseInt(entry.target.value))}}
+                        onChange={entry => {this.updateState(prop, parseInt(entry.target.value))}}
                     />
                 )
             case PropType.CHECKBOX:
@@ -78,7 +92,7 @@ class WidgetProperties extends React.Component {
                     <Checkbox
                         checked={prop.value}
                         color="primary"
-                        onChange={entry => {this.updateState(name, entry.target.checked)}}
+                        onChange={entry => {this.updateState(prop, entry.target.checked)}}
                     />
                 )
             case PropType.COMBOBOX:
@@ -94,7 +108,7 @@ class WidgetProperties extends React.Component {
                         <Select
                             displayEmpty
                             value={prop.value}
-                            onChange={event => {this.updateState(name, event.target.value)}}
+                            onChange={event => {this.updateState(prop, event.target.value)}}
                         >
                             {items}
                         </Select>
@@ -110,7 +124,7 @@ class WidgetProperties extends React.Component {
                                 () => {
                                     const file = ipcRenderer.sendSync('select-file', '')
                                     if (file)
-                                        this.updateState(name, file[0])
+                                        this.updateState(prop, file[0])
                                 }
                             }
                         >Select file</Button>
@@ -132,7 +146,7 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = path.join(Main.MainProjectPath, "codelink", this.state.widget._id + ".json");
+        this.state.widget.codelink = Path.build(Main.MainProjectPath, "codelink", this.state.widget._id + ".json");
         console.log(this.state.widget.codelink)
         this.createFile(this.state.widget.codelink)
     }
@@ -165,7 +179,7 @@ class WidgetProperties extends React.Component {
     }
 
     onSelection = () => {
-        if (this.state.widget.properties) {
+        if (this.state.widget) {
             this.onCodelink()
             return (
                 <Fragment>
@@ -179,7 +193,7 @@ class WidgetProperties extends React.Component {
                             return (
                                 <ListItem key={this.state.widget._id + key}>
                                     <div className={"property_name"}>{key}:</div>
-                                    {this.widgetPropType(key, value)}
+                                    {this.widgetPropType(value)}
                                 </ListItem>
                             );
                         })

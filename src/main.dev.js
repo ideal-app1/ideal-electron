@@ -16,7 +16,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 const electron = require('electron');
 const {SocketIPC} = require('./SocketIPC');
-//const Menu = electron.Menu;
+import MenuBuilder from './menu';
 
 const {ipcMain, dialog} = require('electron')
 
@@ -91,6 +91,9 @@ const createWindow = async () => {
     mainWindow.focus();
   });
 
+  const menuBuilder = new MenuBuilder(mainWindow);
+  menuBuilder.buildMenu();
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -118,34 +121,6 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-/*const menuTemplate = [
-    {
-        label: 'File',
-        submenu: [
-            {
-                label: 'Quit',
-                accelerator: 'CmdOrCtrl+Q',
-                click() {
-                }
-            },
-            {
-                label: 'Dev Tools',
-                accelerator: 'CmdOrCtrl+J',
-                click(item, focusedWindow) {
-                    focusedWindow.toggleDevTools();
-                }
-            }
-        ]
-    },
-]
-
-if (process.platform === 'darwin') {
-    menuTemplate.unshift({role:"fileMenu"},);
-}
-
-    const mainMenu = Menu.buildFromTemplate(menuTemplate);
-    Menu.setApplicationMenu(mainMenu);*/
 
 app.whenReady().then(createWindow).catch(console.log);
 

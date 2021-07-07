@@ -9,22 +9,31 @@ import JsonManager from "../../Tools/JsonManager";
 import Button from '@material-ui/core/Button';
 
 const clone = require("rfdc/default");
+const { ipcRenderer } = window.require('electron');
 
 class Phone extends React.Component {
 
     constructor(props) {
         super(props);
-        this._id = uuid()
-
+        this._id = uuid();
         this.state = {
             widgetList: [],
             idList: {
                 _id: this._id,
                 list: []
             },
-            // history: {pos: 0, list: []},
+            history: {pos: 0, list: []},
             clipboard: {}
         };
+        this.historyChange = false;
+        this.shortcuts = {
+            undo: this.undoHistory,
+            redo: this.redoHistory
+        };
+        ipcRenderer.on('handle-shortcut', (event, arg) => {
+            if (this.shortcuts[arg])
+                this.shortcuts[arg]();
+        });
     }
 
     static instance = null;
@@ -44,33 +53,68 @@ class Phone extends React.Component {
                 _id: this._id,
                 list: []
             },
-            // history: {pos: 0, list: []},
+            history: {pos: 0, list: []},
             clipboard: {}
-        })
+        });
+        this.historyChange = false;
     }
 
     componentDidMount() {
         if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
             const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
             this.setState(jsonCode);
-            this._id = jsonCode.idList._id
+            this._id = jsonCode.idList._id;
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        /*console.log(this.state)
-        const history = this.state.history;
-        if (history.list.length > 5)
-            history.shift();
-        history.pos = history.list.length;
-        history.list.push({...clone(this.state), history: {}})*/
         if (Main.MainProjectPath === "") {
             return;
         }
+        //console.log(this.state);
+        this.pushHistory();
         const finalWidgetList = this.state;
-        console.log(this.state);
         JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
+    }
 
+    pushHistory = () => {
+        if (this.historyChange) {
+            this.historyChange = false;
+            return;
+        }
+        const history = this.state.history;
+        if (history.pos !== 0 && history.pos !== history.list.length - 1) {
+            history.list.splice(history.pos + 1);
+        }
+        if (history.list.length > 10)
+            history.list.shift();
+        history.pos = history.list.length;
+        const tmpState = clone(this.state);
+        tmpState.history = {};
+        tmpState.clipboard = {};
+        history.list.push(tmpState);
+    }
+
+    undoHistory = () => {
+        const history = this.state.history;
+        if (history.pos <= 0)
+            return;
+        this.historyChange = true;
+        const tmpState = clone(history.list[history.pos - 1]);
+        tmpState.history = {...history, pos: history.pos - 1};
+        tmpState.clipboard = this.state.clipboard;
+        this.setState(tmpState);
+    }
+
+    redoHistory = () => {
+        const history = this.state.history;
+        if (history.pos >= history.list.length - 1)
+            return;
+        this.historyChange = true;
+        const tmpState = clone(history.list[history.pos + 1]);
+        tmpState.history = {...history, pos: history.pos + 1};
+        tmpState.clipboard = this.state.clipboard;
+        this.setState(tmpState);
     }
 
     findWidgetByID = id => {
@@ -89,18 +133,14 @@ class Phone extends React.Component {
         }
     }
 
-    itemToAdd = (item) => {
-        return {
-            ...item,
-            _id: uuid(),
+    addToWidgetList = (widget, id) => {
+        const item = {
+            ...clone(widget),
+            _id: id || uuid(),
             source: WidgetType.PHONE
         }
-    }
-
-    addToWidgetList = widget => {
-        const item = this.itemToAdd(clone(widget))
-        this.state.widgetList.push(item)
-        return item._id
+        this.state.widgetList.push(item);
+        return item._id;
     }
 
     deepConstruct = idItem => {
@@ -119,8 +159,6 @@ class Phone extends React.Component {
     deepFind = (id, idItem) => {
         if (!idItem)
             return null
-        if (idItem._id === id)
-            return idItem
         for (let i = 0; i < idItem.list.length; i++) {
             if (idItem.list[i]._id === id) {
                 return {
@@ -166,11 +204,15 @@ class Phone extends React.Component {
     }
 
     findByID = id => {
+        if (id === this._id)
+            return { child: this.state.idList };
         return this.deepFind(id, this.state.idList);
     }
 
     removeByID = id => {
-        return this.deepRemove(id, this.state.idList);
+        if (id === this._id)
+            return null;
+        this.deepRemove(id, this.state.idList);
     }
 
     moveByID = (id, idDest, list) => {
@@ -194,6 +236,7 @@ class Phone extends React.Component {
                     <Layout
                         _id={this._id}
                         name={"root"}
+                        group={"layout"}
                         properties={{
                             direction: "column",
                             justify: "flex-start",
@@ -204,12 +247,9 @@ class Phone extends React.Component {
                         root
                     />
                 </div>
-                {/*<Button variant="contained" color="primary" onClick={() => {
-                    const history = this.state.history;
-                    this.setState({...history.list[history.pos], history: {...history, pos: history.pos - 1}})
-                }}>
-                    BACK
-                </Button>*/}
+                <Button variant="contained" color="secondary" onClick={() => {this.resetState()}}>
+                    CLEAR
+                </Button>
             </Fragment>
         );
     }
