@@ -30,9 +30,15 @@ class Phone extends React.Component {
     static instance = null;
 
     static getInstance = () => {
-        if (Phone.instance == null)
-            Phone.instance = React.createRef();
 
+        // TODO Application -> View (Phone = load view with ID)
+        console.log("Phone instance 1: ", Phone.instance);
+
+        if (Phone.instance == null) {
+            Phone.instance = React.createRef();
+            console.log("Phone instance 2: ", Phone.instance);
+        }
+        console.log("Phone instance 3: ", Phone.instance);
         return Phone.instance;
     }
 

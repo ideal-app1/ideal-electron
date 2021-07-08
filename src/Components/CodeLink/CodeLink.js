@@ -24,8 +24,10 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
+        console.log("COUCOU Avant", phone);
         const phone = Phone.getInstance();
 
+        console.log("COUCOU Après", phone, phone.current, phone.current.getWidgetIdList());
         widgetList = phone.current.getWidgetIdList();
 
         if (hasBeenCalled) return;
@@ -93,14 +95,6 @@ function CodeLink(props) {
 
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
-    }
-
-    const generate = (element) => {
-        return [0, 1, 2].map((value) =>
-            React.cloneElement(element, {
-                key: value,
-            }),
-        );
     }
 
     const writeCodeLinkData = () => {
