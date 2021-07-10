@@ -5,6 +5,18 @@ import 'dart:async' as async;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+String encodeUrl(var url) {
+  var encoded = Uri.encodeFull(url);
+  assert(encoded == url);
+  return encoded;
+}
+
+String decodedURl(var url) {
+  var decoded = Uri.decodeFull(url);
+  assert(url == decoded);
+  return decoded;
+}
+
 class CodeLinkRequest {
 
   final int userId;

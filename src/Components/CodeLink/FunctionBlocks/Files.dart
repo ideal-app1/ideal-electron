@@ -17,6 +17,34 @@ Future<File> get _localFile async {
   return (File('$path/counter.txt'));
 }
 
+Future<int> deleteFile() async {
+  try {
+    final file = await _localFile;
+
+    await file.delete();
+  } catch (e) {
+    return 0;
+  }
+  return (0);
+}
+
+Future<void> ListAllFile(String path) async {
+  var dir = Directory(path);
+
+  try {
+    var dirList = dir.list();
+    await for (FileSystemEntity f in dirList) {
+      if (f is File) {
+        print('Found file ${f.path}');
+      } else if (f is Directory) {
+        print('Found dir ${f.path}');
+      }
+    }
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
 class CodeLinkFile {
   
   void createFile(String name, String filepath) {
@@ -27,16 +55,6 @@ class CodeLinkFile {
     new File(name).readAsString().then((String contents) {
       print(contents);
     });
-  }
-
-  Future<int> deleteFile() async {
-    try {
-      final file = await _localFile;
-
-      await file.delete();
-    } catch (e) {
-      return 0;
-    }
   }
 
   void writeFile(String name, String text) async {
