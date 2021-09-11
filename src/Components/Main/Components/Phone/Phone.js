@@ -59,7 +59,7 @@ class Phone extends React.Component {
         this.historyChange = false;
     }
 
-    componentDidMount() {
+    load() {
         if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
             const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
             this.setState(jsonCode);
@@ -67,11 +67,16 @@ class Phone extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.load();
+    }
+
+
+
     componentDidUpdate(prevProps, prevState) {
         if (Main.MainProjectPath === "") {
             return;
         }
-        //console.log(this.state);
         this.pushHistory();
         const finalWidgetList = this.state;
         JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
