@@ -135,6 +135,7 @@ class WidgetProperties extends React.Component {
         }
     }
 
+<<<<<<< HEAD
     createFile(path) {
         if (fs.existsSync(path)) {
             return;
@@ -150,6 +151,16 @@ class WidgetProperties extends React.Component {
 
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
+=======
+    deleteCodelinkFile = () => {
+        console.log("Debut delete file ? " + this.state.widget.codelink)
+        fs.rmdirSync(this.state.widget.codelink, { recursive: true });
+    }
+
+    onCodelink = () => {
+        this.state.widget.codelink =  Main.MainProjectPath + Main.Sep + ".ideal_project" + Main.Sep + "codelink" + Main.Sep + this.state.widget._id;
+        let fullPath = this.state.widget.codelink + Main.Sep + this.state.widget._id + '.json';
+>>>>>>> BlockFunctionCodeLink
     }
 
     codeLinkButton = () => {

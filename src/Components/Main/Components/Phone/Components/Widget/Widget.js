@@ -12,6 +12,7 @@ import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 const Widget = props => {
 
     const phone = Phone.getInstance();
+    const widget = WidgetProperties.getInstance();
     const dialog = Dialog.getInstance();
 
     const ref = useRef(null);
@@ -52,6 +53,8 @@ const Widget = props => {
             const didDrop = monitor.didDrop();
             if (!didDrop) {
                 phone.current.componentDidUpdate()
+                console.log("Connaître le widget ? " + widget.current)
+                widget.current.deleteCodelinkFile()
                 console.log('dropped outside');
             }
         },
