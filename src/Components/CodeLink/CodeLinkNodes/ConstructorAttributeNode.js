@@ -42,6 +42,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         if (!link)
             return
+
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         parameterIsFunction(node, index, isConnected);
