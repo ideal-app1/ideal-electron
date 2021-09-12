@@ -58,18 +58,15 @@ function CodeLink(props) {
     }
 
     const initNewFile = (currentpath) => {
-        fs.appendFile(currentpath, null, { flag: 'wx' }, function (err) {
-            if (err) throw err;
-            console.log("The file is created!");
-        });
         LiteGraph.clearRegisteredTypes()
         fs.readFile('data.json', 'utf-8', (err, data) => {
             const parsed = JSON.parse(data);
             CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
+            CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
         });
     }
     
-    const initFile = (currentpath) => {
+    const loadCodeLinkSave = (currentpath) => {
         const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
         const buffer = JSON.parse(data)
         LiteGraph.clearRegisteredTypes()
@@ -79,7 +76,6 @@ function CodeLink(props) {
 
             CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
             graph.load(currentpath)
-            // CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
         });
         console.log(buffer)
 
@@ -89,13 +85,13 @@ function CodeLink(props) {
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
-        console.log("PATH ? " + currentpath);
 
+        console.log(currentpath)
         if (fs.existsSync(currentpath)) {
-            console.log("Le fichier existe")
-            initFile(currentpath)
+            console.log('Load save')
+            loadCodeLinkSave(currentpath)
         } else {
-            console.log("C'est un gros troll")
+            console.log('new')
             initNewFile(currentpath)
         }
     }

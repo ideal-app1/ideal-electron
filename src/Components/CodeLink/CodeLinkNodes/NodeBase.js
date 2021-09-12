@@ -20,6 +20,8 @@ function isOutputACallback(array) {
 }
 
 
+
+
 const inheritNodeBase = (func) => {
     func.prototype.makeId = makeid;
     func.prototype.callbackTracker = [];
@@ -45,5 +47,6 @@ const inheritNodeBase = (func) => {
     func.prototype.addNewEntry = addNewEntry;
     func.prototype.removeAnEntry = removeAnEntry;
 }
+
 
 export default inheritNodeBase

@@ -147,6 +147,7 @@ class WidgetProperties extends React.Component {
     onCodelink = () => {
         this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
+        return;
 
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
