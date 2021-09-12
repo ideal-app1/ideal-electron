@@ -132,7 +132,7 @@ app.on('activate', () => {
 
 //ipcMain.on('')
 
-//SocketIPC();
+SocketIPC();
 
 ipcMain.on('select-file', (event, arg) => {
   event.returnValue = dialog.showOpenDialogSync({
