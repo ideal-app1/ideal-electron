@@ -73,12 +73,16 @@ function CodeLink(props) {
         const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
         const buffer = JSON.parse(data)
         LiteGraph.clearRegisteredTypes()
+
         fs.readFile('data.json', 'utf-8', (err, data) => {
             const parsed = JSON.parse(data);
 
             CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
-            CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
+            graph.load(currentpath)
+            // CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
         });
+        console.log(buffer)
+
     }
 
     const init = () => {

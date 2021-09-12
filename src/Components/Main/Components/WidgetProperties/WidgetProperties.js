@@ -69,31 +69,31 @@ class WidgetProperties extends React.Component {
         switch (prop.type) {
             case PropType.TEXTFIELD:
                 return (
-                    <TextField
-                        defaultValue={prop.value}
-                        variant="outlined"
-                        onChange={entry => {this.updateState(prop, entry.target.value)}}
-                    />
+                  <TextField
+                    defaultValue={prop.value}
+                    variant="outlined"
+                    onChange={entry => {this.updateState(prop, entry.target.value)}}
+                  />
                 )
             case PropType.NUMFIELD:
                 return (
-                    <TextField
-                        defaultValue={prop.value}
-                        type="number"
-                        variant="outlined"
-                        InputProps={{
-                            endAdornment: <InputAdornment position="end">px</InputAdornment>,
-                        }}
-                        onChange={entry => {this.updateState(prop, parseInt(entry.target.value))}}
-                    />
+                  <TextField
+                    defaultValue={prop.value}
+                    type="number"
+                    variant="outlined"
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">px</InputAdornment>,
+                    }}
+                    onChange={entry => {this.updateState(prop, parseInt(entry.target.value))}}
+                  />
                 )
             case PropType.CHECKBOX:
                 return (
-                    <Checkbox
-                        checked={prop.value}
-                        color="primary"
-                        onChange={entry => {this.updateState(prop, entry.target.checked)}}
-                    />
+                  <Checkbox
+                    checked={prop.value}
+                    color="primary"
+                    onChange={entry => {this.updateState(prop, entry.target.checked)}}
+                  />
                 )
             case PropType.COMBOBOX:
                 const items = []
@@ -104,38 +104,37 @@ class WidgetProperties extends React.Component {
                         items.push(<MenuItem key={v} value={v}>{v}</MenuItem>)
                 })
                 return (
-                    <FormControl >
-                        <Select
-                            displayEmpty
-                            value={prop.value}
-                            onChange={event => {this.updateState(prop, event.target.value)}}
-                        >
-                            {items}
-                        </Select>
-                    </FormControl>
+                  <FormControl >
+                      <Select
+                        displayEmpty
+                        value={prop.value}
+                        onChange={event => {this.updateState(prop, event.target.value)}}
+                      >
+                          {items}
+                      </Select>
+                  </FormControl>
                 )
             case PropType.FILE:
                 return (
-                    <Fragment>
-                        {prop.value.split('/').pop()}
-                        <Button
-                            variant="contained"
-                            onClick={
-                                () => {
-                                    const file = ipcRenderer.sendSync('select-file', '')
-                                    if (file)
-                                        this.updateState(prop, file[0])
-                                }
+                  <Fragment>
+                      {prop.value.split('/').pop()}
+                      <Button
+                        variant="contained"
+                        onClick={
+                            () => {
+                                const file = ipcRenderer.sendSync('select-file', '')
+                                if (file)
+                                    this.updateState(prop, file[0])
                             }
-                        >Select file</Button>
-                    </Fragment>
+                        }
+                      >Select file</Button>
+                  </Fragment>
                 )
             default:
                 return (prop.toString())
         }
     }
 
-<<<<<<< HEAD
     createFile(path) {
         if (fs.existsSync(path)) {
             return;
@@ -151,39 +150,29 @@ class WidgetProperties extends React.Component {
 
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
-=======
-    deleteCodelinkFile = () => {
-        console.log("Debut delete file ? " + this.state.widget.codelink)
-        fs.rmdirSync(this.state.widget.codelink, { recursive: true });
-    }
-
-    onCodelink = () => {
-        this.state.widget.codelink =  Main.MainProjectPath + Main.Sep + ".ideal_project" + Main.Sep + "codelink" + Main.Sep + this.state.widget._id;
-        let fullPath = this.state.widget.codelink + Main.Sep + this.state.widget._id + '.json';
->>>>>>> BlockFunctionCodeLink
     }
 
     codeLinkButton = () => {
         if (this.state.widget.group === WidgetGroup.MATERIAL) {
             return (
-                <ListItem>
-                    <Route render={({ history}) => (
-                        <Button className="codelink-button"
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                    history.push({
-                                        pathname: '/codelink/' + this.state.widget._id,
-                                        state: {
-                                            _id: this.state.widget._id,
-                                            path: this.state.widget.codelink
-                                        }
-                                    })
-                                }}>
-                            CodeLink
-                        </Button>
-                    )} />
-                </ListItem>
+              <ListItem>
+                  <Route render={({ history}) => (
+                    <Button className="codelink-button"
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                history.push({
+                                    pathname: '/codelink/' + this.state.widget._id,
+                                    state: {
+                                        _id: this.state.widget._id,
+                                        path: this.state.widget.codelink
+                                    }
+                                })
+                            }}>
+                        CodeLink
+                    </Button>
+                  )} />
+              </ListItem>
             )
         } else {
             return (<Fragment/>)
@@ -194,36 +183,36 @@ class WidgetProperties extends React.Component {
         if (this.state.widget) {
             this.onCodelink()
             return (
-                <Fragment>
-                    <ListSubheader>{this.state.widget.name}</ListSubheader>
-                    <ListItem>
-                        <div className={"property_name"}>group:</div>
-                        {this.state.widget.group}
-                    </ListItem>
-                    {
-                        Object.entries(this.state.widget.properties).map(([key, value]) => {
-                            return (
-                                <ListItem key={this.state.widget._id + key}>
-                                    <div className={"property_name"}>{key}:</div>
-                                    {this.widgetPropType(value)}
-                                </ListItem>
-                            );
-                        })
-                    }
-                    <Divider/>
-                    {this.codeLinkButton()}
-                </Fragment>
+              <Fragment>
+                  <ListSubheader>{this.state.widget.name}</ListSubheader>
+                  <ListItem>
+                      <div className={"property_name"}>group:</div>
+                      {this.state.widget.group}
+                  </ListItem>
+                  {
+                      Object.entries(this.state.widget.properties).map(([key, value]) => {
+                          return (
+                            <ListItem key={this.state.widget._id + key}>
+                                <div className={"property_name"}>{key}:</div>
+                                {this.widgetPropType(value)}
+                            </ListItem>
+                          );
+                      })
+                  }
+                  <Divider/>
+                  {this.codeLinkButton()}
+              </Fragment>
             );
         } else
             return (<div id={'no-selection'}>No Selection</div>);
     }
 
     render () {
-        
+
         return (
-            <List className={"widget-properties"}>
-                {this.onSelection()}
-            </List>
+          <List className={"widget-properties"}>
+              {this.onSelection()}
+          </List>
         )
     }
 }
