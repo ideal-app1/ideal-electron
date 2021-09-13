@@ -14,7 +14,7 @@ export const Library = () => {
     const layouts = {
         column: {
             _id: uuid(),
-            name: "column",
+            name: "Column",
             codePathFile: "Column.dart",
             properties: {
                 direction: "column",
@@ -46,7 +46,7 @@ export const Library = () => {
         },
         row: {
             _id: uuid(),
-            name: "row",
+            name: "Row",
             codePathFile: "Row.dart",
             properties: {
                 direction: "row",
@@ -77,7 +77,7 @@ export const Library = () => {
         },
         center: {
             _id: uuid(),
-            name: "center",
+            name: "Center",
             codePathFile: "Center.dart",
             properties: {
                 direction: "column",
@@ -91,7 +91,7 @@ export const Library = () => {
     const materials = {
         button: {
             _id: uuid(),
-            name: "button",
+            name: "TextButton",
             codePathFile: "Button.dart",
             properties: {
                 text: {
@@ -136,7 +136,7 @@ export const Library = () => {
         },
         text: {
             _id: uuid(),
-            name: "text",
+            name: "Text",
             codePathFile: "Text.dart",
             properties: {
                 data: {
@@ -158,7 +158,7 @@ export const Library = () => {
         },
         textfield: {
             _id: uuid(),
-            name: "text field",
+            name: "TextField",
             codePathFile: "TextField.dart",
             properties: {
                 placeholder: {
@@ -172,7 +172,7 @@ export const Library = () => {
         },
         image: {
             _id: uuid(),
-            name: "image",
+            name: "Image",
             codePathFile: "Image.dart",
             properties: {
                 url: {
