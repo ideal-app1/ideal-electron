@@ -31,8 +31,7 @@ class Phone extends React.Component {
             redo: this.redoHistory
         };
         ipcRenderer.on('handle-shortcut', (event, arg) => {
-            if (this.shortcuts[arg])
-                this.shortcuts[arg]();
+            this.shortcuts[arg]?.();
         });
     }
 
@@ -71,7 +70,7 @@ class Phone extends React.Component {
         if (Main.MainProjectPath === "") {
             return;
         }
-        //console.log(this.state);
+        console.log(this.state);
         this.pushHistory();
         const finalWidgetList = this.state;
         JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));

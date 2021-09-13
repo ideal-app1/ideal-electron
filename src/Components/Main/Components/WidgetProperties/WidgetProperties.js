@@ -35,8 +35,8 @@ class WidgetProperties extends React.Component {
             paste: menuFunc.paste
         };
         ipcRenderer.on('handle-shortcut', (event, arg) => {
-            if (this.state.widget && this.shortcuts[arg])
-                this.shortcuts[arg](this.state)
+            if (this.state.widget)
+                this.shortcuts[arg]?.(this.state)
         });
     }
 
