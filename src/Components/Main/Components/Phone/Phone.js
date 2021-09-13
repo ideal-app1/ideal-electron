@@ -31,8 +31,7 @@ class Phone extends React.Component {
             redo: this.redoHistory
         };
         ipcRenderer.on('handle-shortcut', (event, arg) => {
-            if (this.shortcuts[arg])
-                this.shortcuts[arg]();
+            this.shortcuts[arg]?.();
         });
     }
 

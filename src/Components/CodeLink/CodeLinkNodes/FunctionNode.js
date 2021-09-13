@@ -3,7 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createFunctionNode = (func, LCanvas) => {
+const createFunctionNode = (func, LCanvas, path) => {
 
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
@@ -92,6 +92,8 @@ const createFunctionNode = (func, LCanvas) => {
     }
 
     FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+        if (!link)
+            return
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         isACallbackParameter(node, index, isConnected);
@@ -144,6 +146,6 @@ const createFunctionNode = (func, LCanvas) => {
         sharedBuffer.addImport(func['import']);
     }
 
-    LiteGraph.registerNodeType("Custom Functions/" + func["name"], FunctionNode);
+    LiteGraph.registerNodeType(path + func["name"], FunctionNode);
 }
 export default createFunctionNode

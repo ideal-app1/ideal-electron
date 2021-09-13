@@ -10,15 +10,19 @@
     height: fit-content;
 }
 
-.library-widget.button {
+.library-widget.TextButton {
     background-color: #2190d9;
 }
 
-.library-widget.text {
+.library-widget.Text {
     background-color: lightcoral;
 }
 
-.library-widget.image {
+.library-widget.TextField {
+    background-color: lightcoral;
+}
+
+.library-widget.Image {
     background-color: lightpink;
 }
 

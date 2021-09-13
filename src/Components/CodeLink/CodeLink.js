@@ -29,6 +29,7 @@ function CodeLink(props) {
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
+            console.log("ca crée en premier connard")
             fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
@@ -56,32 +57,49 @@ function CodeLink(props) {
         //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
+    const loadEverything = (name) => {
+        fs.readFile('data.json', 'utf-8', (err, dataFile) => {
+            fs.readFile('flutter.json', 'utf-8', (err, flutterFile) => {
+                const dataJson = JSON.parse(dataFile);
+                const flutterJson = JSON.parse(flutterFile);
+
+                [dataJson].forEach((jsonFile) => {
+                    CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
+                });
+                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
+                CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
+            });
+        });
+    }
+
+    const initNewFile = (name, currentpath) => {
+        LiteGraph.clearRegisteredTypes()
+        loadEverything(name)
+    }
+
+    const loadCodeLinkSave = (name, currentpath) => {
+        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
+        const buffer = JSON.parse(data)
+        LiteGraph.clearRegisteredTypes()
+
+        loadEverything(name)
+        graph.load(currentpath)
+        console.log(buffer)
+
+    }
+
     const init = () => {
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
-        console.log("PATH ? " + currentpath);
-        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
-
-        if (data.length === 0) {
-            LiteGraph.clearRegisteredTypes()
-            fs.readFile('data.json', 'utf-8', (err, data) => {
-                const parsed = JSON.parse(data);
 
 
-                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
-            });
+        if (fs.existsSync(currentpath)) {
+            console.log('Load save')
+            loadCodeLinkSave(props.location.state.name, currentpath)
         } else {
-
-            const buffer = JSON.parse(data)
-
-            LiteGraph.clearRegisteredTypes()
-            fs.readFile('data.json', 'utf-8', (err, data) => {
-                const parsed = JSON.parse(data);
-
-                CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
-                CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
-            });
+            console.log('new')
+            initNewFile(props.location.state.name, currentpath)
         }
     }
 
@@ -157,6 +175,11 @@ function CodeLink(props) {
                                    saveCodeLinkData();
                                 }}>
                                     Exec
+                                </Button>
+                                <Button variant="contained" color="secondary" onClick={() => {
+                                    savegraph(graph.serialize())
+                                }}>
+                                    Save
                                 </Button>
                             </Box>
                         </Grid>

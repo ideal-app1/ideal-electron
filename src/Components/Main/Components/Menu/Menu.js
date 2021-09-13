@@ -36,6 +36,7 @@ import CaretIcon from "./Assets/Icons/caret.svg";
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
+//TODO renommer cette class
 export default function Menu() {
 
     const phone = Phone.getInstance();

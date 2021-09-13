@@ -2,8 +2,9 @@ import {LiteGraph} from "litegraph.js";
 import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
+import { useDrag } from 'react-dnd';
 
-const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
+const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];
@@ -39,6 +40,8 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
 
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+        if (!link)
+            return
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         parameterIsFunction(node, index, isConnected);
