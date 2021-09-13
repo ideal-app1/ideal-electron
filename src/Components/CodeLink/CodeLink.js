@@ -66,7 +66,7 @@ function CodeLink(props) {
                 [dataJson].forEach((jsonFile) => {
                     CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
                 });
-                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson);
+                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
                 CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
             });
         });
