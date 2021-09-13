@@ -3,7 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createClassNode = (NodeInfos, doRegister, LCanvas, varName) => {
+const createClassNode = (NodeInfos, doRegister, LCanvas, varName, path) => {
 
     ClassNode.title = NodeInfos["name"];
     ClassNode.description = NodeInfos["name"];
@@ -23,6 +23,7 @@ const createClassNode = (NodeInfos, doRegister, LCanvas, varName) => {
     }
 
     if (doRegister)
-        LiteGraph.registerNodeType("Classes/" + NodeInfos["name"], ClassNode);
+        console.log(`Je créé ${path + NodeInfos["name"]}`);
+        LiteGraph.registerNodeType(path + NodeInfos["name"], ClassNode);
 }
 export default createClassNode

@@ -12,7 +12,7 @@ const convertDartTypeToLiteral = (type) => {
 }
 
 
-const createConstValueNode = (constValue, LCanvas) => {
+const createConstValueNode = (constValue, LCanvas, path) => {
 
     function ConstValueNode() {
 
@@ -62,7 +62,7 @@ const createConstValueNode = (constValue, LCanvas) => {
         this.setProperty("value",v);
     }
 
-    LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstValueNode);
+    LiteGraph.registerNodeType(path + constValue["name"], ConstValueNode);
 
 }
 export default createConstValueNode
