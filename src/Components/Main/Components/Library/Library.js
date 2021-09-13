@@ -35,7 +35,11 @@ export const Library = () => {
                         "center",
                         "flex-end"
                     ]
-                }
+                },
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Column,
 
@@ -94,6 +98,10 @@ export const Library = () => {
                     value: "button",
                     type: PropType.TEXTFIELD,
                     codeFlag: "IDEAL_BUTTON_TEXT",
+                },
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
                 },
                 color: {
                     value: "#2190d9",

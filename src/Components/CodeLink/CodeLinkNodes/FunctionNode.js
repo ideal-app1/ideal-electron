@@ -92,6 +92,8 @@ const createFunctionNode = (func, LCanvas) => {
     }
 
     FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+        if (!link)
+            return
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         isACallbackParameter(node, index, isConnected);
