@@ -166,6 +166,7 @@ class WidgetProperties extends React.Component {
                                     pathname: '/codelink/' + this.state.widget._id,
                                     state: {
                                         _id: this.state.widget._id,
+                                        name: this.state.widget.name,
                                         path: this.state.widget.codelink
                                     }
                                 })

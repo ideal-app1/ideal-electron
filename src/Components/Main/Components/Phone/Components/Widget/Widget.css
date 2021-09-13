@@ -12,19 +12,19 @@
     color: black;
 }
 
-.widget.button {
+.widget.TextButton {
     background-color: #2190d9;
 }
 
-.widget.text {
+.widget.Text {
     background-color: lightcoral;
 }
 
-.widget.text.field {
+.widget.TextField {
     color: rgba(0, 0, 0, 0.4);
 }
 
-.widget.image {
+.widget.Image {
     background-color: lightpink;
 }
 
