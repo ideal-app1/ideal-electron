@@ -57,34 +57,30 @@ function CodeLink(props) {
         //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
-    const loadEverything = (name) => {
-        fs.readFile('data.json', 'utf-8', (err, dataFile) => {
-            fs.readFile('flutter.json', 'utf-8', (err, flutterFile) => {
-                const dataJson = JSON.parse(dataFile);
-                const flutterJson = JSON.parse(flutterFile);
+    const loadEverything =  (name, forceLoadDefaultWidget) => {
+        const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+        const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
 
-                [dataJson].forEach((jsonFile) => {
-                    CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
-                });
-                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
-                CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
-            });
+
+        [dataJson].forEach((jsonFile) => {
+            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
         });
+        CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
+        if (forceLoadDefaultWidget)
+            CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
     }
 
-    const initNewFile = (name, currentpath) => {
+    const initNewFile =  (name, currentpath) => {
         LiteGraph.clearRegisteredTypes()
-        loadEverything(name)
+        loadEverything(name, true)
     }
 
-    const loadCodeLinkSave = (name, currentpath) => {
-        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
-        const buffer = JSON.parse(data)
+    const loadCodeLinkSave =  (name, currentpath) => {
         LiteGraph.clearRegisteredTypes()
 
-        loadEverything(name)
+        loadEverything(name, false)
         graph.load(currentpath)
-        console.log(buffer)
+
 
     }
 
