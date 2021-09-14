@@ -2,7 +2,7 @@ import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "li
 import inheritNodeBase from "./NodeBase";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 
-const createMethodNode = (method, className, LCanvas) => {
+const createMethodNode = (method, className, LCanvas, path) => {
 //your node constructor class
     function MethodNode() {
         inheritNodeBase(MethodNode)
@@ -74,7 +74,7 @@ const createMethodNode = (method, className, LCanvas) => {
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
-    LiteGraph.registerNodeType(className +" methods/" + method["name"], MethodNode);
+    LiteGraph.registerNodeType(path + className +" methods/" + method["name"], MethodNode);
 
 }
 

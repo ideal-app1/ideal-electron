@@ -72,16 +72,21 @@ class FlutterManager {
     static splitSubVariable(code)
     {
         let result = [];
-        const regex = new RegExp(`(\/\\* IDEAL_SUB_VARIABLE_SEPARATION \\*\/)(.|\\s)+`);
+        const regexDeclaration = new RegExp(`(\/\\* IDEAL_SUB_VARIABLE_SEPARATION \\*\/)(.|\\s)+`);
+        const regexVariableName = new RegExp(`(var )(.+)(;)`);
 
-        while (code.match(regex) !== null) {
-            const tmp = code.match(regex)[0];
+        while (code.match(regexDeclaration) !== null) {
+            const tmp = code.match(regexDeclaration)[0];
+            const declaration = code.replace(tmp, "");
+            const variableName = declaration.match(regexVariableName);
 
-            result.push(code.replace(tmp, ""));
+            if (variableName) {
+                result.push({name: variableName[2], declaration: declaration});
+            }
             code = tmp.replace("/* IDEAL_SUB_VARIABLE_SEPARATION */", "");
         }
 
-        return result.length === 0 ? [code] : result;
+        return result.length === 0 ? [{declaration: code}] : result;
     }
 
     static getName(widget)
@@ -114,7 +119,7 @@ class FlutterManager {
         name = FlutterManager.getName(widget);
         declaration = FlutterManager.getDeclarationAndSetInitialisation(code, name);
 
-        return {declaration: declaration[0], name:name, children:FlutterManager.getChildren(declaration)};
+        return {declaration: declaration[0].declaration, name:name, children:FlutterManager.getChildren(declaration)};
     }
 
     static getAllCode(widgetArray)
@@ -161,7 +166,7 @@ class FlutterManager {
         FlutterManager.fs.writeFileSync(path, file);
     }
 
-    static getCodeHandlerFormat(jsonData, path) {
+    static formatDragAndDropToCodeHandler(jsonData, path) {
         FlutterManager.initialization = "";
         const code = FlutterManager.getAllCode([jsonData]);
 

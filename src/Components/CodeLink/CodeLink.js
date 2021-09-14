@@ -64,26 +64,33 @@ function CodeLink(props) {
         //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
-    const initNewFile = (currentpath) => {
-        LiteGraph.clearRegisteredTypes()
-        fs.readFile('data.json', 'utf-8', (err, data) => {
-            const parsed = JSON.parse(data);
-            CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
-            CodeLinkNodeLoader.addMainWidgetToView("TextButton", parsed["classes"]);
+    const loadEverything = (name) => {
+        fs.readFile('data.json', 'utf-8', (err, dataFile) => {
+            fs.readFile('flutter.json', 'utf-8', (err, flutterFile) => {
+                const dataJson = JSON.parse(dataFile);
+                const flutterJson = JSON.parse(flutterFile);
+
+                [dataJson].forEach((jsonFile) => {
+                    CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
+                });
+                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
+                CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
+            });
         });
     }
-    
-    const loadCodeLinkSave = (currentpath) => {
+
+    const initNewFile = (name, currentpath) => {
+        LiteGraph.clearRegisteredTypes()
+        loadEverything(name)
+    }
+
+    const loadCodeLinkSave = (name, currentpath) => {
         const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
         const buffer = JSON.parse(data)
         LiteGraph.clearRegisteredTypes()
 
-        fs.readFile('data.json', 'utf-8', (err, data) => {
-            const parsed = JSON.parse(data);
-
-            CodeLinkNodeLoader.loadEveryKnownNodes(parsed, props.match.params.id.replace(/[^a-z]+/g, ""));
-            graph.load(currentpath)
-        });
+        loadEverything(name)
+        graph.load(currentpath)
         console.log(buffer)
 
     }
@@ -93,13 +100,13 @@ function CodeLink(props) {
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
 
-        console.log(currentpath)
+
         if (fs.existsSync(currentpath)) {
             console.log('Load save')
-            loadCodeLinkSave(currentpath)
+            loadCodeLinkSave(props.location.state.name, currentpath)
         } else {
             console.log('new')
-            initNewFile(currentpath)
+            initNewFile(props.location.state.name, currentpath)
         }
     }
 

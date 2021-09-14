@@ -1,11 +1,10 @@
 
 
-SizedBox /* IDEAL_VARIABLE_NAME */;
+var /* IDEAL_VARIABLE_NAME */;
 
 /* IDEAL_SUB_VARIABLE_SEPARATION */
 
-var /* IDEAL_VARIABLE_NAME */onPressed = null;
-var width;
+var /* IDEAL_VARIABLE_NAME */onPressed;
 
 /* IDEAL_SUB_VARIABLE_SEPARATION */
 

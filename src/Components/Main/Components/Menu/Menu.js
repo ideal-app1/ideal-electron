@@ -90,15 +90,16 @@ export default function Menu() {
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart')
-        const codeHandlerFormat = FlutterManager.getCodeHandlerFormat(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        // todo send to code handler merci
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         const data = {
             'imports': new Set(),
             'functions': [],
         }
 
-        getEveryCodeLinkData(data, Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+//        getEveryCodeLinkData(data, Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         console.log(data);
         //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
         Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");

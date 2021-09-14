@@ -4,7 +4,7 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import { useDrag } from 'react-dnd';
 
-const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
+const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];

@@ -7,14 +7,19 @@ import createConstructorAttributeNode from "./CodeLinkNodes/ConstructorAttribute
 
 let LCanvas = null;
 
-const getConstructor = (widget, data) => {
-    const widgetData = data.find(classData => {
-        return (classData["name"] === widget);
 
-    });
+const getClass = (widget, data) => {
+  return (data.find(classData => {
+    return (classData["name"] === widget);
+  }));
+}
+
+const getConstructor = (widget, data) => {
+    const widgetData = getClass(widget, data);
 
     if (!widgetData) {
-        console.log("Error - The class was not found.");
+        console.log(`Error - The class ${widget} was not found.`);
+        console.log(data)
         //TODO implement an error when the widget is not found.
         return;
     }
@@ -22,9 +27,11 @@ const getConstructor = (widget, data) => {
 
 }
 
+
 const createMainWidget = (className) => {
     console.log("THE LENGTH");
     const mainWidget = LiteGraph.createNode("Classes/" + className);
+    console.log(className)
     mainWidget.pos = [250, 250];
     LCanvas.graph.add(mainWidget);
 }
@@ -51,30 +58,36 @@ const CodeLinkNodeLoader = {
       LCanvas = canvasToRegister;
     },
 
-    //TODO remove varName to something more clever
-    loadEveryKnownNodes: (parsed, varName) => {
 
-        const constructor = getConstructor('TextButton', parsed["classes"]);
+    loadSpecificFlutterNode: (className, parsed, id) => {
+      const constructor = getConstructor(className, parsed['classes']);
+      const specificClass = getClass(className, parsed['classes']);
 
+
+      createClassNode(specificClass, true, LCanvas, id, 'Classes/')
+      if (constructor) {
+        constructor["parameters"].forEach((constructorParameter) => {
+          createConstructorAttributeNode(className, constructorParameter, LCanvas, 'Current Flutter class attributes/');
+        })
+      }
+    },
+
+    loadEveryKnownNodes: (parsed, className, id) => {
+
+        if (parsed === undefined)
+          return;
         parsed["funcs"].forEach((data) => {
-            createFunctionNode(data, LCanvas);
+            createFunctionNode(data, LCanvas, 'Custom functions/');
         });
         parsed["constValues"].forEach((data) => {
-            createValue(data, LCanvas);
+            createValue(data, LCanvas, 'Custom const values/');
         });
-        if (constructor) {
-            constructor["parameters"].forEach((constructorParameter) => {
-                createConstructorAttributeNode('TextButton', constructorParameter, LCanvas);
-            })
-        }
 
         parsed["classes"].forEach((classObject) => {
-            if (classObject["name"] === "TextButton") {
-                createClassNode(classObject, true, LCanvas, varName);
+                createClassNode(classObject, true, LCanvas, id, 'Custom class/');
                 classObject["methods"].forEach((value) => {
-                    createMethodNode(value, classObject["name"], LCanvas);
+                    createMethodNode(value, classObject["name"], LCanvas, `Custom class/${classObject['name']}/`);
                 });
-            }
         });
     },
     addMainWidgetToView: (widget, data) => {
@@ -82,7 +95,7 @@ const CodeLinkNodeLoader = {
         const constructor = getConstructor(widget, data);
 
         if (!constructor) {
-            console.log("Error - The constructor was not found.");
+            console.log(`Error - The constructor of ${widget} was not found.`);
             //TODO implement an error when the main constructor is not found.
             return;
         }
