@@ -33,6 +33,8 @@ import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
 import CaretIcon from "./Assets/Icons/caret.svg";
+import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import moveFiles from './Tools/MoveFiles';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
@@ -44,8 +46,8 @@ export default function Menu() {
 
     const newProject = async () => {
         if (!Main.FlutterSDK) {
-            const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
-            Main.FlutterSDK = Path.build(project.dir, "bin", "flutter");
+            const sdk = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
+            Main.FlutterSDK = Path.build(sdk.dir, "bin", "flutter");
         }
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
@@ -53,8 +55,9 @@ export default function Menu() {
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
             fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
-            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project'));
-            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterSDK: Main.FlutterSDK
@@ -87,6 +90,7 @@ export default function Menu() {
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         // todo send to code handler merci
         const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");

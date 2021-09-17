@@ -9,6 +9,11 @@ import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
 import Phone from "../Main/Components/Phone/Phone";
+import Dialog from '../Main/Components/Dialog/Dialog';
+import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
+import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import JsonManager from '../Main/Tools/JsonManager';
+import Path from '../../utils/Path';
 const { ipcRenderer } = window.require('electron')
 const fs = window.require("fs")
 const app = window.require('electron').remote.app;
@@ -21,6 +26,8 @@ function CodeLink(props) {
     let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
+
+    const dialog = Dialog.getInstance();
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
@@ -57,34 +64,30 @@ function CodeLink(props) {
         //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
     }
 
-    const loadEverything = (name) => {
-        fs.readFile('data.json', 'utf-8', (err, dataFile) => {
-            fs.readFile('flutter.json', 'utf-8', (err, flutterFile) => {
-                const dataJson = JSON.parse(dataFile);
-                const flutterJson = JSON.parse(flutterFile);
+    const loadEverything =  (name, forceLoadDefaultWidget) => {
+        const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+        const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
 
-                [dataJson].forEach((jsonFile) => {
-                    CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
-                });
-                CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
-                CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
-            });
+
+        [dataJson].forEach((jsonFile) => {
+            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
         });
+        CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
+        if (forceLoadDefaultWidget)
+            CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
     }
 
-    const initNewFile = (name, currentpath) => {
+    const initNewFile =  (name, currentpath) => {
         LiteGraph.clearRegisteredTypes()
-        loadEverything(name)
+        loadEverything(name, true)
     }
 
-    const loadCodeLinkSave = (name, currentpath) => {
-        const data = fs.readFileSync(currentpath, {encoding: 'utf8', flag: 'r'});
-        const buffer = JSON.parse(data)
+    const loadCodeLinkSave =  (name, currentpath) => {
         LiteGraph.clearRegisteredTypes()
 
-        loadEverything(name)
+        loadEverything(name, false)
         graph.load(currentpath)
-        console.log(buffer)
+
 
     }
 
@@ -143,8 +146,14 @@ function CodeLink(props) {
         writeCodeLinkData();
     }
 
+    const loadCodeLinkBlocks = async () => {
+        const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
+        JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+    }
+
     return (
         <div>
+            <Dialog ref={Dialog.getInstance()}/>
             <Grid container className={"CodeLink-Content"}>
                 <Grid item xs={12} className={"CodeLink-bar-menu"}>
                     <Grid container>
@@ -180,6 +189,13 @@ function CodeLink(props) {
                                     savegraph(graph.serialize())
                                 }}>
                                     Save
+                                </Button>
+                            </Box>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
+                                <Button variant="contained" color="secondary" onClick={loadCodeLinkBlocks}>
+                                    Load
                                 </Button>
                             </Box>
                         </Grid>
