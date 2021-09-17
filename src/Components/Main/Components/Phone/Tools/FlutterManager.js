@@ -1,5 +1,6 @@
 import React from "react";
 import {v4 as uuid} from 'uuid';
+import {TypeToGetValue} from "../../../../../utils/WidgetUtils";
 
 class FlutterManager {
 
@@ -32,14 +33,34 @@ class FlutterManager {
         return found[0];
     }
 
-    static initName(code, name) {
-        let result = code;
-        const regex = new RegExp(`(\/\\* IDEAL_VARIABLE_NAME \\*\/)`);
+    static declarationName(code, name, properties) {
+        let result = [];
+        const regexVariableName = new RegExp(`(var )(.+)(;)`);
+        let match;
 
-        while (result.match(regex) !== null) {
-            result = result.replace(regex, name);
+        while ((match = code.match(regexVariableName)) !== null) {
+            let declaration = null;
+
+            if (properties[match[2]] !== undefined) {
+                declaration = TypeToGetValue[properties[match[2]].type](properties[match[2]].value);
+            }
+
+            result.push({
+                before: match[2],
+                name: match[2] + "_" + name,
+                declaration:"var " + match[2]  + "_" + name + (declaration !== null ? " = " + declaration : "") + ";"
+            });
+            code = code.replace(match[0], "");
         }
         return result;
+    }
+
+    static initName(code, nameList) {
+        nameList.map((name) => {
+            code = code.replaceAll(name.before, name.name);
+        });
+
+        return code;
     }
 
     static initChild(code, variablesName) {
@@ -52,41 +73,18 @@ class FlutterManager {
         return result;
     }
 
-    static getDeclarationAndSetInitialisation(code, name)
+    static getDeclarationAndSetInitialisation(code, name, properties)
     {
         let result = code;
         let initialisation = FlutterManager.getInitialisation(result);
 
         result = result.replace(initialisation, '');
-        result = FlutterManager.initName(result, name);
+        const declarationsInfo = FlutterManager.declarationName(result, name, properties);
 
-        initialisation = FlutterManager.initName(initialisation, name);
-
+        initialisation = FlutterManager.initName(initialisation, declarationsInfo);
         FlutterManager.initialization += initialisation + "\n";
 
-
-
-        return FlutterManager.splitSubVariable(result);
-    }
-
-    static splitSubVariable(code)
-    {
-        let result = [];
-        const regexDeclaration = new RegExp(`(\/\\* IDEAL_SUB_VARIABLE_SEPARATION \\*\/)(.|\\s)+`);
-        const regexVariableName = new RegExp(`(var )(.+)(;)`);
-
-        while (code.match(regexDeclaration) !== null) {
-            const tmp = code.match(regexDeclaration)[0];
-            const declaration = code.replace(tmp, "");
-            const variableName = declaration.match(regexVariableName);
-
-            if (variableName) {
-                result.push({name: variableName[2], declaration: declaration});
-            }
-            code = tmp.replace("/* IDEAL_SUB_VARIABLE_SEPARATION */", "");
-        }
-
-        return result.length === 0 ? [{declaration: code}] : result;
+        return declarationsInfo;
     }
 
     static getName(widget)
@@ -117,9 +115,9 @@ class FlutterManager {
         }
 
         name = FlutterManager.getName(widget);
-        declaration = FlutterManager.getDeclarationAndSetInitialisation(code, name);
+        declaration = FlutterManager.getDeclarationAndSetInitialisation(code, name, widget.properties);
 
-        return {declaration: declaration[0].declaration, name:name, children:FlutterManager.getChildren(declaration)};
+        return {declaration: declaration[0].declaration, name:declaration[0].name, children:FlutterManager.getChildren(declaration)};
     }
 
     static getAllCode(widgetArray)

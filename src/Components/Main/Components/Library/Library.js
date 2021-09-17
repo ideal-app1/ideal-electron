@@ -17,6 +17,10 @@ export const Library = () => {
             name: "Column",
             codePathFile: "Column.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 justify: {
                     value: "flex-start",
@@ -36,10 +40,6 @@ export const Library = () => {
                         "flex-end"
                     ]
                 },
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Column,
 
@@ -49,6 +49,10 @@ export const Library = () => {
             name: "Row",
             codePathFile: "Row.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "row",
                 justify: {
                     value: "flex-start",
@@ -80,6 +84,10 @@ export const Library = () => {
             name: "Center",
             codePathFile: "Center.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 justify: "center",
                 align: "center"
@@ -94,13 +102,12 @@ export const Library = () => {
             name: "TextButton",
             codePathFile: "Button.dart",
             properties: {
-                text: {
-                    value: "button",
-                    type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_BUTTON_TEXT",
-                },
                 name: {
                     value: "name",
+                    type: PropType.TEXTFIELD,
+                },
+                text: {
+                    value: "button",
                     type: PropType.TEXTFIELD,
                 },
                 color: {
@@ -112,24 +119,17 @@ export const Library = () => {
                         "green"
                     ],
                 },
-                state: {
-                    value: "enabled",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "enabled",
-                        "disabled"
-                    ],
-                    codeFlag: "IDEAL_BUTTON_STATE",
+                enable: {
+                    value: true,
+                    type: PropType.CHECKBOX,
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_WIDTH",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_HEIGHT",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Button
@@ -139,10 +139,13 @@ export const Library = () => {
             name: "Text",
             codePathFile: "Text.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_TEXT",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -161,10 +164,13 @@ export const Library = () => {
             name: "TextField",
             codePathFile: "TextField.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_PLACEHOLDER",
                 },
                 focus: false
             },
@@ -175,10 +181,13 @@ export const Library = () => {
             name: "Image",
             codePathFile: "Image.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 url: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_URL",
                 },
                 rounded: {
                     value: true,
@@ -187,12 +196,10 @@ export const Library = () => {
                 width: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_WIDTH",
                 },
                 height: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_HEIGHT",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image

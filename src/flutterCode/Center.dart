@@ -1,8 +1,7 @@
-Center /* IDEAL_VARIABLE_NAME */;
-
+var center;
 
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new Center(
+center = new Center(
   child: /* IDEAL_CHILD */
 );
 /* IDEAL_INITIALISATION_END */
