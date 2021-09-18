@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Process from "./Tools/Process"
 import "./Menu.css"
 import "./Dropdrownmenu.css"
+const path = require('path');
 
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
@@ -78,7 +79,7 @@ export default function Menu() {
     const getEveryCodeLinkData = (fullData, dirPath) => {
         const filesInDirectory = fs.readdirSync(dirPath);
         for (const file of filesInDirectory) {
-            const absolute = path.join(dirPath, file);
+            const absolute = Path.build(dirPath, file);
             if (fs.statSync(absolute).isDirectory()) {
                 getEveryCodeLinkData(fullData, absolute);
             } else if (path.extname(absolute) === ".json" &&
@@ -99,10 +100,11 @@ export default function Menu() {
             'functions': [],
         }
 
-//        getEveryCodeLinkData(data, Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        getEveryCodeLinkData(data, Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        console.log('Data');
         console.log(data);
         //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+        //Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);

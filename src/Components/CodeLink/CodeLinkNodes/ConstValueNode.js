@@ -23,7 +23,7 @@ const createConstValueNode = (constValue, LCanvas, path) => {
         this.widget = this.addWidget(convertDartTypeToLiteral(constValue["type"]) ,"value",constValue["value"],"value");
         this.widgets_up = true;
         this.size = [180, 30];
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
     ConstValueNode.title = constValue["type"] + " " + constValue["name"];
@@ -43,7 +43,7 @@ const createConstValueNode = (constValue, LCanvas, path) => {
         console.log("wot")
         console.log(constValue)
         console.log("stopwot")
-        let buffer = "const " + constValue["type"] + " " + this.randomName + " = " +
+        let buffer = "const " + constValue["type"] + " " + this.varName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 
         this.setOutputData(0, this);

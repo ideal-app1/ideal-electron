@@ -59,12 +59,12 @@ const CodeLinkNodeLoader = {
     },
 
 
-    loadSpecificFlutterNode: (className, parsed, id) => {
+    loadSpecificFlutterNodes: (variableName, className, parsed, id) => {
       const constructor = getConstructor(className, parsed['classes']);
       const specificClass = getClass(className, parsed['classes']);
 
 
-      createClassNode(specificClass, true, LCanvas, id, 'Classes/')
+      createClassNode(variableName, specificClass, LCanvas, 'Classes/');
       if (constructor) {
         constructor["parameters"].forEach((constructorParameter) => {
           createConstructorAttributeNode(className, constructorParameter, LCanvas, 'Current Flutter class attributes/');
@@ -84,7 +84,7 @@ const CodeLinkNodeLoader = {
         });
 
         parsed["classes"].forEach((classObject) => {
-                createClassNode(classObject, true, LCanvas, id, 'Custom class/');
+                createClassNode(undefined, classObject, LCanvas,'Custom class/');
                 classObject["methods"].forEach((value) => {
                     createMethodNode(value, classObject["name"], LCanvas, `Custom class/${classObject['name']}/`);
                 });

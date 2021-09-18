@@ -14,8 +14,8 @@ import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
-const { ipcRenderer } = window.require('electron')
-const fs = window.require("fs")
+const { ipcRenderer } = window.require('electron');
+const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
 
@@ -36,12 +36,12 @@ function CodeLink(props) {
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
-            console.log("ca crée en premier connard")
+            console.log("ca crée en premier connard");
             fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
-    }
+    };
 
     useEffect(() => {
         app.allowRendererProcessReuse = false;
@@ -62,49 +62,50 @@ function CodeLink(props) {
         });
         //FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
         //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
-    }
+    };
 
-    const loadEverything =  (name, forceLoadDefaultWidget) => {
+    const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
         const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
-
+        const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
         [dataJson].forEach((jsonFile) => {
-            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
+            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, className, safeID);
         });
-        CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
-        if (forceLoadDefaultWidget)
-            CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
-    }
+        CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
+        afterLoad(className, flutterJson);
+    };
 
-    const initNewFile =  (name, currentpath) => {
-        LiteGraph.clearRegisteredTypes()
-        loadEverything(name, true)
-    }
+    const initNewFile =  (variableName, className, currentpath) => {
+        LiteGraph.clearRegisteredTypes();
+        loadEverything(variableName, className, (className, flutterJson) => {
+            CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
+        })
+    };
 
-    const loadCodeLinkSave =  (name, currentpath) => {
-        LiteGraph.clearRegisteredTypes()
+    const loadCodeLinkSave =  (variableName, className, currentpath) => {
+        LiteGraph.clearRegisteredTypes();
+        loadEverything(variableName, className, (_, __) => {
+            graph.load(currentpath);
+        });
 
-        loadEverything(name, false)
-        graph.load(currentpath)
 
-
-    }
+    };
 
     const init = () => {
+        const variableName = props.location.state.variableName.value;
+        const className = props.location.state.name;
+        const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
+
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
-        let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
-
-
-        if (fs.existsSync(currentpath)) {
-            console.log('Load save')
-            loadCodeLinkSave(props.location.state.name, currentpath)
+        console.log(props);
+        if (fs.existsSync(currentPath)) {
+            loadCodeLinkSave(variableName, className, currentPath)
         } else {
-            console.log('new')
-            initNewFile(props.location.state.name, currentpath)
+            initNewFile(variableName, className, currentPath)
         }
-    }
+    };
 
     const savegraph = (event) =>
     {
@@ -112,7 +113,7 @@ function CodeLink(props) {
 
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
-    }
+    };
 
     const generate = (element) => {
         return [0, 1, 2].map((value) =>
@@ -120,7 +121,7 @@ function CodeLink(props) {
               key: value,
           }),
         );
-    }
+    };
 
     const writeCodeLinkData = () => {
 
@@ -135,21 +136,20 @@ function CodeLink(props) {
               }
           }
         ));
-    }
+    };
 
 
     const saveCodeLinkData = () => {
 
         BufferSingleton.erase();
         graph.runStep(1);
-        const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
         writeCodeLinkData();
-    }
+    };
 
     const loadCodeLinkBlocks = async () => {
         const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-    }
+    };
 
     return (
         <div>
