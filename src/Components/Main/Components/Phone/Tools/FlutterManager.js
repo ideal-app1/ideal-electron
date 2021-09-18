@@ -53,8 +53,8 @@ class FlutterManager {
 
             result.push({
                 before: match[2],
-                name: match[2] + "_" + name,
-                declaration:"var " + match[2]  + "_" + name + (declaration !== null ? " = " + declaration : "") + ";"
+                name: varName,
+                declaration:"var " + varName + (declaration !== null ? " = " + declaration : "") + ";"
             });
             code = code.replace(match[0], "");
         }

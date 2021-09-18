@@ -1,4 +1,4 @@
-var nina;
+var button;
 var onPressed;
 var text;
 var enable;
@@ -7,7 +7,7 @@ var height;
 
 
 /* IDEAL_INITIALISATION_START */
-nina = new SizedBox(
+button = new SizedBox(
   width: width,
   height: height,
   child: FlatButton(
