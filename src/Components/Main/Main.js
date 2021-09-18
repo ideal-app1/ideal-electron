@@ -17,6 +17,7 @@ class Main extends React.Component {
     static IdealDir = "";
     static MainProjectPath = "";
     static FlutterSDK = "";
+    static FlutterRoot = '';
     static Sep = "/";
     static CopyCmd = "cp";
     static fs = window.require('fs');
