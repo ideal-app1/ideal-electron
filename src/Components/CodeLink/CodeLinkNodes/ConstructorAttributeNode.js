@@ -57,7 +57,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         if (linkedClass === undefined || linkedData === undefined)
             return;
         console.log(linkedClass)
-        buffer = linkedClass["varName"] + param["name"] + " = " + linkedData['randomName'] + ';';
+        buffer = linkedClass["varName"] + '_' + param["name"] + " = " + linkedData['randomName'] + ';';
         sharedBuffer.addCode(buffer);
     }
     console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"])
