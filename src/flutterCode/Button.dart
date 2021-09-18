@@ -9,7 +9,7 @@ var height;
 /* IDEAL_INITIALISATION_START */
 nina = new SizedBox(
   width: width,
-  height: /* IDEAL_BUTTON_HEIGHT */,
+  height: height,
   child: FlatButton(
     onPressed: enable ? onPressed : null,
       child: Text(
