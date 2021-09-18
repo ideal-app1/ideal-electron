@@ -1,19 +1,19 @@
-var button;
-var onPressed;
-var text;
-var enable;
-var width;
-var height;
+var ideal_button;
+var ideal_onPressed;
+var ideal_text;
+var ideal_enable;
+var ideal_width;
+var ideal_height;
 
 
 /* IDEAL_INITIALISATION_START */
-button = new SizedBox(
-  width: width,
-  height: height,
+ideal_button = new SizedBox(
+  width: ideal_width,
+  height: ideal_height,
   child: FlatButton(
-    onPressed: enable ? onPressed : null,
+    onPressed: ideal_enable ? ideal_onPressed : null,
       child: Text(
-      text,
+      ideal_text,
       style: TextStyle(
       fontSize: 16
     ),

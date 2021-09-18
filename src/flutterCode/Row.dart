@@ -1,8 +1,8 @@
-var row;
+var ideal_row;
 
 
 /* IDEAL_INITIALISATION_START */
-row = new Row(
+ideal_row = new Row(
   children: <Widget>[
     /* IDEAL_CHILD */
   ],

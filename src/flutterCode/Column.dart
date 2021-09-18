@@ -1,6 +1,6 @@
-var column;
+var ideal_column;
 /* IDEAL_INITIALISATION_START */
-column = new Column(
+ideal_column = new Column(
   children: <Widget>[
   /* IDEAL_CHILD */
   ],

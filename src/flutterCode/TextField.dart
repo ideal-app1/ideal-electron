@@ -1,15 +1,15 @@
 
 
-var textField;
-var placeholder;
+var ideal_textField;
+var ideal_placeholder;
 
 /* IDEAL_INITIALISATION_START */
-textfield = new TextField(
+ideal_textfield = new TextField(
   decoration: InputDecoration(
     border: InputBorder.none,
     filled: true,
     fillColor: Colors.white,
-    hintText: placeholder
+    hintText: ideal_placeholder
   ),
   obscureText: true,
 );

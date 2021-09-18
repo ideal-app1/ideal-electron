@@ -33,6 +33,18 @@ class FlutterManager {
         return found[0];
     }
 
+    static findProperties(properties, toFind)
+    {
+        let result = undefined;
+
+        Object.keys(properties).map((key) => {
+            if (properties[key].variableName === toFind) {
+                result = properties[key];
+            }
+        });
+        return result;
+    }
+
     static declarationName(code, name, properties) {
         let result = [];
         const regexVariableName = new RegExp(`(var )(.+)(;)`);
@@ -40,13 +52,13 @@ class FlutterManager {
 
         while ((match = code.match(regexVariableName)) !== null) {
             let declaration = null;
+            const find = FlutterManager.findProperties(properties, match[2]);
 
-            if (properties[match[2]] !== undefined) {
-                declaration = TypeToGetValue[properties[match[2]].type](properties[match[2]].value);
+            if (find !== undefined) {
+                declaration = TypeToGetValue[find.type](find.value);
             }
 
-            let varName = match[2]  + "_" + name;
-
+            let varName = name + "_" + match[2];
             if (result.length === 0) {
                 varName = name;
             }
