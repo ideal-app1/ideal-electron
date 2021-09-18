@@ -67,18 +67,18 @@ function CodeLink(props) {
     const loadEverything =  (name, forceLoadDefaultWidget) => {
         const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
         const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
-
+        const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
         [dataJson].forEach((jsonFile) => {
-            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, props.match.params.id.replace(/[^a-z]+/g));
+            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, name, safeID);
         });
-        CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, props.match.params.id.replace(/[^a-z]+/g));
+        CodeLinkNodeLoader.loadSpecificFlutterNode(name, flutterJson, safeID);
         if (forceLoadDefaultWidget)
             CodeLinkNodeLoader.addMainWidgetToView(name, flutterJson["classes"]);
     }
 
     const initNewFile =  (name, currentpath) => {
-        LiteGraph.clearRegisteredTypes()
+        LiteGraph.clearRegisteredTypes();
         loadEverything(name, true)
     }
 
@@ -95,7 +95,7 @@ function CodeLink(props) {
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
         let currentpath = path.join(props.location.state.path, props.match.params.id + ".json");
-
+        console.log()
 
         if (fs.existsSync(currentpath)) {
             console.log('Load save')
@@ -142,7 +142,6 @@ function CodeLink(props) {
 
         BufferSingleton.erase();
         graph.runStep(1);
-        const variableName = props.match.params.id.replace(/[^a-z]+/g, "");
         writeCodeLinkData();
     }
 

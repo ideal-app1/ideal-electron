@@ -162,6 +162,7 @@ class WidgetProperties extends React.Component {
                             variant="contained"
                             color="primary"
                             onClick={() => {
+                              console.log(`PUSH ${this.state.widget.name}`);
                                 history.push({
                                     pathname: '/codelink/' + this.state.widget._id,
                                     state: {
