@@ -90,6 +90,7 @@ const CodeLinkNodeLoader = {
                 });
         });
     },
+
     addMainWidgetToView: (widget, data) => {
         console.log("Im called")
         const constructor = getConstructor(widget, data);

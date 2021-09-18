@@ -51,7 +51,6 @@ const SocketIPC = () => {
                 let json = JSON.parse(data.toString())
 
                 if (json['info'] === 'message received') {
-                    sendARequest()
                 }
 
             } catch (a) {
@@ -66,22 +65,18 @@ const SocketIPC = () => {
         socketClient.on('end', () => {
             console.log('disconnected from server');
         });
-        socketClient.on('drain', () => {
-            console.log('drain');
-            sendARequest();
-        })
+
     }
 
     const enableIPC = () => {
         ipcMain.on('send-socket-message', (event, arg) => {
             console.log(arg);
-            socketClient.write(JSON.stringify(arg));
+            socketClient.write(arg);
         });
     }
 
     const start = () => {
         connectToServer();
-        startServer();
         enableIPC();
     }
     start();

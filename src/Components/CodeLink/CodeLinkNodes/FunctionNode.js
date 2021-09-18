@@ -8,9 +8,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
 
-
-
-
     function FunctionNode() {
         inheritNodeBase(FunctionNode);
         this.handleInputsOutputs();

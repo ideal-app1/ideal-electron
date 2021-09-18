@@ -66,7 +66,7 @@ class FlutterManager {
             result.push({
                 before: match[2],
                 name: varName,
-                declaration:"var " + varName + (declaration !== null ? " = " + declaration : "") + ";"
+                code:"var " + varName + (declaration !== null ? " = " + declaration : "") + ";"
             });
             code = code.replace(match[0], "");
         }
@@ -135,7 +135,7 @@ class FlutterManager {
         name = FlutterManager.getName(widget);
         declaration = FlutterManager.getDeclarationAndSetInitialisation(code, name, widget.properties);
 
-        return {declaration: declaration[0].declaration, name:declaration[0].name, children:FlutterManager.getChildren(declaration)};
+        return {code: declaration[0].code, name:declaration[0].name, children:FlutterManager.getChildren(declaration)};
     }
 
     static getAllCode(widgetArray)
