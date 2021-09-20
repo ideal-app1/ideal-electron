@@ -54,7 +54,7 @@ const Widget = props => {
             if (!didDrop) {
                 phone.current.componentDidUpdate()
                 console.log("Connaître le widget ? " + widget.current)
-                widget.current.deleteCodelinkFile()
+                //widget.current.deleteCodelinkFile()
                 console.log('dropped outside');
             }
         },

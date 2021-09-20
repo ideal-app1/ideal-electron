@@ -1,18 +1,14 @@
 
 
-Text /* IDEAL_VARIABLE_NAME */;
+var ideal_text;
 
-/* IDEAL_SUB_VARIABLE_SEPARATION */
-
-var /* IDEAL_VARIABLE_NAME */Text = "/* IDEAL_TEXT */";
-
-/* IDEAL_SUB_VARIABLE_SEPARATION */
+var ideal_data;
 
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new Text(/* IDEAL_VARIABLE_NAME */Text,
-style: TextStyle(
-fontWeight: FontWeight.bold,
-fontSize: 22
-),
+ideal_text = new Text(ideal_data,
+  style: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 22
+  ),
 );
 /* IDEAL_INITIALISATION_END */

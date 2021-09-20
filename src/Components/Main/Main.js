@@ -16,7 +16,10 @@ class Main extends React.Component {
 
     static IdealDir = "";
     static MainProjectPath = "";
+    //TODO change this when the project handle several views.
+    static CurrentView = 'Main';
     static FlutterSDK = "";
+    static FlutterRoot = '';
     static Sep = "/";
     static CopyCmd = "cp";
     static fs = window.require('fs');
@@ -38,6 +41,7 @@ class Main extends React.Component {
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
             Main.FlutterSDK = data.FlutterSDK;
+            console.log(`MainProject ${Main.MainProjectPath}`);
             Main.IdealDir = path;
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');

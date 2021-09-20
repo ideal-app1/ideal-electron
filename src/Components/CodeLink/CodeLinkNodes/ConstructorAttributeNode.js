@@ -4,19 +4,18 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import { useDrag } from 'react-dnd';
 
-const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
+const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];
 
     function ConstructorAttributeNode() {
-        inheritNodeBase(ConstructorAttributeNode)
+        inheritNodeBase(ConstructorAttributeNode);
         this.addInput("Linked Class", LiteGraph.ACTION);
         this.addInput(param["name"] + "(" + param["type"] + ")");
 
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
-        this.randomName = this.makeId(15);
     }
 
 
@@ -41,12 +40,12 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         if (!link)
-            return
+            return;
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         parameterIsFunction(node, index, isConnected);
 
-    }
+    };
 
     ConstructorAttributeNode.prototype.onExecute = function () {
         const linkedClass = this.getInputData(0);
@@ -56,12 +55,11 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas) => {
 
         if (linkedClass === undefined || linkedData === undefined)
             return;
-        console.log(linkedClass)
-        buffer = linkedClass["varName"] + param["name"] + " = " + linkedData['randomName'] + ';';
+        buffer = linkedClass["varName"] + '_' + param["name"] + " = " + linkedData['varName'] + ';';
         sharedBuffer.addCode(buffer);
-    }
-    console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"])
+    };
+    console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"]);
     LiteGraph.registerNodeType(currentClass + " constructor's attributes/" + param["name"], ConstructorAttributeNode);
-}
+};
 export default createConstructorAttributeNode
 

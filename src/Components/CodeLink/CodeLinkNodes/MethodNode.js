@@ -2,21 +2,21 @@ import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "li
 import inheritNodeBase from "./NodeBase";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 
-const createMethodNode = (method, className, LCanvas) => {
+const createMethodNode = (method, className, LCanvas, path) => {
 //your node constructor class
     function MethodNode() {
-        inheritNodeBase(MethodNode)
+        inheritNodeBase(MethodNode);
         this.addInput("Linked class", LiteGraph.ACTION);
         method["parameters"].forEach((param) => {
             this.addInput(param["name"] + "(" + param["type"] + ")", param["type"]);
-        })
+        });
 
         if (method["return"] !== "void") {
             this.addOutput(method["return"], method["return"]);
         }
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
 //name to show on the canvas
@@ -24,13 +24,13 @@ const createMethodNode = (method, className, LCanvas) => {
 
 
     MethodNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        console.log("Je suis connecté ? " + isConnected + " du type ? " + type)
+        console.log("Je suis connecté ? " + isConnected + " du type ? " + type);
         console.log(link)
 
-    }
+    };
 
     function handleAParam(node, buffer) {
-        buffer += node.randomName + ", ";
+        buffer += node.varName + ", ";
 
         return (buffer);
     }
@@ -39,11 +39,11 @@ const createMethodNode = (method, className, LCanvas) => {
         if (buffer[buffer.length - 2] === ',') {
             buffer = buffer.slice(0, -2);
         }
-        buffer += ");\n"
+        buffer += ");\n";
         return (buffer);
     }
 
-    function startBuffer(linkedClass) {
+    MethodNode.prototype.startBuffer = function(linkedClass) {
         let buffer = undefined;
 
         if (linkedClass === undefined) {
@@ -51,21 +51,21 @@ const createMethodNode = (method, className, LCanvas) => {
             return;
         }
 
-        buffer = "const " + method["return"] + " " + this.randomName + " = this." +  linkedClass.randomName + "(";
+        buffer = "final " + this.varName + " = this." +  method['name'] + "(";
         return (buffer);
-    }
+    };
 
     MethodNode.prototype.onExecute = function () {
         const nbOfInputs = method["parameters"].length;
         const linkedClass = this.getInputData(0);
-        let buffer = startBuffer(linkedClass);
+        let buffer = this.startBuffer(linkedClass);
         let node = undefined;
 
-        console.log(nbOfInputs)
-        for (let i = 1; i < nbOfInputs; i++) {
+        console.log(`For ${method['name']}, ${nbOfInputs} nb of inputs`);
+        for (let i = 1; i <= nbOfInputs; i++) {
             node = this.getInputData(i);
             if (node === undefined) {
-                console.log("In func " + this.title + ", arg nb " + i + ", is undef")
+                console.log("In func " + this.title + ", arg nb " + i + ", is undef");
                 continue;
             }
             buffer = handleAParam(node, buffer);
@@ -73,9 +73,17 @@ const createMethodNode = (method, className, LCanvas) => {
         buffer = endBuffer(buffer);
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
-    }
-    LiteGraph.registerNodeType(className +" methods/" + method["name"], MethodNode);
+    };
+    LiteGraph.registerNodeType(path + className +" methods/" + method["name"], MethodNode);
 
-}
+};
+/*
+() => {
+    const int btbKuqWdNISfeQg = 314;\n
+    const int bgMnhSoYgwDwaRl = 314;\n
+    hihi_onPressed = btbKuqWdNISfeQg;
+    hihi_child = btbKuqWdNISfeQg;
+    final oPBiFsHDlFvFVEJ = this.Int_Int__TemplateT(btbKuqWdNISfeQg, bgMnhSoYgwDwaRl);\n
+}*/
 
 export default createMethodNode

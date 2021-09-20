@@ -20,6 +20,8 @@ class MenuFunctions {
 
     paste = (props) => {
         let clipboard = this.phone.current.state.clipboard;
+        if (!clipboard.widget)
+            return;
         let id = clipboard.widget._id;
         const copy = this.phone.current.findByID(id);
         const dest = this.phone.current.findByID(props.widget._id);

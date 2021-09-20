@@ -1,13 +1,16 @@
 
 
-SizedBox /* IDEAL_VARIABLE_NAME */;
+var ideal_image;
+var ideal_width;
+var ideal_height;
+var ideal_url;
 
 
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new SizedBox(
-width: /* IDEAL_IMAGE_WIDTH */,
-height: /* IDEAL_IMAGE_HEIGHT */,
-child: Image.network('/* IDEAL_URL */'),
+ideal_image = new SizedBox(
+  width: ideal_width,
+  height: ideal_height,
+  child: Image.network(ideal_url),
 );
 /* IDEAL_INITIALISATION_END */
 

@@ -15,20 +15,19 @@ import List from '@material-ui/core/List';
 
 const app = window.require("electron")
 
-const LoadProject = props => {
+const LoadCodeLinkBlocks = props => {
 
     const [values, setValues] = React.useState({
-        dir: '',
-        name: 'idealproject'
+        dir: ''
     });
 
     return (
         <Fragment>
-            <DialogTitle>{"Load a project"}</DialogTitle>
+            <DialogTitle>{"Load your CodeLink Blocks"}</DialogTitle>
             <DialogContent>
                 <List>
                     <DialogContentText>
-                        Please select where is the project
+                        Please select your CodeLink Blocks folder
                     </DialogContentText>
                     <ListItem>
                         <TextField
@@ -56,11 +55,11 @@ const LoadProject = props => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => {props.handleClose(values)}} color="primary" autoFocus>
-                    Open
+                    Load
                 </Button>
             </DialogActions>
         </Fragment>
     );
 }
 
-export default LoadProject
+export default LoadCodeLinkBlocks
