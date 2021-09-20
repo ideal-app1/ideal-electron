@@ -15,7 +15,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 const electron = require('electron');
-const {SocketIPC} = require('./SocketIPC');
+const {SocketIPC} = require('./ProcessIPC');
 import MenuBuilder from './menu';
 
 const {ipcMain, dialog} = require('electron')
@@ -130,7 +130,6 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();
 });
 
-//ipcMain.on('')
 
 SocketIPC();
 

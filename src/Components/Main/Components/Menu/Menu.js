@@ -27,7 +27,7 @@ import Path from '../../../../utils/Path';
 import LoadProject from "../Dialog/Components/Modal/Components/LoadProject/LoadProject";
 import FolderIcon from '@material-ui/icons/Folder';
 const fs = window.require('fs');
-const mainDartCode = require("../../../../flutterCode/main.dart")
+const mainDartCode = require("../../../../flutterCode/main.dart");
 
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
@@ -95,12 +95,16 @@ export default function Menu() {
         }
     };
 
+    const afterCodeCreator = () => {
+        //Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+        console.log('AFTER');
+    };
+
     const runProject = (event) => {
+        Process.runScript()
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
-        // todo send to code handler merci
         const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         const data = {
             'requestType' : 'creator',
             'parameters': {
@@ -116,11 +120,15 @@ export default function Menu() {
         };
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
-
-          console.log(data);
-        ipcRenderer.send('send-socket-message', JSON.stringify(data));
-        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        //Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+        ipcRenderer.send('processExec', ['dart', 'C:\\Users\\Axel\\Documents\\indexer\\bin\\Main.dart', 'indexer', JSON.stringify( {
+            'requestType': 'index',
+            'parameters': {
+                'pathToIndex': 'C:\\Users\\Axel\\Desktop\\hehe\\lib',
+                'finalPath': 'C:\\Users\\Axel\\Desktop\\New folder',
+                'verbose' : true
+            }
+        })]);
+        ipcRenderer.on('processEnd', afterCodeCreator);
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);

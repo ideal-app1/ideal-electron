@@ -28,6 +28,7 @@ import 'dart:async' as async;
     assert(res is String);
     return res;
   }
+
 class CodeLinkType {
   DateTime getDate() {
     var now = DateTime.now();

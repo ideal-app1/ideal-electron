@@ -17,7 +17,6 @@ bool onPressed(bool button) {
 }
 
 bool ifCondition(int a, int b) {
-
   return false;
 }
 
