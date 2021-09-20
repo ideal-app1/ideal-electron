@@ -6,7 +6,7 @@ import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, ListItem} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
-import Phone from "../Main/Components/Phone/Phone";
+import Project from "../Project/Project";
 import CodeLinkWidgetList from "./CodeLinkWidgetList/CodeLinkWidgetList";
 
 const { ipcRenderer } = window.require('electron')
@@ -24,18 +24,16 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        console.log("COUCOU Avant", phone);
-        const phone = Phone.getInstance();
+        const project = Project.getInstance();
 
-        console.log("COUCOU Après", phone, phone.current, phone.current.getWidgetIdList());
-        widgetList = phone.current.getWidgetIdList();
+        widgetList = project.current.getWidgetIdList();
 
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
-        widget = phone.current.findWidgetByID(props.match.params.id);
+        widget = project.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     }
 

@@ -4,7 +4,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import {Button, ListItem} from "@material-ui/core";
 import CodeLinkWidgetListSearch from "./CodeLinkWidgetListSearch.js";
 import {Route} from "react-router-dom";
-import Main from "../../Main/Main";
+
+import Project from "../../Project/Project";
 import * as fs from "fs";
 
 function CodeLinkWidgetList({widgetList}) {
@@ -13,8 +14,8 @@ function CodeLinkWidgetList({widgetList}) {
 
 
     const loadCodeLinkWidget = (history, id) => {
-        const path = Main.MainProjectPath + Main.Sep + ".ideal_project" + Main.Sep + "codelink" + Main.Sep + id;
-        const fullPath = path + Main.Sep + id + '.json';
+        const path = Project.ProjectPath + Project.Sep + ".ideal_project" + Project.Sep + "codelink" + Project.Sep + id;
+        const fullPath = path + Project.Sep + id + '.json';
 
         if (!fs.existsSync(path)) {
             console.log("Go créer un dossier ici " + path);

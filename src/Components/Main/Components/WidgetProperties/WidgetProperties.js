@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
+import Project from "../../../Project/Project";
 import Main from "../../Main";
 import Path from "../../../../utils/Path";
 import MenuFunctions from '../../Tools/MenuFunctions';
@@ -145,7 +146,7 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
+        this.state.widget.codelink = Path.build(Project.ProjectPath, ".ideal_project", "codelink", this.state.widget._id);
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
 
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});

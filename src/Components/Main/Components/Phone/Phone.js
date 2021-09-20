@@ -3,7 +3,7 @@ import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
 import {v4 as uuid} from "uuid";
 import {WidgetType} from "../../../../utils/WidgetUtils";
-import Main from "../../Main";
+import Project from "../../../Project/Project";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
 import Button from '@material-ui/core/Button';
@@ -39,15 +39,9 @@ class Phone extends React.Component {
     static instance = null;
 
     static getInstance = () => {
-
-        // TODO Application -> View (Phone = load view with ID)
-        console.log("Phone instance 1: ", Phone.instance);
-
         if (Phone.instance == null) {
             Phone.instance = React.createRef();
-            console.log("Phone instance 2: ", Phone.instance);
         }
-        console.log("Phone instance 3: ", Phone.instance);
         return Phone.instance;
     }
 
@@ -66,21 +60,21 @@ class Phone extends React.Component {
     }
 
     componentDidMount() {
-        if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
-            const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        if (Project.ProjectPath !== "" && JsonManager.exist(Path.build(Project.ProjectPath, 'Ideal_config.json'))) {
+            const jsonCode = JsonManager.get(Path.build(Project.ProjectPath, 'Ideal_config.json'));
             this.setState(jsonCode);
             this._id = jsonCode.idList._id;
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (Main.MainProjectPath === "") {
+        if (Project.ProjectPath === "") {
             return;
         }
         //console.log(this.state);
         this.pushHistory();
         const finalWidgetList = this.state;
-        JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
+        JsonManager.saveThis(finalWidgetList, Path.build(Project.ProjectPath, "Ideal_config.json"));
     }
 
     pushHistory = () => {

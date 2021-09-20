@@ -4,6 +4,7 @@ import WidgetProperties from "./Components/WidgetProperties/WidgetProperties";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
+import Project from "../Project/Project";
 import Menu from "./Components/Menu/Menu";
 import Phones from "./Components/Phones/Phones";
 import Dialog from './Components/Dialog/Dialog';
@@ -24,27 +25,33 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
 
-        if (window.navigator.platform === "Win32") {
-            Main.CopyCmd = 'copy';
-            Main.Sep = '\\';
-        }
+        Main.IdealDir = Project.IdealDir;
+        Main.MainProjectPath = Project.ProjectPath;
+        Main.FlutterSDK = Project.FlutterSDK;
+        Main.Sep = Project.Sep;
+        Main.CopyCmd = Project.CopyCmd;
 
-        new Path();
-
-        try {
-            const path = Path.build(app.getPath('documents'), 'Ideal');
-            console.log(path);
-            const data = JsonManager.get(Path.build(path, 'config.json'));
-            console.log(data);
-            Main.MainProjectPath = data.ProjectPathAutoSaved;
-            Main.FlutterSDK = data.FlutterSDK;
-            Main.IdealDir = path;
-        } catch (e) {
-            console.log('Config does not exist, trying to create Ideal folder');
-            Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
-            if (!Main.fs.existsSync(Main.IdealDir))
-                Main.fs.mkdirSync(Main.IdealDir);
-        }
+        // if (window.navigator.platform === "Win32") {
+        //     Main.CopyCmd = 'copy';
+        //     Main.Sep = '\\';
+        // }
+        //
+        // new Path();
+        //
+        // try {
+        //     const path = Path.build(app.getPath('documents'), 'Ideal');
+        //     console.log(path);
+        //     const data = JsonManager.get(Path.build(path, 'config.json'));
+        //     console.log(data);
+        //     Main.MainProjectPath = data.ProjectPathAutoSaved;
+        //     Main.FlutterSDK = data.FlutterSDK;
+        //     Main.IdealDir = path;
+        // } catch (e) {
+        //     console.log('Config does not exist, trying to create Ideal folder');
+        //     Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
+        //     if (!Main.fs.existsSync(Main.IdealDir))
+        //         Main.fs.mkdirSync(Main.IdealDir);
+        // }
     }
 
     render() {
@@ -63,6 +70,5 @@ class Main extends React.Component {
         );
     }
 }
-
 
 export default Main

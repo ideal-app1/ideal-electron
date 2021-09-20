@@ -8,7 +8,7 @@ import Process from "./Tools/Process"
 import "./Menu.css"
 import "./Dropdrownmenu.css"
 
-import Main from "../../Main";
+import Project from "../../../Project/Project";
 import JsonManager from "../../Tools/JsonManager";
 import FlutterManager from "../Phone/Tools/FlutterManager";
 import {CSSTransition} from "react-transition-group";
@@ -40,21 +40,21 @@ export default function Menu() {
     const dialog = Dialog.getInstance();
 
     const newProject = async () => {
-        if (!Main.FlutterSDK) {
+        if (!Project.FlutterSDK) {
             const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
-            Main.FlutterSDK = Path.build(project.dir, "bin", "flutter");
+            Project.FlutterSDK = Path.build(project.dir, "bin", "flutter");
         }
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
-        Main.MainProjectPath = Path.build(project.dir, project.name);
+        Project.ProjectPath = Path.build(project.dir, project.name);
 
-        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
-            fs.mkdirSync(Path.build(Main.MainProjectPath, 'codelink'));
+        Process.runScript(Project.FlutterSDK + " create " + Project.ProjectPath, () => {
+            fs.writeFileSync(Path.build(Project.ProjectPath, 'lib', 'main.dart'), mainDartCode)
+            fs.mkdirSync(Path.build(Project.ProjectPath, 'codelink'));
             JsonManager.saveThis({
-                ProjectPathAutoSaved: Main.MainProjectPath,
-                FlutterSDK: Main.FlutterSDK
-            }, Path.build(Main.IdealDir, "config.json"));
+                ProjectPathAutoSaved: Project.ProjectPath,
+                FlutterSDK: Project.FlutterSDK
+            }, Path.build(Project.IdealDir, "config.json"));
             phone.current.resetState();
             dialog.current.unsetDialog();
         });
@@ -82,18 +82,18 @@ export default function Menu() {
     }
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+        const jsonCode = JsonManager.get(Path.build(Project.ProjectPath, 'Ideal_config.json'));
+        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Project.ProjectPath, 'lib', 'main.dart'));
+        Process.runScript("cd " + Project.ProjectPath + " && " + Project.FlutterSDK + " run ");
         const data = {
             'imports': new Set(),
             'functions': [],
         }
 
-        getEveryCodeLinkData(data, path.join(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        getEveryCodeLinkData(data, path.join(Project.ProjectPath, '.ideal_project', 'codelink'));
         console.log(data);
-        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Project.ProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        Process.runScript("cd " + Project.ProjectPath + " && flutter run ");
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
