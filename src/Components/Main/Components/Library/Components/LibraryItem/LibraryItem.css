@@ -1,0 +1,25 @@
+
+.library-item {
+    text-align: center;
+    padding: 10px 50px 10px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    height: fit-content;
+}
+
+.library-item.item-material {
+    background: whitesmoke;
+}
+
+.library-item.item-layout {
+    background: whitesmoke;
+    border-width: 3px;
+    border-style: solid;
+}
+
+.library-item.empty {
+    background: none;
+}

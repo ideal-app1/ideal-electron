@@ -254,6 +254,15 @@ class Phone extends React.Component {
                 <Button variant="contained" color="secondary" onClick={() => {this.resetState()}}>
                     CLEAR
                 </Button>
+                <Button variant="contained" color="secondary" onClick={() => {this.forceUpdate()}}>
+                    UPDATE
+                </Button>
+                <Button variant="contained" color="secondary" onClick={() => {
+                    this.state.widgetList.forEach(w => w.group === "layout" ? (w.visualizer ? w.visualizer = !w.visualizer : w.visualizer = true) : null)
+                    this.forceUpdate()
+                }}>
+                    VISUALIZER
+                </Button>
             </Fragment>
         );
     }

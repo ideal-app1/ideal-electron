@@ -67,7 +67,7 @@ const Widget = props => {
 
     return (
         <div
-            className={"widget " + props.name}
+            className={"widget " + props.name.toLowerCase()}
             style={isOver ? {...DisplayWidgetsStyle.Display[props.display](props).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
                 event.stopPropagation()
