@@ -33,8 +33,14 @@
     font-size: 20px !important;
 }
 
-.property_name {
+.property-name-material {
     width: 80px;
+    margin-right: 8px;
+    text-align: right;
+}
+
+.property-name-layout {
+    width: 145px;
     margin-right: 8px;
     text-align: right;
 }

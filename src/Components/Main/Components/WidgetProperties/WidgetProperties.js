@@ -188,14 +188,14 @@ class WidgetProperties extends React.Component {
               <Fragment>
                   <ListSubheader>{this.state.widget.name}</ListSubheader>
                   <ListItem>
-                      <div className={"property_name"}>group:</div>
+                      <div className={"property-name-" + this.state.widget.group}>group:</div>
                       {this.state.widget.group}
                   </ListItem>
                   {
                       Object.entries(this.state.widget.properties).map(([key, value]) => {
                           return (
                             <ListItem key={this.state.widget._id + key}>
-                                <div className={"property_name"}>{key}:</div>
+                                <div className={"property-name-" + this.state.widget.group}>{key}:</div>
                                 {this.widgetPropType(value)}
                             </ListItem>
                           );

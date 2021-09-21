@@ -1,7 +1,7 @@
 import React, {Fragment} from "react";
 import "./Library.css"
 import {v4 as uuid} from 'uuid';
-import LibraryWidget from "./Components/LibraryWidget/LibraryWidget";
+import LibraryItem from './Components/LibraryItem/LibraryItem';
 import {PropType, WidgetGroup, WidgetType} from "../../../../utils/WidgetUtils";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -11,6 +11,32 @@ import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
 
 export const Library = () => {
 
+    const defaultProperties = {
+        mainAxisAlignment: {
+            value: "MainAxisAlignment.start",
+            type: PropType.COMBOBOX,
+            items: [
+                {name: 'start', value: 'MainAxisAlignment.start', style: 'flex-start'},
+                {name: 'center', value: 'MainAxisAlignment.center', style: 'center'},
+                {name: 'end', value: 'MainAxisAlignment.end', style: 'flex-end'},
+                {name: 'spaceAround', value: 'MainAxisAlignment.spaceAround', style: 'space-around'},
+                {name: 'spaceBetween', value: 'MainAxisAlignment.spaceBetween', style: 'space-between'},
+                {name: 'spaceEvenly', value: 'MainAxisAlignment.spaceEvenly', style: 'space-evenly'}
+            ]
+        },
+        crossAxisAlignment: {
+            value: "CrossAxisAlignment.start",
+            type: PropType.COMBOBOX,
+            items: [
+                {name: 'start', value: 'CrossAxisAlignment.start', style: 'flex-start'},
+                {name: 'center', value: 'CrossAxisAlignment.center', style: 'center'},
+                {name: 'end', value: 'CrossAxisAlignment.end', style: 'flex-end'},
+                {name: 'baseline', value: 'CrossAxisAlignment.baseline', style: 'baseline'},
+                {name: 'stretch', value: 'CrossAxisAlignment.stretch', style: 'stretch'}
+            ]
+        }
+    }
+
     const layouts = {
         column: {
             _id: uuid(),
@@ -18,31 +44,10 @@ export const Library = () => {
             codePathFile: "Column.dart",
             properties: {
                 direction: "column",
-                justify: {
-                    value: "flex-start",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "flex-start",
-                        "center",
-                        "flex-end"
-                    ]
-                },
-                align: {
-                    value: "flex-start",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "flex-start",
-                        "center",
-                        "flex-end"
-                    ]
-                },
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
+                mainAxisAlignment: defaultProperties.mainAxisAlignment,
+                crossAxisAlignment: defaultProperties.crossAxisAlignment
             },
             display: DisplayWidgetsStyle.DisplayKeys.Column,
-
         },
         row: {
             _id: uuid(),
@@ -50,25 +55,9 @@ export const Library = () => {
             codePathFile: "Row.dart",
             properties: {
                 direction: "row",
-                justify: {
-                    value: "flex-start",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "flex-start",
-                        "center",
-                        "flex-end"
-                    ]
-                },
-                align: {
-                    value: "flex-start",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "flex-start",
-                        "center",
-                        "flex-end"
-                    ]
-                },
-                height: {
+                mainAxisAlignment: defaultProperties.mainAxisAlignment,
+                crossAxisAlignment: defaultProperties.crossAxisAlignment,
+                width: {
                     value: 100,
                     type: PropType.NUMFIELD
                 }
@@ -81,14 +70,30 @@ export const Library = () => {
             codePathFile: "Center.dart",
             properties: {
                 direction: "column",
-                justify: "center",
-                align: "center"
+                mainAxisAlignment: "center",
+                crossAxisAlignment: "center"
             },
             display: DisplayWidgetsStyle.DisplayKeys.Center
         },
+        //stack
+        /*padding: {
+            _id: uuid(),
+            name: "Padding",
+            codePathFile: "Padding.dart",
+            properties: {
+                padding: {
+                    value: 5,
+                    type: PropType.NUMFIELD
+                },
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Padding
+        }*/
+        //padding
     }
 
     const materials = {
+        //container
+            //color - border radius
         button: {
             _id: uuid(),
             name: "TextButton",
@@ -98,10 +103,6 @@ export const Library = () => {
                     value: "button",
                     type: PropType.TEXTFIELD,
                     codeFlag: "IDEAL_BUTTON_TEXT",
-                },
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
                 },
                 color: {
                     value: "#2190d9",
@@ -134,6 +135,7 @@ export const Library = () => {
             },
             display: DisplayWidgetsStyle.DisplayKeys.Button
         },
+        //IconButton
         text: {
             _id: uuid(),
             name: "Text",
@@ -144,6 +146,7 @@ export const Library = () => {
                     type: PropType.TEXTFIELD,
                     codeFlag: "IDEAL_TEXT",
                 },
+                //font-size
                 overflow: {
                     value: 'TextOverflow.clip',
                     type: PropType.COMBOBOX,
@@ -212,7 +215,7 @@ export const Library = () => {
                     Object.values(group.widgets).map(widget => (
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
-                                <LibraryWidget
+                                <LibraryItem
                                     {...widget}
                                     group={group.group}
                                     type={WidgetType.LIBRARY}

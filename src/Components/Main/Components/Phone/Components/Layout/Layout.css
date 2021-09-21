@@ -1,17 +1,31 @@
 
-.Column {
-    background-color: lightsalmon;
+.column {
+    border-color: lightskyblue;
 }
 
-.Row {
-    background-color: lightgreen;
+.row {
+    border-color: lightgreen;
 }
 
-.Center {
-    background-color: lightskyblue;
+.center {
+    border-color: lightsalmon;
+}
+
+.layout.base {
+    background-color: white;
+}
+
+.layout.root {
+    background-color: white !important;
+    padding: 30px 0 0; /* safe zone */
+    border: 0;
 }
 
 .layout {
+    padding: 1px;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 10px;
     height: 100%;
     cursor: pointer;
 }
