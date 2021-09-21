@@ -1,6 +1,5 @@
 const net = require('net');
-const {ipcMain, dialog} = require('electron')
-const { startServer } = require('webpack-bundle-analyzer/lib/viewer');
+const {ipcMain, dialog} = require('electron');
 
 let socketClient = null;
 
