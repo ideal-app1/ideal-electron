@@ -38,6 +38,7 @@ import CaretIcon from "./Assets/Icons/caret.svg";
 import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
+import VersionHandler from '../../../../utils/VersionHandler';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
@@ -62,6 +63,9 @@ export default function Menu() {
             fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', 'FlutterSDKIndex'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', 'FunctionBlocksIndex'), {recursive: true});
+
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterRoot: Main.FlutterRoot,
@@ -69,6 +73,8 @@ export default function Menu() {
             }, Path.build(Main.IdealDir, "config.json"));
             phone.current.resetState();
             dialog.current.unsetDialog();
+            new VersionHandler();
+
         });
     }
 

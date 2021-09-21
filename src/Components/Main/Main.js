@@ -9,7 +9,7 @@ import Phones from "./Components/Phones/Phones";
 import Dialog from './Components/Dialog/Dialog';
 import JsonManager from './Tools/JsonManager';
 import Path from '../../utils/Path';
-import codelinkBlocks from '../CodeLink/Tools/FunctionBlocks';
+import VersionHandler from '../../utils/VersionHandler';
 
 const app = window.require('electron').remote.app;
 
@@ -45,7 +45,7 @@ class Main extends React.Component {
             Main.FlutterSDK = data.FlutterSDK;
             console.log(`MainProject ${Main.MainProjectPath}`);
             Main.IdealDir = path;
-            codelinkBlocks.forEach(x => Main.fs.writeFileSync(Path.build(Main.IdealDir, 'codelink', 'default', x), require('../CodeLink/FunctionBlocks/' + x)));
+            new VersionHandler();
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');
             Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
