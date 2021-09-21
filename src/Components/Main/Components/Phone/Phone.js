@@ -3,7 +3,7 @@ import "./Phone.css"
 import Layout from "./Components/Layout/Layout";
 import {v4 as uuid} from "uuid";
 import {WidgetType} from "../../../../utils/WidgetUtils";
-import Project from "../../../Project/Project";
+import Main from "../../Main";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
 import Button from '@material-ui/core/Button';
@@ -31,17 +31,16 @@ class Phone extends React.Component {
             redo: this.redoHistory
         };
         ipcRenderer.on('handle-shortcut', (event, arg) => {
-            if (this.shortcuts[arg])
-                this.shortcuts[arg]();
+            this.shortcuts[arg]?.();
         });
     }
 
     static instance = null;
 
     static getInstance = () => {
-        if (Phone.instance == null) {
+        if (Phone.instance == null)
             Phone.instance = React.createRef();
-        }
+
         return Phone.instance;
     }
 
@@ -59,22 +58,25 @@ class Phone extends React.Component {
         this.historyChange = false;
     }
 
-    componentDidMount() {
-        if (Project.ProjectPath !== "" && JsonManager.exist(Path.build(Project.ProjectPath, 'Ideal_config.json'))) {
-            const jsonCode = JsonManager.get(Path.build(Project.ProjectPath, 'Ideal_config.json'));
+    load() {
+        if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
+            const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
             this.setState(jsonCode);
             this._id = jsonCode.idList._id;
         }
     }
 
+    componentDidMount() {
+        this.load();
+    }
+
     componentDidUpdate(prevProps, prevState) {
-        if (Project.ProjectPath === "") {
+        if (Main.MainProjectPath === "") {
             return;
         }
-        //console.log(this.state);
         this.pushHistory();
         const finalWidgetList = this.state;
-        JsonManager.saveThis(finalWidgetList, Path.build(Project.ProjectPath, "Ideal_config.json"));
+        JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
     }
 
     pushHistory = () => {
@@ -148,7 +150,7 @@ class Phone extends React.Component {
             return null
         let finalListItem = {}
         if (idItem._id !== this._id)
-                finalListItem = this.findWidgetByID(idItem._id)
+            finalListItem = this.findWidgetByID(idItem._id)
         finalListItem.list = []
         for (let i = 0; i < idItem.list.length; i++) {
             finalListItem.list.push(this.deepConstruct(idItem.list[i]))
@@ -243,7 +245,7 @@ class Phone extends React.Component {
                         group={"layout"}
                         properties={{
                             direction: "column",
-                            justify: "flex-start",
+                            justifyContent: "flex-start",
                             align: "flex-start"
                         }}
                         list={this.state.idList.list}

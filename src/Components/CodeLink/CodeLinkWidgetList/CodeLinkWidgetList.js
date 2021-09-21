@@ -5,37 +5,36 @@ import {Button, ListItem} from "@material-ui/core";
 import CodeLinkWidgetListSearch from "./CodeLinkWidgetListSearch.js";
 import {Route} from "react-router-dom";
 
-import Project from "../../Project/Project";
+import Main from "../../Main/Main";
 import * as fs from "fs";
 
 function CodeLinkWidgetList({widgetList}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredWidgets, setFilteredWidgets] = useState(widgetList);
 
-
     const loadCodeLinkWidget = (history, id) => {
-        const path = Project.ProjectPath + Project.Sep + ".ideal_project" + Project.Sep + "codelink" + Project.Sep + id;
-        const fullPath = path + Project.Sep + id + '.json';
+        const path = Main.MainProjectPath + Main.Sep + ".ideal_project" + Main.Sep + "codelink" + Main.Sep + id;
+        const fullPath = path + Main.Sep + id + '.json';
 
-        if (!fs.existsSync(path)) {
-            console.log("Go créer un dossier ici " + path);
-            fs.mkdirSync(path, {recursive: true});
-        }
-
-        if (!fs.existsSync(fullPath)) {
-            fs.appendFile(fullPath, null, { flag: 'wx' }, function (err) {
-                if (err) throw err;
-                console.log("It's saved here " + fullPath);
-            });
-        }
-
-        history.push({
-            pathname: '/codelink/' + id,
-            state: {
-                _id: id,
-                path: path,
-            }
-        })
+        // if (!fs.existsSync(path)) {
+        //     console.log("Go créer un dossier ici " + path);
+        //     fs.mkdirSync(path, {recursive: true});
+        // }
+        //
+        // if (!fs.existsSync(fullPath)) {
+        //     fs.appendFile(fullPath, null, { flag: 'wx' }, function (err) {
+        //         if (err) throw err;
+        //         console.log("It's saved here " + fullPath);
+        //     });
+        // }
+        //
+        // history.push({
+        //     pathname: '/codelink/' + id,
+        //     state: {
+        //         _id: id,
+        //         path: path,
+        //     }
+        // })
     }
 
     return (

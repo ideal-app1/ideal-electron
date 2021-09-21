@@ -13,7 +13,6 @@ import Select from '@material-ui/core/Select';
 import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
 import {Route} from "react-router-dom";
 import Phone from "../Phone/Phone";
-import Project from "../../../Project/Project";
 import Main from "../../Main";
 import Path from "../../../../utils/Path";
 import MenuFunctions from '../../Tools/MenuFunctions';
@@ -36,8 +35,8 @@ class WidgetProperties extends React.Component {
             paste: menuFunc.paste
         };
         ipcRenderer.on('handle-shortcut', (event, arg) => {
-            if (this.state.widget && this.shortcuts[arg])
-                this.shortcuts[arg](this.state)
+            if (this.state.widget)
+                this.shortcuts[arg]?.(this.state)
         });
     }
 
@@ -146,8 +145,9 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = Path.build(Project.ProjectPath, ".ideal_project", "codelink", this.state.widget._id);
+        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
+        return;
 
         fs.mkdirSync(this.state.widget.codelink, {recursive: true});
         this.createFile(fullPath)
@@ -162,10 +162,15 @@ class WidgetProperties extends React.Component {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
+
+                                    console.log(`PUSH `);
+                                    console.log(this.state.widget)
                                     history.push({
                                         pathname: '/codelink/' + this.state.widget._id,
                                         state: {
                                             _id: this.state.widget._id,
+                                            name: this.state.widget.name,
+                                            variableName: this.state.widget.properties.name,
                                             path: this.state.widget.codelink
                                         }
                                     })
@@ -209,7 +214,7 @@ class WidgetProperties extends React.Component {
     }
 
     render () {
-        
+
         return (
             <List className={"widget-properties"}>
                 {this.onSelection()}

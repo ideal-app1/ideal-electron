@@ -3,12 +3,14 @@ import React, {useEffect, useRef, useState} from "react";
 import Button from '@material-ui/core/Button';
 import UiMenu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+const { ipcRenderer } = window.require('electron');
 
 import Process from "./Tools/Process"
 import "./Menu.css"
 import "./Dropdrownmenu.css"
+const path = require('path');
 
-import Project from "../../../Project/Project";
+import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
 import FlutterManager from "../Phone/Tools/FlutterManager";
 import {CSSTransition} from "react-transition-group";
@@ -22,6 +24,8 @@ import FlutterSDK from '../Dialog/Components/Modal/Components/FlutterSDK/Flutter
 import Loading from '../Dialog/Components/Loading/Loading';
 
 import Path from '../../../../utils/Path';
+import LoadProject from "../Dialog/Components/Modal/Components/LoadProject/LoadProject";
+import FolderIcon from '@material-ui/icons/Folder';
 const fs = window.require('fs');
 const mainDartCode = require("../../../../flutterCode/main.dart")
 
@@ -31,30 +35,36 @@ import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
 import CaretIcon from "./Assets/Icons/caret.svg";
+import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import moveFiles from './Tools/MoveFiles';
+import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
+//TODO renommer cette class
 export default function Menu() {
 
     const phone = Phone.getInstance();
     const dialog = Dialog.getInstance();
 
     const newProject = async () => {
-        if (!Project.FlutterSDK) {
-            const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
-            Project.FlutterSDK = Path.build(project.dir, "bin", "flutter");
+        if (!Main.FlutterSDK) {
+            const sdk = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
+            Main.FlutterSDK = Path.build(sdk.dir, "bin", "flutter");
         }
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
-        Project.ProjectPath = Path.build(project.dir, project.name);
+        Main.MainProjectPath = Path.build(project.dir, project.name);
 
-        Process.runScript(Project.FlutterSDK + " create " + Project.ProjectPath, () => {
-            fs.writeFileSync(Path.build(Project.ProjectPath, 'lib', 'main.dart'), mainDartCode)
-            fs.mkdirSync(Path.build(Project.ProjectPath, 'codelink'));
+        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
+            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
+            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
             JsonManager.saveThis({
-                ProjectPathAutoSaved: Project.ProjectPath,
-                FlutterSDK: Project.FlutterSDK
-            }, Path.build(Project.IdealDir, "config.json"));
+                ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterSDK: Main.FlutterSDK
+            }, Path.build(Main.IdealDir, "config.json"));
             phone.current.resetState();
             dialog.current.unsetDialog();
         });
@@ -63,6 +73,8 @@ export default function Menu() {
     const getACodeLinkData = (fullData, file) => {
         const data =  JSON.parse(fs.readFileSync(file).toString());
 
+        console.log("Data ? ");
+        console.log(data)
         data.imports.forEach((elem) => fullData.imports.add(elem));
         fullData.functions.push(data.function);
 
@@ -70,31 +82,46 @@ export default function Menu() {
 
     const getEveryCodeLinkData = (fullData, dirPath) => {
         const filesInDirectory = fs.readdirSync(dirPath);
+
         for (const file of filesInDirectory) {
-            const absolute = path.join(dirPath, file);
+            const absolute = Path.build(dirPath, file);
+
             if (fs.statSync(absolute).isDirectory()) {
                 getEveryCodeLinkData(fullData, absolute);
             } else if (path.extname(absolute) === ".json" &&
-              path.basename(absolute).startsWith('CodeLinkCode_')) {
+                path.basename(absolute).startsWith('CodeLinkCode_')) {
                 getACodeLinkData(fullData, absolute);
             }
         }
-    }
+    };
 
     const runProject = (event) => {
-        const jsonCode = JsonManager.get(Path.build(Project.ProjectPath, 'Ideal_config.json'));
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Project.ProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Project.ProjectPath + " && " + Project.FlutterSDK + " run ");
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        // todo send to code handler merci
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         const data = {
-            'imports': new Set(),
-            'functions': [],
-        }
+            'requestType' : 'creator',
+            'parameters': {
+                'path': Main.MainProjectPath,
+                'view': Main.CurrentView,
+                'code': {
+                    'imports': new Set(),
+                    'functions': [],
+                    'declarations': codeHandlerFormat['declarations'],
+                    'initialization': codeHandlerFormat['initialization'],
+                }
+            }
+        };
+        getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
 
-        getEveryCodeLinkData(data, path.join(Project.ProjectPath, '.ideal_project', 'codelink'));
         console.log(data);
-        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Project.ProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Project.ProjectPath + " && flutter run ");
-    }
+        ipcRenderer.send('send-socket-message', JSON.stringify(data));
+        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
+        //Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+    };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -108,10 +135,21 @@ export default function Menu() {
 
     const { shell } = window.require('electron');
 
+    const loadProject = async () => {
+        const project = await dialog.current.createDialog(<Modal modal={<LoadProject/>}/>);
+        Main.MainProjectPath = project.dir;
+        JsonManager.saveThis({
+            ProjectPathAutoSaved: Main.MainProjectPath,
+            FlutterSDK: Main.FlutterSDK
+        }, Path.build(Main.IdealDir, "config.json"));
+        phone.current.load();
+    }
+
     return (
         <div className={"new"}>
             <Navbar>
                 <h1>IDEAL</h1>
+                <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
                 <NavItem icon={<PlusIcon onClick={newProject}/>}/>
                 <NavItem icon={<ChevronIcon onClick={runProject} />}/>
                 <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
@@ -153,6 +191,125 @@ function NavItem(props) {
 
             {open && props.children}
         </li>
+    );
+}
+
+function Dropdown() {
+    const [activeMenu, setActiveMenu] = useState('main');
+    const [menuHeight, setMenuHeight] = useState(null);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        setMenuHeight(dropdownRef.current?.firstChild.offsetHeight)
+    }, [])
+
+    function calcHeight(el) {
+        const height = el.offsetHeight;
+        setMenuHeight(height);
+    }
+
+    function DropdownItem(props) {
+        return (
+            <a href="#" className="menu-item" onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function Discord() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://discord.gg/4T9DGFvA')
+    }
+
+    function Feedback() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
+    }
+
+    function DocumentationLink() {
+        const { shell } = window.require('electron');
+        shell.openExternal('https://docs.idealapp.fr')
+    }
+
+    function DiscordButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Discord}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function FeedbackButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Feedback}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function DocButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={DocumentationLink}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function LogoutAuth() {
+        authService.logout();
+    }
+
+    function LogoutButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={LogoutAuth}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    return (
+        <div className="dropdown" style={{height: menuHeight}} ref={dropdownRef}>
+            <CSSTransition
+                in={activeMenu === 'main'}
+                timeout={500}
+                classNames="menu-primary"
+                unmountOnExit
+                onEnter={calcHeight}>
+                <div className="menu">
+                    <LogoutButton leftIcon={<BoltIcon/>}>Logout</LogoutButton>
+                    <DropdownItem
+                        leftIcon={<CogIcon/>}
+                        goToMenu="settings">
+                        Settings
+                    </DropdownItem>
+                </div>
+            </CSSTransition>
+
+
+            <CSSTransition
+                in={activeMenu === 'settings'}
+                timeout={500}
+                classNames="menu-secondary"
+                unmountOnExit
+                onEnter={calcHeight}>
+                <div className="menu">
+                    <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}/>
+                    <FeedbackButton>Feedback</FeedbackButton>
+                    <DocButton>Documentation</DocButton>
+                    <DiscordButton>Report bug / Need help</DiscordButton>
+                </div>
+            </CSSTransition>
+        </div>
     );
 }
 

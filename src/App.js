@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
+import Main from "./Components/Main/Main";
 import Login from "./Components/Login/Login"
+import CodeLink from "./Components/CodeLink/CodeLink";
 import authService from "./service/auth-service";
-import Project from "./Components/Project/Project";
 
 async function authentication({setAuthenticated}) {
     try {
@@ -30,7 +31,7 @@ function App () {
         return <Login setAuthenticated={setAuthenticated} />
     }*/
 
-    const darkTheme = createMuiTheme({
+    const darkTheme = createTheme({
         palette: {
             type: 'dark',
         },
@@ -39,7 +40,14 @@ function App () {
     return (
         <ThemeProvider theme={darkTheme}>
             <div className={"wrapper"}>
-                <Project ref={Project.getInstance()}/>
+                <Router>
+                    <Switch>
+                        <Route exact path="/">
+                            <Main/>
+                        </Route>
+                        <Route exact path="/codelink/:id" component={CodeLink}/>
+                    </Switch>
+                </Router>
             </div>
         </ThemeProvider>
     );

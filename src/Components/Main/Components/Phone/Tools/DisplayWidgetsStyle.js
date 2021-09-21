@@ -42,7 +42,7 @@ class DisplayWidgetsStyle extends React.Component {
             return {
                 display: widget.properties.text.value,
                 style: {
-                    backgroundColor: widget.properties.state.value === "disabled" ? "lightgray" : widget.properties.color.value,
+                    backgroundColor: widget.properties.enable.value === "disabled" ? "lightgray" : widget.properties.color.value,
                     width: widget.properties.width.value,
                     height: widget.properties.height.value
                 }

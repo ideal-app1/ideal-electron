@@ -14,9 +14,13 @@ export const Library = () => {
     const layouts = {
         column: {
             _id: uuid(),
-            name: "column",
+            name: "Column",
             codePathFile: "Column.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 justify: {
                     value: "flex-start",
@@ -35,16 +39,20 @@ export const Library = () => {
                         "center",
                         "flex-end"
                     ]
-                }
+                },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Column,
 
         },
         row: {
             _id: uuid(),
-            name: "row",
+            name: "Row",
             codePathFile: "Row.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "row",
                 justify: {
                     value: "flex-start",
@@ -73,9 +81,13 @@ export const Library = () => {
         },
         center: {
             _id: uuid(),
-            name: "center",
+            name: "Center",
             codePathFile: "Center.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 justify: "center",
                 align: "center"
@@ -87,13 +99,17 @@ export const Library = () => {
     const materials = {
         button: {
             _id: uuid(),
-            name: "button",
+            name: "TextButton",
             codePathFile: "Button.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_BUTTON_TEXT",
+                    variableName: "ideal_text",
                 },
                 color: {
                     value: "#2190d9",
@@ -104,37 +120,37 @@ export const Library = () => {
                         "green"
                     ],
                 },
-                state: {
-                    value: "enabled",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "enabled",
-                        "disabled"
-                    ],
-                    codeFlag: "IDEAL_BUTTON_STATE",
+                enable: {
+                    value: true,
+                    type: PropType.CHECKBOX,
+                    variableName: "ideal_enable",
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_WIDTH",
+                    variableName: "ideal_width",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_HEIGHT",
+                    variableName: "ideal_height",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Button
         },
         text: {
             _id: uuid(),
-            name: "text",
+            name: "Text",
             codePathFile: "Text.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_TEXT",
+                    variableName: "ideal_data",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -143,20 +159,24 @@ export const Library = () => {
                         {name: 'clip', value: 'TextOverflow.clip'},
                         {name: 'ellipsis', value: 'TextOverflow.ellipsis'},
                         {name: 'fade', value: 'TextOverflow.fade'}
-                    ]
+                    ],
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Text
         },
         textfield: {
             _id: uuid(),
-            name: "text field",
+            name: "TextField",
             codePathFile: "TextField.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_PLACEHOLDER",
+                    variableName: "ideal_placeholder",
                 },
                 focus: false
             },
@@ -164,13 +184,17 @@ export const Library = () => {
         },
         image: {
             _id: uuid(),
-            name: "image",
+            name: "Image",
             codePathFile: "Image.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 url: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_URL",
+                    variableName: "ideal_url",
                 },
                 rounded: {
                     value: true,
@@ -179,12 +203,12 @@ export const Library = () => {
                 width: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_WIDTH",
+                    variableName: "ideal_width",
                 },
                 height: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_HEIGHT",
+                    variableName: "ideal_height",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image

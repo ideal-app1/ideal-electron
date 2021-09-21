@@ -3,20 +3,17 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createFunctionNode = (func, LCanvas) => {
+const createFunctionNode = (func, LCanvas, path) => {
 
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
-
-
-
 
     function FunctionNode() {
         inheritNodeBase(FunctionNode);
         this.handleInputsOutputs();
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
     FunctionNode.prototype.handleInputsOutputs = function ()  {
@@ -31,7 +28,7 @@ const createFunctionNode = (func, LCanvas) => {
     }
 
     function handleAParam(node, buffer) {
-        buffer += node.randomName + ", ";
+        buffer += node.varName + ", ";
 
         return (buffer);
     }
@@ -92,6 +89,8 @@ const createFunctionNode = (func, LCanvas) => {
     }
 
     FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+        if (!link)
+            return
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
         isACallbackParameter(node, index, isConnected);
@@ -101,7 +100,7 @@ const createFunctionNode = (func, LCanvas) => {
     FunctionNode.prototype.createCode = function () {
         console.log("This is my tracker: ");
         console.log(this.callbackTracker);
-        let buffer = "const " + func["return"] + " " + this.randomName + " = " + this.title + "(";
+        let buffer = "const " + func["return"] + " " + this.varName + " = " + this.title + "(";
         const nbOfInputs = func["parameters"].length;
         let node = undefined;
 
@@ -126,7 +125,7 @@ const createFunctionNode = (func, LCanvas) => {
 
     FunctionNode.prototype.createCallback = function () {
 
-        let buffer = 'const dynamic ' + this.randomName + ' = ' + func['name'] + ';'
+        let buffer = 'const dynamic ' + this.varName + ' = ' + func['name'] + ';'
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
@@ -144,6 +143,6 @@ const createFunctionNode = (func, LCanvas) => {
         sharedBuffer.addImport(func['import']);
     }
 
-    LiteGraph.registerNodeType("Custom Functions/" + func["name"], FunctionNode);
+    LiteGraph.registerNodeType(path + func["name"], FunctionNode);
 }
 export default createFunctionNode
