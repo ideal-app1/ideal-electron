@@ -100,10 +100,7 @@ export default function Menu() {
         console.log('AFTER');
     };
 
-    const runProject = (event) => {
-        Process.runScript()
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+    const getDataToCreate = () => {
         const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         const data = {
             'requestType' : 'creator',
@@ -120,15 +117,16 @@ export default function Menu() {
         };
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
-        ipcRenderer.send('processExec', ['dart', 'C:\\Users\\Axel\\Documents\\indexer\\bin\\Main.dart', 'indexer', JSON.stringify( {
-            'requestType': 'index',
-            'parameters': {
-                'pathToIndex': 'C:\\Users\\Axel\\Desktop\\hehe\\lib',
-                'finalPath': 'C:\\Users\\Axel\\Desktop\\New folder',
-                'verbose' : true
-            }
-        })]);
-        ipcRenderer.on('processEnd', afterCodeCreator);
+        return JSON.stringify(data);
+    };
+
+    const runProject = (_) => {
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        const data = getDataToCreate();
+
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        moveFiles(Path.build(Main.IdealDir, 'FunctionBlocksIndex'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
+        Process.runScript('dart pub global run ideal_dart_code_handler creator ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
