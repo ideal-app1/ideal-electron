@@ -230,7 +230,8 @@
     "regenerator-runtime": "^0.13.5",
     "rfdc": "^1.3.0",
     "source-map-support": "^0.5.19",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "tree-kill": "latest"
   },
   "devEngines": {
     "node": ">=10.x",
