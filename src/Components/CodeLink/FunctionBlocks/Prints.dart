@@ -16,11 +16,6 @@ bool onPressed(bool button) {
     return true;
 }
 
-bool ifCondition(int a, int b) {
-
-  return false;
-}
-
 int getMaxNumber(int a, int b) {
   if (a > b)
     return (a);
@@ -43,4 +38,14 @@ String UpperString(String str) {
 String LowerString(String str) {
   String res = str.toLowerCase();
   return (res);
+}
+
+void PrintAllMap(var data)
+{
+  data.forEach((k, v) => print('${k}: ${v}'));
+}
+
+void PrintFirstList(List data)
+{
+  print(data.first);
 }

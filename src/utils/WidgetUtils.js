@@ -16,3 +16,11 @@ export const PropType = {
     COMBOBOX: 'combo',
     FILE: 'file'
 }
+
+export const TypeToGetValue = {
+    'textfield': (value) => {return "\"" + value + "\"";},
+    'numfield': (value) => {return value;},
+    'check': (value) => {return (value);},
+    'combo': (value) => {return value;},
+    'file': (value) => {return value;},
+}

@@ -43,6 +43,10 @@ export const Library = () => {
             name: "Column",
             codePathFile: "Column.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment
@@ -54,6 +58,10 @@ export const Library = () => {
             name: "Row",
             codePathFile: "Row.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "row",
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment,
@@ -69,6 +77,10 @@ export const Library = () => {
             name: "Center",
             codePathFile: "Center.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 direction: "column",
                 mainAxisAlignment: "center",
                 crossAxisAlignment: "center"
@@ -99,10 +111,14 @@ export const Library = () => {
             name: "TextButton",
             codePathFile: "Button.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_BUTTON_TEXT",
+                    variableName: "ideal_text",
                 },
                 color: {
                     value: "#2190d9",
@@ -113,24 +129,20 @@ export const Library = () => {
                         "green"
                     ],
                 },
-                state: {
-                    value: "enabled",
-                    type: PropType.COMBOBOX,
-                    items: [
-                        "enabled",
-                        "disabled"
-                    ],
-                    codeFlag: "IDEAL_BUTTON_STATE",
+                enable: {
+                    value: true,
+                    type: PropType.CHECKBOX,
+                    variableName: "ideal_enable",
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_WIDTH",
+                    variableName: "ideal_width",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_BUTTON_HEIGHT",
+                    variableName: "ideal_height",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Button
@@ -141,10 +153,14 @@ export const Library = () => {
             name: "Text",
             codePathFile: "Text.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_TEXT",
+                    variableName: "ideal_data",
                 },
                 //font-size
                 overflow: {
@@ -154,7 +170,7 @@ export const Library = () => {
                         {name: 'clip', value: 'TextOverflow.clip'},
                         {name: 'ellipsis', value: 'TextOverflow.ellipsis'},
                         {name: 'fade', value: 'TextOverflow.fade'}
-                    ]
+                    ],
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Text
@@ -164,10 +180,14 @@ export const Library = () => {
             name: "TextField",
             codePathFile: "TextField.dart",
             properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_PLACEHOLDER",
+                    variableName: "ideal_placeholder",
                 },
                 focus: false
             },
@@ -181,7 +201,7 @@ export const Library = () => {
                 url: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    codeFlag: "IDEAL_URL",
+                    variableName: "ideal_url",
                 },
                 rounded: {
                     value: true,
@@ -190,12 +210,12 @@ export const Library = () => {
                 width: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_WIDTH",
+                    variableName: "ideal_width",
                 },
                 height: {
                     value: 200,
                     type: PropType.NUMFIELD,
-                    codeFlag: "IDEAL_IMAGE_HEIGHT",
+                    variableName: "ideal_height",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image

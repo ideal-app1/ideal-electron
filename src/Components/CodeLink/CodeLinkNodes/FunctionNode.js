@@ -8,15 +8,12 @@ const createFunctionNode = (func, LCanvas, path) => {
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
 
-
-
-
     function FunctionNode() {
         inheritNodeBase(FunctionNode);
         this.handleInputsOutputs();
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
     FunctionNode.prototype.handleInputsOutputs = function ()  {
@@ -31,7 +28,7 @@ const createFunctionNode = (func, LCanvas, path) => {
     }
 
     function handleAParam(node, buffer) {
-        buffer += node.randomName + ", ";
+        buffer += node.varName + ", ";
 
         return (buffer);
     }
@@ -103,7 +100,7 @@ const createFunctionNode = (func, LCanvas, path) => {
     FunctionNode.prototype.createCode = function () {
         console.log("This is my tracker: ");
         console.log(this.callbackTracker);
-        let buffer = "const " + func["return"] + " " + this.randomName + " = " + this.title + "(";
+        let buffer = "const " + func["return"] + " " + this.varName + " = " + this.title + "(";
         const nbOfInputs = func["parameters"].length;
         let node = undefined;
 
@@ -128,7 +125,7 @@ const createFunctionNode = (func, LCanvas, path) => {
 
     FunctionNode.prototype.createCallback = function () {
 
-        let buffer = 'const dynamic ' + this.randomName + ' = ' + func['name'] + ';'
+        let buffer = 'const dynamic ' + this.varName + ' = ' + func['name'] + ';'
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }

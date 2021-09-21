@@ -3,10 +3,12 @@ import React, {useEffect, useRef, useState} from "react";
 import Button from '@material-ui/core/Button';
 import UiMenu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+const { ipcRenderer } = window.require('electron');
 
 import Process from "./Tools/Process"
 import "./Menu.css"
 import "./Dropdrownmenu.css"
+const path = require('path');
 
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
@@ -35,6 +37,7 @@ import ChevronIcon from "./Assets/Icons/chevron.svg";
 import CaretIcon from "./Assets/Icons/caret.svg";
 import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import moveFiles from './Tools/MoveFiles';
+import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
@@ -70,6 +73,8 @@ export default function Menu() {
     const getACodeLinkData = (fullData, file) => {
         const data =  JSON.parse(fs.readFileSync(file).toString());
 
+        console.log("Data ? ");
+        console.log(data)
         data.imports.forEach((elem) => fullData.imports.add(elem));
         fullData.functions.push(data.function);
 
@@ -77,8 +82,10 @@ export default function Menu() {
 
     const getEveryCodeLinkData = (fullData, dirPath) => {
         const filesInDirectory = fs.readdirSync(dirPath);
+
         for (const file of filesInDirectory) {
-            const absolute = path.join(dirPath, file);
+            const absolute = Path.build(dirPath, file);
+
             if (fs.statSync(absolute).isDirectory()) {
                 getEveryCodeLinkData(fullData, absolute);
             } else if (path.extname(absolute) === ".json" &&
@@ -86,7 +93,7 @@ export default function Menu() {
                 getACodeLinkData(fullData, absolute);
             }
         }
-    }
+    };
 
     const runProject = (event) => {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
@@ -95,15 +102,26 @@ export default function Menu() {
         const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         const data = {
-            'imports': new Set(),
-            'functions': [],
-        }
+            'requestType' : 'creator',
+            'parameters': {
+                'path': Main.MainProjectPath,
+                'view': Main.CurrentView,
+                'code': {
+                    'imports': new Set(),
+                    'functions': [],
+                    'declarations': codeHandlerFormat['declarations'],
+                    'initialization': codeHandlerFormat['initialization'],
+                }
+            }
+        };
+        getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
 
-//        getEveryCodeLinkData(data, Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
-        console.log(data);
+          console.log(data);
+        ipcRenderer.send('send-socket-message', JSON.stringify(data));
         //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
-    }
+        //Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+    };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
