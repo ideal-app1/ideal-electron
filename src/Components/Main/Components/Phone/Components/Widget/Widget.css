@@ -12,20 +12,20 @@
     color: black;
 }
 
-.widget.TextButton {
+.widget.textbutton {
     background-color: #2190d9;
 }
 
-.widget.Text {
-    background-color: lightcoral;
+.widget.text {
+    padding: 2%;
 }
 
-.widget.TextField {
+.widget.textfield {
     color: rgba(0, 0, 0, 0.4);
 }
 
-.widget.Image {
-    background-color: lightpink;
+.widget.image {
+    border: #1A1A1A 1px solid;
 }
 
 .widget.empty {

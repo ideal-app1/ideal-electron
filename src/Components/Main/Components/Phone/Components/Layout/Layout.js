@@ -39,9 +39,7 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            justify={props.properties.justify.value || props.properties.justify}
-            alignItems={props.properties.align.value || props.properties.align}
-            className={"layout " + props.name}
+            className={"layout base " + props.name.toLowerCase() + (props.visualizer ? " visualizer" : "")}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {

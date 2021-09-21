@@ -49,8 +49,9 @@ export default function Menu() {
 
     const newProject = async () => {
         if (!Main.FlutterSDK) {
-            const sdk = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
-            Main.FlutterSDK = Path.build(sdk.dir, "bin", "flutter");
+            const flutter = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
+            Main.FlutterRoot = flutter.dir;
+            Main.FlutterSDK = Path.build(flutter.dir, "bin", "flutter");
         }
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
@@ -63,6 +64,7 @@ export default function Menu() {
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterRoot: Main.FlutterRoot,
                 FlutterSDK: Main.FlutterSDK
             }, Path.build(Main.IdealDir, "config.json"));
             phone.current.resetState();

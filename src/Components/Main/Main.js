@@ -40,6 +40,7 @@ class Main extends React.Component {
             const data = JsonManager.get(Path.build(path, 'config.json'));
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
+            Main.FlutterRoot = data.FlutterRoot;
             Main.FlutterSDK = data.FlutterSDK;
             console.log(`MainProject ${Main.MainProjectPath}`);
             Main.IdealDir = path;
