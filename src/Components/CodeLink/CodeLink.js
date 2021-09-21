@@ -33,16 +33,16 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        const main = Phone.getInstance();
+        const phone = Phone.getInstance();
 
-        widgetList = project.current.getWidgetIdList();
+        widgetList = phone.current.getWidgetIdList();
 
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
-        widget = project.current.findWidgetByID(props.match.params.id);
+        widget = phone.current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     };
 
@@ -217,7 +217,7 @@ function CodeLink(props) {
                           spacing={0}
                           direction="row"
                           alignItems="center"
-                          justify="center"
+                          justifyContent="center"
                     >
                         { widgetList
                             ? <CodeLinkWidgetList widgetList={widgetList} />
