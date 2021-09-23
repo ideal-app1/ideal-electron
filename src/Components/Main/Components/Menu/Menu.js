@@ -126,7 +126,8 @@ export default function Menu() {
         };
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
-        return JSON.stringify(data);
+
+        return new Buffer(JSON.stringify(data)).toString('base64');
     };
 
     const runProject = (_) => {
@@ -135,7 +136,7 @@ export default function Menu() {
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart pub global run ideal_dart_code_handler creator ' + data, () => {});
+        Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
