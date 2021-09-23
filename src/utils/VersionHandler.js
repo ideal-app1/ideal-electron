@@ -26,34 +26,34 @@ class VersionHandler {
   };
 
   moveCodeLinkCode = (toUpdateList) => {
-    codelinkBlocks.forEach(x => Main.fs.writeFileSync(Path.build(Main.IdealDir, 'codelink', 'default', x), require('../FunctionBlocks/' + x)));
+    codelinkBlocks.forEach(x => Main.fs.writeFileSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks', x), require('../FunctionBlocks/' + x)));
     this.update(toUpdateList);
   };
 
   indexFlutterSources = (toUpdateList) => {
-    const command = 'dart pub global run ideal_dart_code_handler index';
+    const command = 'dart pub global run ideal_dart_code_handler ';
     const indexerArguments = {
       'requestType': 'index',
       'parameters': {
         'pathToIndex': Path.build(Main.FlutterRoot, 'packages', 'flutter', 'lib'),
-        'finalPath': Path.build(Main.IdealDir, 'codelink', 'FlutterSDKIndex'),
+        'finalPath': Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'),
         'verbose' : false
       }
-    }
-    this.scriptThen(command + JSON.stringify(indexerArguments), toUpdateList);
+    };
+    this.scriptThen(command + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), toUpdateList);
   };
 
   indexCodeLinkCode = (toUpdateList) => {
-    const command = 'dart pub global run ideal_dart_code_handler index';
+    const command = 'dart pub global run ideal_dart_code_handler ';
     const indexerArguments = {
       'requestType': 'index',
       'parameters': {
-        'pathToIndex': Path.build(Main.IdealDir, 'FunctionBlocks'),
-        'finalPath': Path.build(Main.IdealDir, 'codelink', 'FunctionBlocksIndex'),
+        'pathToIndex': Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'),
+        'finalPath': Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'),
         'verbose' : false
       }
-    }
-    this.scriptThen(command + JSON.stringify(indexerArguments), toUpdateList)
+    };
+    this.scriptThen(command + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), toUpdateList )
   };
 
   verifyFlutterIndex = () => {
