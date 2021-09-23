@@ -64,8 +64,9 @@ export default function Menu() {
             fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', 'FlutterSDKIndex'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', 'FunctionBlocksIndex'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
 
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
@@ -109,8 +110,8 @@ export default function Menu() {
         console.log('AFTER');
     };
 
-    const getDataToCreate = () => {
-        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
+    const getDataToCreate = (jsonCode) => {
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
         const data = {
             'requestType' : 'creator',
             'parameters': {
@@ -126,16 +127,17 @@ export default function Menu() {
         };
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
-        return JSON.stringify(data);
+
+        return new Buffer(JSON.stringify(data)).toString('base64');
     };
 
     const runProject = (_) => {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const data = getDataToCreate();
+        const data = getDataToCreate(jsonCode);
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
-        moveFiles(Path.build(Main.IdealDir, 'FunctionBlocksIndex'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart pub global run ideal_dart_code_handler creator ' + data, () => {});
+        moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
+        Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
