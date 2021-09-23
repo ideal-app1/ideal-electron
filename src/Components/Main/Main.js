@@ -21,19 +21,10 @@ class Main extends React.Component {
     static CurrentView = 'Main';
     static FlutterSDK = "";
     static FlutterRoot = '';
-    static Sep = "/";
-    static CopyCmd = "cp";
     static fs = window.require('fs');
 
     constructor(props) {
         super(props);
-
-        if (window.navigator.platform === "Win32") {
-            Main.CopyCmd = 'copy';
-            Main.Sep = '\\';
-        }
-
-        new Path();
 
         try {
             const path = Path.build(app.getPath('documents'), 'Ideal');

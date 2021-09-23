@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(IdealApp());
+  runApp(Main());
 }
 
-class IdealApp extends StatelessWidget {
+class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ideal',
+      title: 'Main',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: IdealHomePage(),
+      home: MainHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class IdealHomePage extends StatefulWidget {
-  IdealHomePage({Key key}) : super(key: key);
+class MainHomePage extends StatefulWidget {
+  MainHomePage({Key key}) : super(key: key);
 
   @override
-  _IdealHomePageState createState() => _IdealHomePageState();
+  _MainHomePageState createState() => _MainHomePageState();
 }
 
-class _IdealHomePageState extends State<IdealHomePage> {
+class _MainHomePageState extends State<MainHomePage> {
 
-  _IdealHomePageState() {
+  _MainHomePageState() {
     @override
     Widget build(BuildContext context) {
       return Scaffold(
-          body: IdealScaffold()
+          body: MainScaffold()
       );
     }
   }
