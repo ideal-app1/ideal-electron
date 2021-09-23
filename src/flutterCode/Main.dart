@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(Main());
+  runApp(MainApp());
 }
 
-class Main extends StatelessWidget {
+class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,12 +23,12 @@ class MainHomePage extends StatefulWidget {
   MainHomePage({Key key}) : super(key: key);
 
   @override
-  _MainHomePageState createState() => _MainHomePageState();
+  Main createState() => Main();
 }
 
-class _MainHomePageState extends State<MainHomePage> {
+class Main extends State<MainHomePage> {
 
-  _MainHomePageState() {
+  Main() {
     @override
     Widget build(BuildContext context) {
       return Scaffold(

@@ -92,6 +92,7 @@ export const Library = () => {
             _id: uuid(),
             name: "Padding",
             codePathFile: "Padding.dart",
+            applied: true,
             properties: {
                 padding: {
                     value: 5,
@@ -125,8 +126,8 @@ export const Library = () => {
                     type: PropType.COMBOBOX,
                     items: [
                         {name: "blue", value: "#2190d9"},
-                        "red",
-                        "green"
+                        {name: "red", value: "#F05C5C"},
+                        {name: "green", value: "#67F05C"}
                     ],
                 },
                 enable: {
