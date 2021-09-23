@@ -162,7 +162,10 @@ export const Library = () => {
                     type: PropType.TEXTFIELD,
                     variableName: "ideal_data",
                 },
-                //font-size
+                fontSize: {
+                    value: 15,
+                    type: PropType.NUMFIELD
+                },
                 overflow: {
                     value: 'TextOverflow.clip',
                     type: PropType.COMBOBOX,
@@ -199,7 +202,7 @@ export const Library = () => {
             codePathFile: "Image.dart",
             properties: {
                 url: {
-                    value: "Placeholder",
+                    value: "Image url",
                     type: PropType.TEXTFIELD,
                     variableName: "ideal_url",
                 },

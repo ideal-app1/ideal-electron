@@ -71,7 +71,10 @@ class DisplayWidgetsStyle extends React.Component {
                 return {};
             }
             return {
-                display: widget.properties.data.value
+                display: widget.properties.data.value,
+                style: {
+                    fontSize: widget.properties.fontSize.value + "px"
+                }
             };
         },
         'Textfield': (widget) => {
