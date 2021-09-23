@@ -27,7 +27,7 @@ import Path from '../../../../utils/Path';
 import LoadProject from "../Dialog/Components/Modal/Components/LoadProject/LoadProject";
 import FolderIcon from '@material-ui/icons/Folder';
 const fs = window.require('fs');
-const mainDartCode = require("../../../../flutterCode/main.dart");
+const mainTemplateCode = require("../../../../flutterCode/Main.dart");
 
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
@@ -59,7 +59,8 @@ export default function Menu() {
         Main.MainProjectPath = Path.build(project.dir, project.name);
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
+            fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
             fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
@@ -109,7 +110,7 @@ export default function Menu() {
     };
 
     const getDataToCreate = () => {
-        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
         const data = {
             'requestType' : 'creator',
             'parameters': {
