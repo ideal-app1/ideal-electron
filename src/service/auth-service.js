@@ -131,7 +131,7 @@ async function logout() {
 
     accessToken = null;
     licence = null;
-    window.location.href = "/";
+    window.location.reload();
 }
 
 export default {
