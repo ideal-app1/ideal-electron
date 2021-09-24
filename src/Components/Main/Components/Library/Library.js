@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
 import "./Library.css"
 import {v4 as uuid} from 'uuid';
 import LibraryItem from './Components/LibraryItem/LibraryItem';
@@ -231,12 +231,23 @@ export const Library = () => {
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}
     ]
 
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filterWidget = (widget, query) => {
+        if (!query) {
+            return widget;
+        }
+
+        return widget.name.toLowerCase().includes(query.toLowerCase());
+    }
+
     const groupSection = (group) => {
         return (
             <Fragment key={group.name}>
                 <ListSubheader>{group.name}</ListSubheader>
                 {
-                    Object.values(group.widgets).map(widget => (
+                    Object.values(group.widgets).map(widget =>
+                    ( filterWidget(widget, searchQuery) ? (
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
                                 <LibraryItem
@@ -248,6 +259,7 @@ export const Library = () => {
                             </ListItem>
                             <Divider />
                         </Fragment>
+                    ) : <></>
                     ))
                 }
             </Fragment>
@@ -256,6 +268,17 @@ export const Library = () => {
 
     return (
         <List id={"library"}>
+            <input
+                id="widgets-search"
+                type="text"
+                placeholder="Search widgets"
+                value={searchQuery}
+                style={{color: '#aaaaaa'}}
+                onChange={e => {
+                    e.preventDefault();
+                    setSearchQuery(e.target.value);
+                }}
+            />
             {groups.map(groupSection)}
         </List>
     )
