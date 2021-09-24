@@ -6,7 +6,6 @@ import {WidgetType} from "../../../../utils/WidgetUtils";
 import Main from "../../Main";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
-import Button from '@material-ui/core/Button';
 
 const clone = require("rfdc/default");
 const { ipcRenderer } = window.require('electron');
@@ -253,18 +252,6 @@ class Phone extends React.Component {
                         root
                     />
                 </div>
-                <Button variant="contained" color="secondary" onClick={() => {this.resetState()}}>
-                    CLEAR
-                </Button>
-                <Button variant="contained" color="secondary" onClick={() => {this.forceUpdate()}}>
-                    UPDATE
-                </Button>
-                <Button variant="contained" color="secondary" onClick={() => {
-                    this.state.widgetList.forEach(w => w.group === "layout" ? (w.visualizer ? w.visualizer = !w.visualizer : w.visualizer = true) : null)
-                    this.forceUpdate()
-                }}>
-                    VISUALIZER
-                </Button>
             </Fragment>
         );
     }

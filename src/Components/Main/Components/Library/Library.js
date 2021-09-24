@@ -92,6 +92,7 @@ export const Library = () => {
             _id: uuid(),
             name: "Padding",
             codePathFile: "Padding.dart",
+            applied: true,
             properties: {
                 padding: {
                     value: 5,
@@ -125,8 +126,8 @@ export const Library = () => {
                     type: PropType.COMBOBOX,
                     items: [
                         {name: "blue", value: "#2190d9"},
-                        "red",
-                        "green"
+                        {name: "red", value: "#F05C5C"},
+                        {name: "green", value: "#67F05C"}
                     ],
                 },
                 enable: {
@@ -162,7 +163,10 @@ export const Library = () => {
                     type: PropType.TEXTFIELD,
                     variableName: "ideal_data",
                 },
-                //font-size
+                fontSize: {
+                    value: 15,
+                    type: PropType.NUMFIELD
+                },
                 overflow: {
                     value: 'TextOverflow.clip',
                     type: PropType.COMBOBOX,
@@ -199,7 +203,7 @@ export const Library = () => {
             codePathFile: "Image.dart",
             properties: {
                 url: {
-                    value: "Placeholder",
+                    value: "Image url",
                     type: PropType.TEXTFIELD,
                     variableName: "ideal_url",
                 },

@@ -27,7 +27,7 @@ import Path from '../../../../utils/Path';
 import LoadProject from "../Dialog/Components/Modal/Components/LoadProject/LoadProject";
 import FolderIcon from '@material-ui/icons/Folder';
 const fs = window.require('fs');
-const mainDartCode = require("../../../../flutterCode/main.dart")
+const mainTemplateCode = require("../../../../flutterCode/Main.dart");
 
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
@@ -38,6 +38,7 @@ import CaretIcon from "./Assets/Icons/caret.svg";
 import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
+import VersionHandler from '../../../../utils/VersionHandler';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 
@@ -58,10 +59,15 @@ export default function Menu() {
         Main.MainProjectPath = Path.build(project.dir, project.name);
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
+            fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
             fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
             fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
+            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
+
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
                 FlutterRoot: Main.FlutterRoot,
@@ -70,6 +76,8 @@ export default function Menu() {
             if(phone.current)
                 phone.current.resetState();
             dialog.current.unsetDialog();
+            new VersionHandler();
+
         });
     }
 
@@ -98,15 +106,13 @@ export default function Menu() {
         }
     };
 
-    const runProject = (event) => {
-        if (!Main.fs.existsSync(Main.MainProjectPath))
-            return
+    const afterCodeCreator = () => {
+        //Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+        console.log('AFTER');
+    };
 
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
-        // todo send to code handler merci
+    const getDataToCreate = (jsonCode) => {
         const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         const data = {
             'requestType' : 'creator',
             'parameters': {
@@ -123,10 +129,19 @@ export default function Menu() {
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
 
-        console.log(data);
-        ipcRenderer.send('send-socket-message', JSON.stringify(data));
-        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        //Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+        return new Buffer(JSON.stringify(data)).toString('base64');
+    };
+
+    const runProject = (_) => {
+        if (!Main.fs.existsSync(Main.MainProjectPath))
+            return
+
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        const data = getDataToCreate(jsonCode);
+
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
+        Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
