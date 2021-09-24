@@ -67,7 +67,8 @@ export default function Menu() {
                 FlutterRoot: Main.FlutterRoot,
                 FlutterSDK: Main.FlutterSDK
             }, Path.build(Main.IdealDir, "config.json"));
-            phone.current.resetState();
+            if(phone.current)
+                phone.current.resetState();
             dialog.current.unsetDialog();
         });
     }
@@ -98,6 +99,9 @@ export default function Menu() {
     };
 
     const runProject = (event) => {
+        if (!Main.fs.existsSync(Main.MainProjectPath))
+            return
+
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         // todo send to code handler merci

@@ -4,7 +4,7 @@
 
 .login-wrapper {
     color: #282c34;
-    margin-top: 5rem;
+    margin-top: 1rem;
     border: #8e8e8e;
     border-radius: 16px;
     padding: 2rem;
@@ -22,7 +22,7 @@
 }
 
 .login-header-title {
-    background-color: indianred;
+    background-color: royalblue;
     color: #eeeeee;
     border: #8e8e8e;
     border-radius: 16px;
@@ -35,9 +35,9 @@
 }
 
 .login-submit {
-    padding-top: 2rem;
+    padding-top: 1rem;
 }
 
 .login-redirect {
-    padding-top: 2rem;
+    padding-top: 1rem;
 }

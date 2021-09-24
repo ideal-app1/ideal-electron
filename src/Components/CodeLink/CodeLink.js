@@ -35,7 +35,10 @@ function CodeLink(props) {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
         const phone = Phone.getInstance();
 
-        widgetList = phone.current.getWidgetIdList();
+        widgetList = []
+        phone.current.getWidgetIdList().forEach(widget =>
+            widgetList.push(phone.current.findWidgetByID(widget._id))
+         );
 
         if (hasBeenCalled) return;
 
@@ -196,6 +199,10 @@ function CodeLink(props) {
                                 }}>
                                     Exec
                                 </Button>
+                            </Box>
+                        </Grid>
+                        <Grid className={"CodeLink-bar-item"}>
+                            <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
                                     savegraph(graph.serialize())
                                 }}>

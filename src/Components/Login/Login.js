@@ -5,6 +5,7 @@ import {Grid, Button, IconButton, Collapse, Container} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import authService from "../../service/auth-service";
 
+
 async function loginUser(credentials) {
     try {
         await authService.loadTokens(credentials);
@@ -75,7 +76,7 @@ export default function Login({setAuthenticated}) {
                         <h1 className={"login-header-title"}>IDEAL</h1>
                     </Grid>
                     <Grid item xs={12} className={"login-content"}>
-                        <h1>Login</h1>
+                        <img src={'../assets/icon.png'} alt=''/>
                         <Collapse in={open}>
                             <Alert
                                 severity="error"
@@ -104,16 +105,18 @@ export default function Login({setAuthenticated}) {
                                 <h4>Password</h4>
                                 <input className={"login-input"} type="password" onChange={e => setPassword(e.target.value)} />
                             </label>
-                            <Grid item xs={12} className={"login-submit"}>
-                                <Button variant="contained" color="primary" type="submit">Submit</Button>
+                            <Grid container className={"login-submit"} justifyContent={"center"}>
+                                <Button variant="contained" color="primary" type="submit">Login</Button>
                             </Grid>
                         </form>
-                        <Grid item xs={12} className={"login-redirect"}>
-                            <Button variant="contained" color="secondary" onClick={openWebSiteRegister}>Register</Button>
+                        <Grid container className={"login-redirect"} justifyContent={"center"}>
+                            <Grid item>
+                                <Button variant="contained" color="secondary" onClick={openWebSiteForgotPassword}>Forgot Password</Button>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} className={"login-redirect"}>
-                            <Button variant="contained" color="secondary" onClick={openWebSiteForgotPassword}>Forgot Password</Button>
-                        </Grid>
+                    </Grid>
+                    <Grid container className={"login-header"} justifyContent={"center"}>
+                        <h1 className={"login-header-title"}><Button variant="contained" color="primary" onClick={openWebSiteRegister}>Register</Button></h1>
                     </Grid>
                 </Grid>
             </Container>

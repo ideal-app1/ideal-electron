@@ -14,7 +14,7 @@ function CodeLinkWidgetList({widgetList}) {
     const [filteredWidgets, setFilteredWidgets] = useState(widgetList);
 
     const loadCodeLinkWidget = (history, id) => {
-        const phone = Phone.getInstance()
+        // const phone = Phone.getInstance()
         // const widget = phone.current.findWidgetByID(id)
         //
         // console.log(widget)
@@ -49,7 +49,7 @@ function CodeLinkWidgetList({widgetList}) {
                                     <Button variant="contained"
                                             color="secondary"
                                             onClick={() => loadCodeLinkWidget(history, widget._id)}>
-                                        Load<br/>{widget._id}
+                                        Load<br/>{widget.name}<br/>{widget._id}
                                     </Button>
                                 )} />
                             </ListItem>

@@ -58,10 +58,20 @@ class Main extends React.Component {
                 <header className="App-header">
                     <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
-                        <Library/>
-                        <Phones/>
-                        <WidgetProperties ref={WidgetProperties.getInstance()}/>
-                        <Menu/>
+                        { Main.fs.existsSync(Main.MainProjectPath)
+                            ? [
+                                <Library/>,
+                                <Phones/>,
+                                <WidgetProperties ref={WidgetProperties.getInstance()}/>,
+                                <Menu/>
+                            ]
+                            : [
+                                <Menu/>,
+                                <div>
+                                    <h4>Please load or create a project</h4>
+                                </div>
+                            ]
+                        }
                     </DndProvider>
                 </header>
             </div>
