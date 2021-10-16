@@ -14,6 +14,7 @@ import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
+import Phones from "../Main/Components/Phones/Phones";
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
@@ -33,14 +34,13 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        const phone = Phone.getInstance();
 
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
-        widget = phone.current.findWidgetByID(props.match.params.id);
+        widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     };
 

@@ -51,6 +51,11 @@ export const Library = () => {
                     type: PropType.TEXTFIELD,
                 },
                 direction: "column",
+                child: {
+                    value: "<Widget>[/* IDEAL_CHILD */]",
+                    type: PropType.HIDDEN,
+                    variableName: "ideal_child",
+                },
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment
             },

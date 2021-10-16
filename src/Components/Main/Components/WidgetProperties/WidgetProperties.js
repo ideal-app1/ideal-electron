@@ -9,10 +9,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { PropType, WidgetGroup } from '../../../../utils/WidgetUtils';
 import { Route } from 'react-router-dom';
-import Phone from '../Phone/Phone';
 import Main from '../../Main';
 import Path from '../../../../utils/Path';
 import MenuFunctions from '../../Tools/MenuFunctions';
+import Phones from "../Phones/Phones";
 import { Grid, InputAdornment } from '@material-ui/core';
 
 import propSize from './Components/PropSize'
@@ -35,7 +35,6 @@ class WidgetProperties extends React.Component {
     constructor(props) {
         super(props);
         this.state = { widget: null };
-        this.phone = Phone.getInstance();
         const menuFunc = new MenuFunctions();
         this.shortcuts = {
             cut: menuFunc.cut,
@@ -57,7 +56,10 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        const widget = this.phone.current.findWidgetByID(id);
+        const widget = Phones.phoneList[Main.selection].current.findWidgetByID(id);
+        console.log(Phones.phoneList);
+        console.log(id);
+        console.log(Main.selection);
         if (!widget)
             return;
         this.setState({ widget: widget })
@@ -70,7 +72,7 @@ class WidgetProperties extends React.Component {
     updateState = (prop, value) => {
         prop.value = value
         this.forceUpdate()
-        this.phone.current.forceUpdate()
+        Phones.phoneList[Main.selection].current.forceUpdate()
     }
 
     widgetPropType = prop => {
@@ -154,20 +156,22 @@ class WidgetProperties extends React.Component {
                   <Divider/>
                   {
                       Object.entries(this.state.widget.properties).map(([key, value]) => {
-                          return (
-                            <Fragment key={this.state.widget._id + key}>
-                                <Grid
-                                    container
-                                    item
-                                    direction={'row'}
-                                    alignItems={'center'}
-                                    justify={'space-between'}>
-                                    <div className={"property-name-" + this.state.widget.group}>{key}</div>
-                                    {this.widgetPropType(value)}
-                                </Grid>
-                                <Divider/>
-                            </Fragment>
-                          );
+                          if (value.type !== PropType.HIDDEN) {
+                              return (
+                                  <Fragment key={this.state.widget._id + key}>
+                                      <Grid
+                                          container
+                                          item
+                                          direction={'row'}
+                                          alignItems={'center'}
+                                          justify={'space-between'}>
+                                          <div className={"property-name-" + this.state.widget.group}>{key}</div>
+                                          {this.widgetPropType(value)}
+                                      </Grid>
+                                      <Divider/>
+                                  </Fragment>
+                              );
+                          }
                       })
                   }
                   {this.codeLinkButton()}

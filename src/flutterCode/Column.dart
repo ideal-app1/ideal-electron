@@ -1,8 +1,7 @@
 var ideal_column;
+var ideal_child;
 /* IDEAL_INITIALISATION_START */
 ideal_column = new Column(
-  children: <Widget>[
-  /* IDEAL_CHILD */
-  ],
+  children: ideal_child,
 );
 /* IDEAL_INITIALISATION_END */

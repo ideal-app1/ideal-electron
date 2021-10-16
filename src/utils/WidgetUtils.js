@@ -16,7 +16,8 @@ export const PropType = {
     COMBOBOX: 'combo',
     FILE: 'file',
     ALIGNMENT: 'alignment',
-    SIZE: 'SIZE'
+    SIZE: 'SIZE',
+    HIDDEN: 'hidden', // special type (can t be parameter by widgets property)
 }
 
 export const TypeToGetValue = {
@@ -25,4 +26,5 @@ export const TypeToGetValue = {
     'check': (value) => {return (value);},
     'combo': (value) => {return value;},
     'file': (value) => {return value;},
+    'hidden' : (value) => {return value;},
 }
