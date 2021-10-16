@@ -1,22 +1,30 @@
-import React, {Fragment} from "react";
-import "./WidgetProperties.css"
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import Checkbox from "@material-ui/core/Checkbox";
-import TextField from "@material-ui/core/TextField";
-import Divider from "@material-ui/core/Divider";
+import React, { Fragment } from 'react';
+import './WidgetProperties.css';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import {PropType, WidgetGroup} from "../../../../utils/WidgetUtils";
-import {Route} from "react-router-dom";
-import Phone from "../Phone/Phone";
-import Main from "../../Main";
-import Path from "../../../../utils/Path";
+import { PropType, WidgetGroup } from '../../../../utils/WidgetUtils';
+import { Route } from 'react-router-dom';
+import Phone from '../Phone/Phone';
+import Main from '../../Main';
+import Path from '../../../../utils/Path';
 import MenuFunctions from '../../Tools/MenuFunctions';
-import { InputAdornment } from '@material-ui/core';
+import { Grid, InputAdornment } from '@material-ui/core';
+
+import propSize from './Components/PropSize'
+
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import propTextField from './Components/PropTextField';
+import propNumField from './Components/PropNumField';
+import propCheckBox from './Components/PropCheckBox';
+import propComboBox from './Components/PropComboBox';
+import propFile from './Components/PropFile';
+import propAlignment from './Components/PropAlignment';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -66,73 +74,16 @@ class WidgetProperties extends React.Component {
     }
 
     widgetPropType = prop => {
-        switch (prop.type) {
-            case PropType.TEXTFIELD:
-                return (
-                  <TextField
-                    defaultValue={prop.value}
-                    variant="outlined"
-                    onChange={entry => {this.updateState(prop, entry.target.value)}}
-                  />
-                )
-            case PropType.NUMFIELD:
-                return (
-                  <TextField
-                    defaultValue={prop.value}
-                    type="number"
-                    variant="outlined"
-                    InputProps={{
-                        endAdornment: <InputAdornment position="end">px</InputAdornment>,
-                    }}
-                    onChange={entry => {this.updateState(prop, parseInt(entry.target.value))}}
-                  />
-                )
-            case PropType.CHECKBOX:
-                return (
-                  <Checkbox
-                    checked={prop.value}
-                    color="primary"
-                    onChange={entry => {this.updateState(prop, entry.target.checked)}}
-                  />
-                )
-            case PropType.COMBOBOX:
-                const items = []
-                prop.items.forEach(v => {
-                    if (v.name && v.value)
-                        items.push(<MenuItem key={v.name} value={v.value}>{v.name}</MenuItem>)
-                    else
-                        items.push(<MenuItem key={v} value={v}>{v}</MenuItem>)
-                })
-                return (
-                  <FormControl >
-                      <Select
-                        displayEmpty
-                        value={prop.value}
-                        onChange={event => {this.updateState(prop, event.target.value)}}
-                      >
-                          {items}
-                      </Select>
-                  </FormControl>
-                )
-            case PropType.FILE:
-                return (
-                  <Fragment>
-                      {prop.value.split('/').pop()}
-                      <Button
-                        variant="contained"
-                        onClick={
-                            () => {
-                                const file = ipcRenderer.sendSync('select-file', '')
-                                if (file)
-                                    this.updateState(prop, file[0])
-                            }
-                        }
-                      >Select file</Button>
-                  </Fragment>
-                )
-            default:
-                return (prop.toString())
+        let propMap = {
+            [PropType.TEXTFIELD]: propTextField,
+            [PropType.NUMFIELD]: propNumField,
+            [PropType.CHECKBOX]: propCheckBox,
+            [PropType.COMBOBOX]: propComboBox,
+            [PropType.FILE]: propFile,
+            [PropType.ALIGNMENT]: propAlignment,
+            [PropType.SIZE]: propSize
         }
+        return propMap[prop.type]?.(prop, this.updateState) || prop?.toString()
     }
 
     createFile(path) {
@@ -156,7 +107,7 @@ class WidgetProperties extends React.Component {
     codeLinkButton = () => {
         if (this.state.widget.group === WidgetGroup.MATERIAL) {
             return (
-              <ListItem>
+              <Grid item style={{marginTop: '15px'}}>
                   <Route render={({ history}) => (
                     <Button className="codelink-button"
                             variant="contained"
@@ -178,7 +129,7 @@ class WidgetProperties extends React.Component {
                         CodeLink
                     </Button>
                   )} />
-              </ListItem>
+              </Grid>
             )
         } else {
             return (<Fragment/>)
@@ -190,22 +141,35 @@ class WidgetProperties extends React.Component {
             this.onCodelink()
             return (
               <Fragment>
-                  <ListSubheader>{this.state.widget.name}</ListSubheader>
-                  <ListItem>
-                      <div className={"property-name-" + this.state.widget.group}>group:</div>
+                  <Grid item className={'GridSubheader-root'}>{this.state.widget.name}</Grid>
+                  <Grid
+                      container
+                      item
+                      direction={'row'}
+                      alignItems={'center'}
+                      justify={'space-between'}>
+                      <div className={"property-name-" + this.state.widget.group}>group</div>
                       {this.state.widget.group}
-                  </ListItem>
+                  </Grid>
+                  <Divider/>
                   {
                       Object.entries(this.state.widget.properties).map(([key, value]) => {
                           return (
-                            <ListItem key={this.state.widget._id + key}>
-                                <div className={"property-name-" + this.state.widget.group}>{key}:</div>
-                                {this.widgetPropType(value)}
-                            </ListItem>
+                            <Fragment key={this.state.widget._id + key}>
+                                <Grid
+                                    container
+                                    item
+                                    direction={'row'}
+                                    alignItems={'center'}
+                                    justify={'space-between'}>
+                                    <div className={"property-name-" + this.state.widget.group}>{key}</div>
+                                    {this.widgetPropType(value)}
+                                </Grid>
+                                <Divider/>
+                            </Fragment>
                           );
                       })
                   }
-                  <Divider/>
                   {this.codeLinkButton()}
               </Fragment>
             );
@@ -216,9 +180,12 @@ class WidgetProperties extends React.Component {
     render () {
 
         return (
-          <List className={"widget-properties"}>
+          <Grid
+              container
+              direction={'column'}
+              className={"widget-properties"}>
               {this.onSelection()}
-          </List>
+          </Grid>
         )
     }
 }

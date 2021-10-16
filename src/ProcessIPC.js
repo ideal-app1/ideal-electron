@@ -1,6 +1,5 @@
 const net = require('net');
 const {ipcMain, dialog,} = require('electron');
-const { startServer } = require('webpack-bundle-analyzer/lib/viewer');
 const { spawn } = require( 'child_process' );
 var kill  = require('tree-kill');
 

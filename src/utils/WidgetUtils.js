@@ -14,7 +14,9 @@ export const PropType = {
     NUMFIELD: 'numfield',
     CHECKBOX: 'check',
     COMBOBOX: 'combo',
-    FILE: 'file'
+    FILE: 'file',
+    ALIGNMENT: 'alignment',
+    SIZE: 'SIZE'
 }
 
 export const TypeToGetValue = {

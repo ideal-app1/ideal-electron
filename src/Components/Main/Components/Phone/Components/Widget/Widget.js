@@ -25,7 +25,18 @@ const Widget = props => {
             if (monitor.didDrop()) {
                 return;
             }
-            if (item.source === WidgetType.PHONE) {
+
+            if (item.applied) {
+                console.log(phone.current.state);
+                const itemID = phone.current.addToWidgetList(item);
+                phone.current.moveByID(itemID, props._id);
+                const itemApplied = phone.current.findByID(itemID);
+                const itemProps = phone.current.findByID(props._id);
+                console.log(itemApplied, itemProps);
+                itemApplied.child.list.push(itemProps.child);
+                itemApplied.parent.list = itemApplied.parent.list.filter(x => x._id !== props._id);
+                phone.current.forceUpdate();
+            } else if (item.source === WidgetType.PHONE) {
                 phone.current.moveByID(item._id, props._id)
             } else {
                 const itemID = phone.current.addToWidgetList(item)
@@ -67,11 +78,15 @@ const Widget = props => {
 
     return (
         <div
-            className={"widget " + props.name.toLowerCase()}
+            className={"widget " + props.name.toLowerCase() + (props.selected ? " selected" : "")}
             style={isOver ? {...DisplayWidgetsStyle.Display[props.display](props).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
-                event.stopPropagation()
-                WidgetProperties.getInstance().current.handleSelect(props._id)
+                event.stopPropagation();
+                /*console.log('select');
+                let widget = phone.current.findWidgetByID(props._id);
+                widget.selected = !widget.selected;
+                phone.current.forceUpdate();*/
+                WidgetProperties.getInstance().current.handleSelect(props._id);
             }}
             onContextMenu={(event => {
                 event.preventDefault();

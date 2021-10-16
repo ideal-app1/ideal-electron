@@ -39,8 +39,11 @@ import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLi
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
+import { Grid } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
+
+import IdealLogo from "../../../../../assets/icon.png";
 
 //TODO renommer cette class
 export default function Menu() {
@@ -57,6 +60,7 @@ export default function Menu() {
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
         Main.MainProjectPath = Path.build(project.dir, project.name);
+        ipcRenderer.send('update-window-title', project.name);
 
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
             fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
@@ -165,25 +169,30 @@ export default function Menu() {
     return (
         <div className={"new"}>
             <Navbar>
-                <h1>IDEAL</h1>
-                <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
-                <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                <NavItem icon={<ChevronIcon onClick={runProject} />}/>
-                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                    Settings
-                </Button>
-                <UiMenu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={() => {shell.openExternal('https://docs.idealapp.fr')}}>Documentation</MenuItem>
-                    <MenuItem onClick={() => {shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')}}>Feedback</MenuItem>
-                    <MenuItem onClick={() => {shell.openExternal('https://discord.gg/jUeEwq7Max')}}>Report Bug/Need help</MenuItem>
-                    <MenuItem onClick={() => {authService.logout()}}>Logout</MenuItem>
-                </UiMenu>
+                <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
+                    <img src={IdealLogo} style={{marginRight: '5px'}} height={'24'} width={'24'} alt={'ideal logo'}/>
+                    <h1>IDEAL</h1>
+                </Grid>
+                <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
+                    <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
+                    <NavItem icon={<PlusIcon onClick={newProject}/>}/>
+                    <NavItem icon={<ChevronIcon onClick={runProject} />}/>
+                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        Settings
+                    </Button>
+                    <UiMenu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={() => {shell.openExternal('https://docs.idealapp.fr')}}>Documentation</MenuItem>
+                        <MenuItem onClick={() => {shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')}}>Feedback</MenuItem>
+                        <MenuItem onClick={() => {shell.openExternal('https://discord.gg/jUeEwq7Max')}}>Report Bug/Need help</MenuItem>
+                        <MenuItem onClick={() => {authService.logout()}}>Logout</MenuItem>
+                    </UiMenu>
+                </Grid>
             </Navbar>
         </div>
     );

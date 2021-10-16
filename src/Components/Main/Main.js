@@ -12,6 +12,7 @@ import Path from '../../utils/Path';
 import VersionHandler from '../../utils/VersionHandler';
 
 const app = window.require('electron').remote.app;
+const { ipcRenderer } = window.require('electron');
 
 class Main extends React.Component {
 
@@ -32,6 +33,8 @@ class Main extends React.Component {
             const data = JsonManager.get(Path.build(path, 'config.json'));
             console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
+            const projectName = Main.MainProjectPath.split(Path.Sep).lastItem;
+            ipcRenderer.send('update-window-title', projectName);
             Main.FlutterRoot = data.FlutterRoot;
             Main.FlutterSDK = data.FlutterSDK;
             console.log(`MainProject ${Main.MainProjectPath}`);

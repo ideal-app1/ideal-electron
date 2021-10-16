@@ -26,14 +26,17 @@ export const Library = () => {
         },
         crossAxisAlignment: {
             value: "CrossAxisAlignment.start",
-            type: PropType.COMBOBOX,
+            type: PropType.ALIGNMENT,
             items: [
                 {name: 'start', value: 'CrossAxisAlignment.start', style: 'flex-start'},
                 {name: 'center', value: 'CrossAxisAlignment.center', style: 'center'},
                 {name: 'end', value: 'CrossAxisAlignment.end', style: 'flex-end'},
-                {name: 'baseline', value: 'CrossAxisAlignment.baseline', style: 'baseline'},
-                {name: 'stretch', value: 'CrossAxisAlignment.stretch', style: 'stretch'}
+                // {name: 'baseline', value: 'CrossAxisAlignment.baseline', style: 'baseline'},
+                // {name: 'stretch', value: 'CrossAxisAlignment.stretch', style: 'stretch'}
             ]
+        },
+        size: (w, h) => {
+            return { value: {w: w || 0, h: h || 0, lockRatio: false}, type: PropType.SIZE }
         }
     }
 
@@ -65,10 +68,7 @@ export const Library = () => {
                 direction: "row",
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment,
-                width: {
-                    value: 100,
-                    type: PropType.NUMFIELD
-                }
+                size: defaultProperties.size(100),
             },
             display: DisplayWidgetsStyle.DisplayKeys.Row,
         },
@@ -87,8 +87,36 @@ export const Library = () => {
             },
             display: DisplayWidgetsStyle.DisplayKeys.Center
         },
-        //stack
-        /*padding: {
+        stack: {
+            _id: uuid(),
+            name: "Stack",
+            codePathFile: "Stack.dart",
+            properties: {
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
+                },
+                height: {
+                    value: 250,
+                    type: PropType.NUMFIELD
+                },
+                width: {
+                    value: 300,
+                    type: PropType.NUMFIELD
+                },
+                alignment: {
+                    value: "Alignment.topLeft",
+                    type: PropType.COMBOBOX,
+                    items: [
+                        {name: 'topLeft', value: 'Alignment.topLeft', style: 'flex-start'},
+                        {name: 'center', value: 'Alignment.center', style: 'center'},
+                        {name: 'bottomLeft', value: 'Alignment.bottomLeft', style: 'flex-end'}
+                    ]
+                }
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Stack
+        },
+        padding: {
             _id: uuid(),
             name: "Padding",
             codePathFile: "Padding.dart",
@@ -100,8 +128,7 @@ export const Library = () => {
                 },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Padding
-        }*/
-        //padding
+        }
     }
 
     const materials = {
@@ -203,7 +230,7 @@ export const Library = () => {
             codePathFile: "Image.dart",
             properties: {
                 url: {
-                    value: "Image url",
+                    value: null,
                     type: PropType.TEXTFIELD,
                     variableName: "ideal_url",
                 },
@@ -211,16 +238,7 @@ export const Library = () => {
                     value: true,
                     type: PropType.CHECKBOX
                 },
-                width: {
-                    value: 200,
-                    type: PropType.NUMFIELD,
-                    variableName: "ideal_width",
-                },
-                height: {
-                    value: 200,
-                    type: PropType.NUMFIELD,
-                    variableName: "ideal_height",
-                }
+                size: defaultProperties.size(200, 200)
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image
         }
@@ -246,7 +264,6 @@ export const Library = () => {
                                     codelink={'/'}
                                 />
                             </ListItem>
-                            <Divider />
                         </Fragment>
                     ))
                 }
