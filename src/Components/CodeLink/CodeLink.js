@@ -14,11 +14,15 @@ import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
+import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
+
+import CloseIcon from '@material-ui/icons/Close';
+
 
 function CodeLink(props) {
 
@@ -31,14 +35,13 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        const phone = Phone.getInstance();
 
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
-        widget = phone.current.findWidgetByID(props.match.params.id);
+        widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     };
 
@@ -152,97 +155,84 @@ function CodeLink(props) {
             }
         };
 
-        //TODO SWITCH TO REAL CODE HANDLER
         Process.runScript('dart pub global run ideal_dart_code_handler ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
         });
     };
 
-
     return (
         <div>
             <Dialog ref={Dialog.getInstance()}/>
-            <Grid container className={"CodeLink-Content"}>
-                <Grid item xs={12} className={"CodeLink-bar-menu"}>
-                    <Grid container>
-                        <Grid className={"CodeLink-bar-item"}>
+            <Grid container direction={'column'} className={"CodeLink-Content"}>
+                <Grid container item alignItems={'center'} justify={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
+                    <Grid container item alignItems={'center'} className={"CodeLink-bar-item"}>
+                        <CloseIcon style={{fontSize: '2.5rem', paddingRight: '20px'}} onClick={() => {props.history.push('/')}}/>
+                        <h3>CODELINK</h3>
+                    </Grid>
+                    <Grid container item className={"CodeLink-bar-item"}>
+                        <Grid item className={"CodeLink-bar-item"}>
                             <Box>
-                                <h2>CodeLink</h2>
-                            </Box>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="primary" onClick={() => {props.history.push('/')}}>
-                                    Phone view
-                                </Button>
-                            </Box>
-                            <Button onClick={() => {
-                                ipcEnabling();
-                            }
-                            }>
-                                IPC
-                            </Button>
-                            <Button onClick={() => {    setCounter(counter + 1);}}>
-                                counter
-                            </Button>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={() => {
-                                   saveCodeLinkData();
+                                <Button variant="contained" color="primary" onClick={() => {
+                                    saveCodeLinkData();
                                 }}>
                                     Exec
                                 </Button>
-                                <Button variant="contained" color="secondary" onClick={() => {
+                            </Box>
+                        </Grid>
+                        <Grid item className={"CodeLink-bar-item"}>
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={() => {
                                     savegraph(graph.serialize())
                                 }}>
                                     Save
                                 </Button>
                             </Box>
                         </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={loadCodeLinkBlocks}>
+                        <Grid item className={"CodeLink-bar-item"}>
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={loadCodeLinkBlocks}>
                                     Load
                                 </Button>
                             </Box>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={2} className={"CodeLink-widget-menu"}>
-                    <Grid container
-                          spacing={0}
-                          direction="column"
-                          alignItems="center"
-                          justify="center"
-                    >
-                        <Typography variant="h6">
-                            Widget Menu
-                        </Typography>
-                        <div>
-                            {/*    <List>*/}
-                            {/*        {this.generate(*/}
-                            {/*            <ListItem>*/}
-                            {/*                <ListItemText*/}
-                            {/*                    primary="Widget item Id"*/}
-                            {/*                />*/}
-                            {/*                <ListItemIcon>*/}
-                            {/*                    <Loop />*/}
-                            {/*                </ListItemIcon>*/}
-                            {/*            </ListItem>,*/}
-                            {/*        )}*/}
-                            {/*    </List>*/}
-                        </div>
+                <Grid container item direction={'row'}>
+                    <Grid item xs={2} className={"CodeLink-widget-menu"}>
+                        <Grid container
+                              spacing={0}
+                              direction="column"
+                              alignItems="center"
+                              justify="center"
+                        >
+                            <Typography variant="h6" style={{paddingTop: '15px'}}>
+                                Widget Menu
+                            </Typography>
+                            <div>
+                                {/*    <List>*/}
+                                {/*        {this.generate(*/}
+                                {/*            <ListItem>*/}
+                                {/*                <ListItemText*/}
+                                {/*                    primary="Widget item Id"*/}
+                                {/*                />*/}
+                                {/*                <ListItemIcon>*/}
+                                {/*                    <Loop />*/}
+                                {/*                </ListItemIcon>*/}
+                                {/*            </ListItem>,*/}
+                                {/*        )}*/}
+                                {/*    </List>*/}
+                            </div>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid item xs={10} className={"CodeLink-canvas"}>
-                    <Box className={"CodeLink-canvas-Box"}>
-                        <canvas id="myCanvas" width={1920} height={1080} ref={(canvasRef) => {
-                            canvas = canvasRef;
-                            //init()
-                        }}/>
-                    </Box>
+                    <Grid item xs={10} className={"CodeLink-canvas"}>
+                        <Box className={"CodeLink-canvas-Box"}>
+                            <canvas id="myCanvas" width={1920} height={1080} ref={(canvasRef) => {
+                                canvas = canvasRef;
+                                //init()
+                            }}/>
+                        </Box>
+                    </Grid>
                 </Grid>
             </Grid>
         </div>

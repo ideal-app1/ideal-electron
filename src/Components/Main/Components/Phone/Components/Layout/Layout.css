@@ -11,6 +11,21 @@
     border-color: lightsalmon;
 }
 
+.stack {
+    border-color: mediumpurple;
+}
+
+.layout.stack > div {
+    position: absolute;
+}
+
+.layout.padding {
+    height: auto;
+    min-height: 40px;
+    width: auto;
+    min-width: 40px;
+}
+
 .layout.base {
     background-color: white;
 }

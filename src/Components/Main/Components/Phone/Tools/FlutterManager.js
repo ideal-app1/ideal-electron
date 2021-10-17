@@ -157,11 +157,17 @@ class FlutterManager {
             let variablesString = "";
             childDeclarations.declarations.map((variable) => {
 
-                variablesString += variable.name + ',\n'
-            })
+                variablesString += variable.name + ',';
+            });
             FlutterManager.initialization = FlutterManager.initChild(FlutterManager.initialization, variablesString);
 
-            declarations = [...declarations, ...childDeclarations.declarations]
+            declarations = [...declarations, ...childDeclarations.declarations];
+
+            declarations.map((declaration) => {
+                declaration.children.map((child) => {
+                    child.code = FlutterManager.initChild(child.code, variablesString);
+                });
+            });
         }
 
 

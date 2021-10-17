@@ -1,7 +1,7 @@
 
 .widget {
     text-align: center;
-    padding: 3% 10%;
+    padding: 10px 32px;
     border-radius: 5px;
     cursor: pointer;
     height: fit-content;
@@ -30,4 +30,9 @@
 
 .widget.empty {
     background: none;
+}
+
+.widget.selected {
+    outline: #2190d9 1px solid !important;
+    outline-offset: 10px;
 }

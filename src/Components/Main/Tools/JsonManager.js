@@ -17,6 +17,9 @@ class JsonManager {
     }
 
     static get(path) {
+        if (!JsonManager.exist(path)) {
+            return null;
+        }
         let file = JsonManager.fs.readFileSync(path, 'utf8');
         const result = JSON.parse(file);
         return result;

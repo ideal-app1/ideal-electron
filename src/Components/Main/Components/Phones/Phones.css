@@ -1,1 +1,9 @@
 
+.phones {
+    display: flex;
+    flex-direction:row;
+}
+
+.phone-container {
+
+}
