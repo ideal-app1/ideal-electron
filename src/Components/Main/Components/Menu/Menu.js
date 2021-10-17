@@ -137,7 +137,10 @@ export default function Menu() {
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+        //TODO Put back the old line
+        //Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+        Process.runScript(' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);

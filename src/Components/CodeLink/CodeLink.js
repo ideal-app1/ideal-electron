@@ -14,11 +14,11 @@ import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
+import Process from '../Main/Components/Menu/Tools/Process';
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
-
 
 function CodeLink(props) {
 
@@ -50,45 +50,36 @@ function CodeLink(props) {
 
     useConstructor();
 
-    const sendData = () => {
-        const buffer = BufferSingleton.get();
-
-        ipcRenderer.send('send-socket-message', {
-            'request-type': 'creator',
-            'parameters': {
-                'imports': Array.from(buffer.import),
-                'code': buffer.code
-            }
-        });
-        //FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+    const loadUserCode = () => {
+      try {
+          return (JsonManager.get(Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources', 'data.json')));
+      } catch (_) {
+          return undefined;
+      }
     };
 
     const loadEverything =  (variableName, className,  afterLoad) => {
-        const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+        const dataJson = loadUserCode();
         const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
         const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
-        [dataJson].forEach((jsonFile) => {
-            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, className, safeID);
-        });
+        if (dataJson) {
+            CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
+        }
         CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
         afterLoad(className, flutterJson);
     };
 
     const initNewFile =  (variableName, className, currentpath) => {
-        LiteGraph.clearRegisteredTypes();
         loadEverything(variableName, className, (className, flutterJson) => {
             CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
         })
     };
 
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
-        LiteGraph.clearRegisteredTypes();
         loadEverything(variableName, className, (_, __) => {
             graph.load(currentpath);
         });
-
 
     };
 
@@ -99,7 +90,8 @@ function CodeLink(props) {
 
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
-        console.log(props);
+        LiteGraph.clearRegisteredTypes();
+
         if (fs.existsSync(currentPath)) {
             loadCodeLinkSave(variableName, className, currentPath)
         } else {
@@ -148,8 +140,28 @@ function CodeLink(props) {
 
     const loadCodeLinkBlocks = async () => {
         const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
+
+        console.log('what');
+        console.log(codeLinkBlocks);
+        if (!codeLinkBlocks)
+            return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        const indexerArguments = {
+            'requestType': 'index',
+            'parameters': {
+                'pathToIndex': codeLinkBlocks.dir,
+                'finalPath': Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources'),
+                'verbose' : false
+            }
+        };
+
+        //TODO SWITCH TO REAL CODE HANDLER
+        Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+            LiteGraph.clearRegisteredTypes();
+            loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
+        });
     };
+
 
     return (
         <div>
