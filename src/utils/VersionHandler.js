@@ -14,12 +14,15 @@ let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
 
 class VersionHandler {
   static FlutterVersion = undefined;
+  static hasBeenRun = false;
 
   constructor() {
     if (debug) {
+      // Easier to debug than to submit a new version of the Code Handler.
+      // Change to the path of the dart file for debugging purpose.
       execDartHandler = ' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ';
     }
-    this.versionCheck();
+
   }
 
   scriptThen = (command, toUpdateList) => {
@@ -120,14 +123,17 @@ class VersionHandler {
     }
   };
 
-  versionCheck = () => {
+  versionCheck = (force = false) => {
     const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexUserCode, this.indexCodeLinkCode];
 
     if (Main.MainProjectPath === undefined || Main.IdealDir === undefined ||
-        Main.FlutterRoot === undefined)
-      return;
+      Main.FlutterRoot === undefined ||
+      (force === false && VersionHandler.hasBeenRun === true))
+      return false;
+    VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
     this.update(toUpdateList);
+    return true;
   };
 }
 

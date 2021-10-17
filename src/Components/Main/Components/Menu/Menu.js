@@ -54,6 +54,30 @@ export default function Menu(props) {
 
     const dialog = Dialog.getInstance();
 
+    const createDirectories = () => {
+        fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
+    };
+
+    const createIdealProject = () => {
+        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
+            fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
+            createDirectories();
+            JsonManager.saveThis({
+                ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterRoot: Main.FlutterRoot,
+                FlutterSDK: Main.FlutterSDK
+            }, Path.build(Main.IdealDir, "config.json"));
+            Phones.resetState();
+            dialog.current.unsetDialog();
+        });
+    };
+
     const newProject = async () => {
         if (!Main.FlutterSDK) {
             const flutter = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
@@ -64,27 +88,7 @@ export default function Menu(props) {
         dialog.current.createDialog(<Loading/>);
         Main.MainProjectPath = Path.build(project.dir, project.name);
         ipcRenderer.send('update-window-title', project.name);
-
-        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
-            fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
-            fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
-
-            JsonManager.saveThis({
-                ProjectPathAutoSaved: Main.MainProjectPath,
-                FlutterRoot: Main.FlutterRoot,
-                FlutterSDK: Main.FlutterSDK
-            }, Path.build(Main.IdealDir, "config.json"));
-            Phones.resetState();
-            dialog.current.unsetDialog();
-            new VersionHandler();
-
-        });
+        createIdealProject();
     }
 
     const getACodeLinkData = (fullData, file) => {
