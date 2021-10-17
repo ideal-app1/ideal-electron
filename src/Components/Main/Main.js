@@ -29,7 +29,7 @@ class Main extends React.Component {
     static FlutterRoot = '';
     static fs = window.require('fs');
 
-    static selection = 1;
+    static selection = 0;
 
     constructor(props) {
         super(props);
@@ -61,15 +61,13 @@ class Main extends React.Component {
     }
 
     render() {
-        if (this.state.selection !== null) {
-            Main.selection = this.state.selection;
-        }
+        Main.selection = this.state.selection;
         return (
             <div className="App">
                 <header className="App-header">
                     <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
-                        {Main.selection !== null && Main.selection >= 0 ?
+                        {Main.selection >= 0 ?
                             <Fragment>
                                 <Library/>
                                 <Grid
@@ -81,14 +79,14 @@ class Main extends React.Component {
                                         onClick={() => {
                                             this.setState({selection:-1});
                                         }}/>
-                                    {'View ' + this.state.selection}
+                                    {'View ' + Main.selection}
                                     <MoreHorizIcon/>
                                 </Grid>
                                 <WidgetProperties ref={WidgetProperties.getInstance()}/>
                             </Fragment>
                              : <Fragment/>}
                         <Phones
-                            phoneId={Main.selection !== null && Main.selection >= 0 ? Main.selection : null} select={(key) => {
+                            phoneId={Main.selection >= 0 ? Main.selection : null} select={(key) => {
                             this.setState({selection:key});
                         }}/>
                         <Menu/>
