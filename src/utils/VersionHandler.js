@@ -6,7 +6,7 @@ import JsonManager from '../Components/Main/Tools/JsonManager';
 
 const fs = require('fs');
 
-const debug = true;
+const debug = false;
 let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
 
 
@@ -19,8 +19,6 @@ class VersionHandler {
     if (debug) {
       execDartHandler = ' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ';
     }
-    console.log(`Path ? ${execDartHandler}`);
-    console.log('SALUT');
     this.versionCheck();
   }
 
@@ -118,7 +116,6 @@ class VersionHandler {
     const toUpdate = toUpdateList.shift();
 
     if (toUpdate !== undefined) {
-      console.log(`Kikoo ^^ ${toUpdate.name}`);
       toUpdate(toUpdateList);
     }
   };
@@ -126,15 +123,10 @@ class VersionHandler {
   versionCheck = () => {
     const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexUserCode, this.indexCodeLinkCode];
 
-    console.log(Main.MainProjectPath)
-    console.log(Main.IdealDir)
-    console.log(Main.FlutterRoot)
-
     if (Main.MainProjectPath === undefined || Main.IdealDir === undefined ||
         Main.FlutterRoot === undefined)
       return;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
-    console.log('slt')
     this.update(toUpdateList);
   };
 }

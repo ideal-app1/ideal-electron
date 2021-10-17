@@ -36,7 +36,6 @@ function CodeLink(props) {
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
-            console.log("ca crée en premier connard");
             fs.mkdirSync(props.location.state.path);
         }
         widget = phone.current.findWidgetByID(props.match.params.id);
@@ -141,8 +140,6 @@ function CodeLink(props) {
     const loadCodeLinkBlocks = async () => {
         const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
 
-        console.log('what');
-        console.log(codeLinkBlocks);
         if (!codeLinkBlocks)
             return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
@@ -156,7 +153,7 @@ function CodeLink(props) {
         };
 
         //TODO SWITCH TO REAL CODE HANDLER
-        Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+        Process.runScript('dart pub global run ideal_dart_code_handler ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
         });
