@@ -2,15 +2,27 @@ import Process from '../Components/Main/Components/Menu/Tools/Process';
 import Main from '../Components/Main/Main';
 import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
+import JsonManager from '../Components/Main/Tools/JsonManager';
 
 const fs = require('fs');
 
+const debug = false;
+let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
+
+
+
+
 class VersionHandler {
   static FlutterVersion = undefined;
+  static hasBeenRun = false;
 
   constructor() {
-    console.log('SALUT');
-    this.versionCheck();
+    if (debug) {
+      // Easier to debug than to submit a new version of the Code Handler.
+      // Change to the path of the dart file for debugging purpose.
+      execDartHandler = ' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ';
+    }
+
   }
 
   scriptThen = (command, toUpdateList) => {
@@ -31,7 +43,7 @@ class VersionHandler {
   };
 
   indexFlutterSources = (toUpdateList) => {
-    const command = 'dart pub global run ideal_dart_code_handler ';
+
     const indexerArguments = {
       'requestType': 'index',
       'parameters': {
@@ -40,11 +52,43 @@ class VersionHandler {
         'verbose' : false
       }
     };
-    this.scriptThen(command + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), toUpdateList);
+
+    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    this.update(toUpdateList);
+  };
+
+  loadUserCode = () => {
+    try {
+      const file = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+
+      return file.codeLinkUserPath;
+    } catch (_) {
+      return undefined;
+    }
+  };
+
+  indexUserCode = (toUpdateList) => {
+
+    const codeLinkBlocks = this.loadUserCode();
+
+    if (!codeLinkBlocks) {
+      this.update(toUpdateList);
+      return;
+    }
+    const indexerArguments = {
+      'requestType': 'index',
+      'parameters': {
+        'pathToIndex': codeLinkBlocks,
+        'finalPath': Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources'),
+        'verbose' : false
+      }
+    };
+
+    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    this.update(toUpdateList);
   };
 
   indexCodeLinkCode = (toUpdateList) => {
-    const command = 'dart pub global run ideal_dart_code_handler ';
     const indexerArguments = {
       'requestType': 'index',
       'parameters': {
@@ -53,7 +97,8 @@ class VersionHandler {
         'verbose' : false
       }
     };
-    this.scriptThen(command + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), toUpdateList )
+    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    this.update(toUpdateList);
   };
 
   verifyFlutterIndex = () => {
@@ -74,24 +119,21 @@ class VersionHandler {
     const toUpdate = toUpdateList.shift();
 
     if (toUpdate !== undefined) {
-      console.log(`Kikoo ^^ ${toUpdate.name}`);
       toUpdate(toUpdateList);
     }
   };
 
-  versionCheck = () => {
-    const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexCodeLinkCode];
-
-    console.log(Main.MainProjectPath)
-    console.log(Main.IdealDir)
-    console.log(Main.FlutterRoot)
+  versionCheck = (force = false) => {
+    const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexUserCode, this.indexCodeLinkCode];
 
     if (Main.MainProjectPath === undefined || Main.IdealDir === undefined ||
-        Main.FlutterRoot === undefined)
-      return;
+      Main.FlutterRoot === undefined ||
+      (force === false && VersionHandler.hasBeenRun === true))
+      return false;
+    VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
-    console.log('slt')
     this.update(toUpdateList);
+    return true;
   };
 }
 
