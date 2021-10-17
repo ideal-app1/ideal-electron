@@ -6,6 +6,11 @@ import Button from "@material-ui/core/Button";
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
 import Path from "../../../../utils/Path";
+import { Grid } from '@material-ui/core';
+
+import DeleteIcon from '@material-ui/icons/Delete';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AddIcon from '@material-ui/icons/Add';
 
 class Phones extends React.Component {
 
@@ -62,32 +67,38 @@ class Phones extends React.Component {
         if (this.props.phoneId !== null) {
             data = <Phone disable={false} myId={this.props.phoneId} ref={Phones.phoneList[this.props.phoneId]}/>;
         } else {
-            data = <MapInteractionCSS>
-                <div className={"phones"}>
-                    {Phones.phoneList.map((elem, key) => {
-                        return (<div className={"phone-container"}>
-                            <div onClick={() => {
-                                this.props.select(key);
-                            }}>
-                                <Phone disable={true} myId={key} ref={elem}/>
-                            </div>
-                            <Button variant="contained" color="secondary" onClick={() => {
-                                Phones.phoneList[key].current.deleteView();
-                                Phones.phoneList.splice(key, 1);
-                                this.setState({phoneListLength: Phones.phoneList.length});
-                            }}>
-                                Delete
-                            </Button>
-                        </div>);
-                    })}
-                </div>
-                <Button variant="contained" color="secondary" onClick={() => {
-                    Phones.phoneList.push(Phone.createRef());
-                    this.setState({phoneListLength: Phones.phoneList.length});
-                }}>
-                    New
-                </Button>
-            </MapInteractionCSS>;
+            data = <div style={{textAlign: 'center'}}>
+                <MapInteractionCSS>
+                    <div className={"phones"} style={{alignItems: 'center'}}>
+                        {Phones.phoneList.map((elem, key) => {
+                            return (
+                                <div className={'phone-container'} key={key}>
+                                    <Grid
+                                        container
+                                        className={'phone-toolbar'}
+                                        alignItems={'center'}
+                                        justify={'space-between'}>
+                                        <DeleteIcon onClick={() => {
+                                            Phones.phoneList[key].current.deleteView();
+                                            Phones.phoneList.splice(key, 1);
+                                            this.setState({ phoneListLength: Phones.phoneList.length });
+                                        }}/>
+                                        {'View ' + key}
+                                        <MoreHorizIcon/>
+                                    </Grid>
+                                    <div onClick={() => {this.props.select(key);}}>
+                                        <Phone disable={true} myId={key} ref={elem}/>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        <AddIcon style={{fontSize: '6rem', marginTop: '90px'}} onClick={() => {
+                            Phones.phoneList.push(Phone.createRef());
+                            this.setState({phoneListLength: Phones.phoneList.length});
+                        }}/>
+                    </div>
+                </MapInteractionCSS>
+            </div>;
         }
         return (
             data

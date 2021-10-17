@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from 'react';
 import {Library} from "./Components/Library/Library";
 import WidgetProperties from "./Components/WidgetProperties/WidgetProperties";
 import {DndProvider} from "react-dnd";
@@ -12,6 +12,9 @@ import Path from '../../utils/Path';
 import Phone from "./Components/Phone/Phone";
 import Button from "@material-ui/core/Button";
 import VersionHandler from '../../utils/VersionHandler';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import { Grid } from '@material-ui/core';
 
 const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
@@ -26,13 +29,13 @@ class Main extends React.Component {
     static FlutterRoot = '';
     static fs = window.require('fs');
 
-    static selection = null;
+    static selection = 1;
 
     constructor(props) {
         super(props);
 
         this.state = {
-            selection: null,
+            selection: 0,
         };
 
         try {
@@ -67,16 +70,23 @@ class Main extends React.Component {
                     <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
                         {Main.selection !== null && Main.selection >= 0 ?
-                            <>
+                            <Fragment>
                                 <Library/>
-                                <Button variant="contained" color="secondary" onClick={() => {
-                                    this.setState({selection:-1});
-                                }}>
-                                    Back
-                                </Button>
+                                <Grid
+                                    container
+                                    className={'phone-toolbar phone-w'}
+                                    alignItems={'center'}
+                                    justify={'space-between'}>
+                                    <ViewModuleIcon
+                                        onClick={() => {
+                                            this.setState({selection:-1});
+                                        }}/>
+                                    {'View ' + this.state.selection}
+                                    <MoreHorizIcon/>
+                                </Grid>
                                 <WidgetProperties ref={WidgetProperties.getInstance()}/>
-                            </>
-                             : ""}
+                            </Fragment>
+                             : <Fragment/>}
                         <Phones
                             phoneId={Main.selection !== null && Main.selection >= 0 ? Main.selection : null} select={(key) => {
                             this.setState({selection:key});

@@ -8,4 +8,5 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: #8b8b8b;
+  flex-flow: column;
 }
