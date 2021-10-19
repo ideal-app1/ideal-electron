@@ -107,17 +107,16 @@ class WidgetProperties extends React.Component {
     }
 
     codeLinkButton = () => {
-        if (this.state.widget.group === WidgetGroup.MATERIAL) {
-            return (
-              <Grid item style={{marginTop: '15px'}}>
-                  <Route render={({ history}) => (
+        return (
+            <Grid item style={{marginTop: '15px'}}>
+                <Route render={({ history}) => (
                     <Button className="codelink-button"
                             variant="contained"
                             color="primary"
                             onClick={() => {
 
-                              console.log(`PUSH `);
-                              console.log(this.state.widget)
+                                console.log(`PUSH `);
+                                console.log(this.state.widget)
                                 history.push({
                                     pathname: '/codelink/' + this.state.widget._id,
                                     state: {
@@ -130,12 +129,9 @@ class WidgetProperties extends React.Component {
                             }}>
                         CodeLink
                     </Button>
-                  )} />
-              </Grid>
-            )
-        } else {
-            return (<Fragment/>)
-        }
+                )} />
+            </Grid>
+        );
     }
 
     onSelection = () => {

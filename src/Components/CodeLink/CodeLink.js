@@ -192,7 +192,7 @@ function CodeLink(props) {
                         <Grid item className={"CodeLink-bar-item"}>
                             <Box>
                                 <Button variant="contained" color="primary" onClick={loadCodeLinkBlocks}>
-                                    Load
+                                    Load blocks
                                 </Button>
                             </Box>
                         </Grid>
