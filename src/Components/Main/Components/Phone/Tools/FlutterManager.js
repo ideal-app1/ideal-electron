@@ -58,7 +58,7 @@ class FlutterManager {
                 declaration = TypeToGetValue[find.type](find.value);
             }
 
-            let varName = name + "_" + match[2];
+            let varName = name + match[2];
             if (result.length === 0) {
                 varName = name;
             }

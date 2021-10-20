@@ -1,7 +1,7 @@
 
 
 var ideal_textField;
-var ideal_placeholder;
+var _placeholder;
 
 /* IDEAL_INITIALISATION_START */
 ideal_textfield = new TextField(
@@ -9,7 +9,7 @@ ideal_textfield = new TextField(
     border: InputBorder.none,
     filled: true,
     fillColor: Colors.white,
-    hintText: ideal_placeholder
+    hintText: _placeholder
   ),
   obscureText: true,
 );

@@ -1,8 +1,8 @@
 var ideal_center;
-var ideal_child;
+var _child;
 /* IDEAL_INITIALISATION_START */
-ideal_child = <Widget>[/* IDEAL_CHILD */];
+_child = /* IDEAL_CHILD */;
 ideal_center = new Center(
-  child: /* IDEAL_CHILD */
+  child: _child
 );
 /* IDEAL_INITIALISATION_END */
