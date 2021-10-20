@@ -100,7 +100,6 @@ class FlutterManager {
         const declarationsInfo = FlutterManager.declarationName(result, name, properties);
 
         initialisation = FlutterManager.initName(initialisation, declarationsInfo);
-        console.log(FlutterManager.initialization);
         FlutterManager.initialization.push(initialisation);
 
         return declarationsInfo;
@@ -200,7 +199,6 @@ class FlutterManager {
         const code = FlutterManager.getAllCode([jsonData]);
 
         code.initialization = code.initialization.reduce((prev, next) => {return prev + "\n" + next})
-        console.log(code);
         return code;
     }
 
