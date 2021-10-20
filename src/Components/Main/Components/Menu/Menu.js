@@ -123,7 +123,7 @@ export default function Menu(props) {
         functions.forEach((func) => {
             buffer += `\t${func.name}();\n`;
         })
-        buffer += '}\n';
+        buffer += '\n';
         functions.push({
             'name': 'CodeLinkInit',
             'code': buffer,
