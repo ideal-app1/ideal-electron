@@ -33,7 +33,7 @@ const propSize = (prop, updateState) => {
             />
         )
     }
-    const lockStyle = { fontSize: '1rem', paddingLeft: 18}
+    const lockStyle = { fontSize: '1rem', paddingLeft: 15}
     return (
         <Fragment>
             <Grid

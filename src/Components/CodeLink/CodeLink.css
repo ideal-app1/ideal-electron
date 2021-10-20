@@ -27,6 +27,11 @@
     max-height: 900px;
 }
 
+.CodeLink-bar-item .MuiButton-contained {
+    color: #8b8b8b !important;
+    background-color: #383838 !important;
+}
+
 ::-webkit-scrollbar { width: 8px; height: 6px;}
 ::-webkit-scrollbar-button {  background-color: #666; }
 ::-webkit-scrollbar-track {  background-color: #646464;}
