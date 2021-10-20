@@ -8,3 +8,10 @@
     overflow: auto;
 }
 
+.phone-h {
+    height: 822px !important;
+}
+
+.phone-w {
+    width: 385px !important;
+}

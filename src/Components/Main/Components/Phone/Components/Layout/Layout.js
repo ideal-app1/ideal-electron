@@ -5,14 +5,14 @@ import {WidgetGroup, WidgetType} from "../../../../../../utils/WidgetUtils"
 import Widget from "../Widget/Widget";
 import {Grid} from "@material-ui/core";
 import WidgetProperties from "../../../WidgetProperties/WidgetProperties";
-import Phone from "../../Phone";
 import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 import Dialog from '../../../Dialog/Dialog';
+import Phones from "../../../Phones/Phones";
+import Main from "../../../../Main";
 
 const Layout = props => {
 
-    const phone = Phone.getInstance();
     const dialog = Dialog.getInstance();
 
     const [{isOver, isOverCurrent}, drop] = useDrop({
@@ -25,16 +25,16 @@ const Layout = props => {
             if (item.source === WidgetType.PHONE)
                 tmpItem._id = item._id
             else
-                tmpItem._id = phone.current.addToWidgetList(item)
+                tmpItem._id = Phones.phoneList[Main.selection].current.addToWidgetList(item)
             props.list.push(tmpItem)
-            phone.current.forceUpdate()
+            Phones.phoneList[Main.selection].current.forceUpdate()
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             isOverCurrent: monitor.isOver({ shallow: true })
         }),
     });
-
+    console.log(props);
     return (
         <Grid
             container
@@ -43,8 +43,10 @@ const Layout = props => {
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
-                event.stopPropagation();
-                WidgetProperties.getInstance().current.handleSelect(props._id)
+                if (props.disable !== true) {
+                    event.stopPropagation();
+                    WidgetProperties.getInstance().current.handleSelect(props._id)
+                }
             }}
             onContextMenu={(event => {
                 event.preventDefault();
@@ -54,14 +56,14 @@ const Layout = props => {
             ref={drop}>
             {
                 props.list.map(id => {
-                    const widget = phone.current.findWidgetByID(id._id)
-                    if (widget.group === WidgetGroup.MATERIAL) {
+
+                    const widget = Phones.phoneList[props.myId].current.findWidgetByID(id._id)
+
+                    if (widget && widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);
-                    }
-                    else if (widget.group === WidgetGroup.LAYOUT) {
-                        return (<Layout key={widget._id.toString()} {...widget} {...id}/>);
-                    }
-                    else return (<Fragment key={'empty'}/>)
+                    } else if (widget && widget.group === WidgetGroup.LAYOUT) {
+                        return (<Layout disable={props.disable} myId={props.myId} key={widget._id.toString()} {...widget} {...id}/>);
+                    } else return (<Fragment key={'empty'}/>)
                 })
             }
         </Grid>

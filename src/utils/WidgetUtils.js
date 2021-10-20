@@ -14,7 +14,10 @@ export const PropType = {
     NUMFIELD: 'numfield',
     CHECKBOX: 'check',
     COMBOBOX: 'combo',
-    FILE: 'file'
+    FILE: 'file',
+    ALIGNMENT: 'alignment',
+    SIZE: 'SIZE',
+    HIDDEN: 'hidden', // special type (can t be parameter by widgets property)
 }
 
 export const TypeToGetValue = {
@@ -23,4 +26,5 @@ export const TypeToGetValue = {
     'check': (value) => {return (value);},
     'combo': (value) => {return value;},
     'file': (value) => {return value;},
+    'hidden' : (value) => {return value;},
 }

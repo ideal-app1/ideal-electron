@@ -91,8 +91,8 @@ const createWindow = async () => {
     mainWindow.focus();
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  // const menuBuilder = new MenuBuilder(mainWindow);
+  // menuBuilder.buildMenu();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -152,4 +152,8 @@ ipcMain.on('select-directory-hidden', async (event, arg) => {
   event.returnValue = await dialog.showOpenDialog({
     properties: ['openDirectory', 'showHiddenFiles']
   });
+});
+
+ipcMain.on('update-window-title',(event, arg) => {
+  mainWindow.setTitle(arg);
 });

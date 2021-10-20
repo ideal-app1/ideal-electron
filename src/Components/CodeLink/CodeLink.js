@@ -14,11 +14,18 @@ import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Compo
 import CodeLinkWidgetList from "./CodeLinkWidgetList/CodeLinkWidgetList";
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
+<<<<<<< HEAD
 
+=======
+import Phones from "../Main/Components/Phones/Phones";
+import Process from '../Main/Components/Menu/Tools/Process';
+>>>>>>> origin/preprod
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
+
+import CloseIcon from '@material-ui/icons/Close';
 
 
 function CodeLink(props) {
@@ -33,7 +40,6 @@ function CodeLink(props) {
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
-        const phone = Phone.getInstance();
 
         widgetList = []
         phone.current.getWidgetIdList().forEach(widget =>
@@ -45,7 +51,7 @@ function CodeLink(props) {
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
-        widget = phone.current.findWidgetByID(props.match.params.id);
+        widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
         setHasBeenCalled(true);
     };
 
@@ -56,45 +62,36 @@ function CodeLink(props) {
 
     useConstructor();
 
-    const sendData = () => {
-        const buffer = BufferSingleton.get();
-
-        ipcRenderer.send('send-socket-message', {
-            'request-type': 'creator',
-            'parameters': {
-                'imports': Array.from(buffer.import),
-                'code': buffer.code
-            }
-        });
-        //FlutterManager.writeCodeLink(buffer.code, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        //FlutterManager.writeCodeImport(buffer.import, Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart')
+    const loadUserCode = () => {
+      try {
+          return (JsonManager.get(Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources', 'data.json')));
+      } catch (_) {
+          return undefined;
+      }
     };
 
     const loadEverything =  (variableName, className,  afterLoad) => {
-        const dataJson = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+        const dataJson = loadUserCode();
         const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
         const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
-        [dataJson].forEach((jsonFile) => {
-            CodeLinkNodeLoader.loadEveryKnownNodes(jsonFile, className, safeID);
-        });
+        if (dataJson) {
+            CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
+        }
         CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
         afterLoad(className, flutterJson);
     };
 
     const initNewFile =  (variableName, className, currentpath) => {
-        LiteGraph.clearRegisteredTypes();
         loadEverything(variableName, className, (className, flutterJson) => {
             CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
         })
     };
 
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
-        LiteGraph.clearRegisteredTypes();
         loadEverything(variableName, className, (_, __) => {
             graph.load(currentpath);
         });
-
 
     };
 
@@ -105,7 +102,8 @@ function CodeLink(props) {
 
         Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
         CodeLinkNodeLoader.registerLCanvas(Lcanvas);
-        console.log(props);
+        LiteGraph.clearRegisteredTypes();
+
         if (fs.existsSync(currentPath)) {
             loadCodeLinkSave(variableName, className, currentPath)
         } else {
@@ -153,17 +151,38 @@ function CodeLink(props) {
 
     const loadCodeLinkBlocks = async () => {
         const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
+
+        if (!codeLinkBlocks)
+            return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        const indexerArguments = {
+            'requestType': 'index',
+            'parameters': {
+                'pathToIndex': codeLinkBlocks.dir,
+                'finalPath': Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources'),
+                'verbose' : false
+            }
+        };
+
+        Process.runScript('dart pub global run ideal_dart_code_handler ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+            LiteGraph.clearRegisteredTypes();
+            loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
+        });
     };
 
     return (
         <div>
             <Dialog ref={Dialog.getInstance()}/>
-            <Grid container className={"CodeLink-Content"}>
-                <Grid item xs={12} className={"CodeLink-bar-menu"}>
-                    <Grid container>
-                        <Grid className={"CodeLink-bar-item"}>
+            <Grid container direction={'column'} className={"CodeLink-Content"}>
+                <Grid container item alignItems={'center'} justify={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
+                    <Grid container item alignItems={'center'} className={"CodeLink-bar-item"}>
+                        <CloseIcon style={{fontSize: '2.5rem', paddingRight: '20px'}} onClick={() => {props.history.push('/')}}/>
+                        <h3>CODELINK</h3>
+                    </Grid>
+                    <Grid container item className={"CodeLink-bar-item"}>
+                        <Grid item className={"CodeLink-bar-item"}>
                             <Box>
+<<<<<<< HEAD
                                 <h2>CodeLink</h2>
                             </Box>
                         </Grid>
@@ -195,30 +214,40 @@ function CodeLink(props) {
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
+=======
+                                <Button variant="contained" color="primary" onClick={() => {
+>>>>>>> origin/preprod
                                     saveCodeLinkData();
                                 }}>
                                     Exec
                                 </Button>
                             </Box>
                         </Grid>
+<<<<<<< HEAD
                         <Grid className={"CodeLink-bar-item"}>
                             <Box marginTop={"1.25rem"}>
                                 <Button variant="contained" color="secondary" onClick={() => {
+=======
+                        <Grid item className={"CodeLink-bar-item"}>
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={() => {
+>>>>>>> origin/preprod
                                     savegraph(graph.serialize())
                                 }}>
                                     Save
                                 </Button>
                             </Box>
                         </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={loadCodeLinkBlocks}>
-                                    Load
+                        <Grid item className={"CodeLink-bar-item"}>
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={loadCodeLinkBlocks}>
+                                    Load blocks
                                 </Button>
                             </Box>
                         </Grid>
                     </Grid>
                 </Grid>
+<<<<<<< HEAD
                 <Grid item xs={2} className={"CodeLink-widget-menu"}>
                     <Grid container
                           spacing={0}
@@ -230,15 +259,43 @@ function CodeLink(props) {
                             ? <CodeLinkWidgetList widgetList={widgetList} />
                             : <p>No result</p>
                         }
+=======
+                <Grid container item direction={'row'}>
+                    <Grid item xs={2} className={"CodeLink-widget-menu"}>
+                        <Grid container
+                              spacing={0}
+                              direction="column"
+                              alignItems="center"
+                              justify="center"
+                        >
+                            <Typography variant="h6" style={{paddingTop: '15px'}}>
+                                Widget Menu
+                            </Typography>
+                            <div>
+                                {/*    <List>*/}
+                                {/*        {this.generate(*/}
+                                {/*            <ListItem>*/}
+                                {/*                <ListItemText*/}
+                                {/*                    primary="Widget item Id"*/}
+                                {/*                />*/}
+                                {/*                <ListItemIcon>*/}
+                                {/*                    <Loop />*/}
+                                {/*                </ListItemIcon>*/}
+                                {/*            </ListItem>,*/}
+                                {/*        )}*/}
+                                {/*    </List>*/}
+                            </div>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Grid item xs={10} className={"CodeLink-canvas"}>
-                    <Box className={"CodeLink-canvas-Box"}>
-                        <canvas id="myCanvas" width={1920} height={1080} ref={(canvasRef) => {
-                            canvas = canvasRef;
-                            //init()
-                        }}/>
-                    </Box>
+                    <Grid item xs={10} className={"CodeLink-canvas"}>
+                        <Box className={"CodeLink-canvas-Box"}>
+                            <canvas id="myCanvas" width={1920} height={1080} ref={(canvasRef) => {
+                                canvas = canvasRef;
+                                //init()
+                            }}/>
+                        </Box>
+>>>>>>> origin/preprod
+                    </Grid>
                 </Grid>
             </Grid>
         </div>

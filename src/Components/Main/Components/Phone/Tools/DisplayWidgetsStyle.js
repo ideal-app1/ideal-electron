@@ -2,15 +2,16 @@ import React from "react";
 
 class DisplayWidgetsStyle extends React.Component {
 
-    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
+    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
 
     static Display = {
         'Column': (widget) => {
             if (widget.properties === undefined) {
                 return {};
             }
-            const main = widget.properties.mainAxisAlignment.items.find(p => p.value === widget.properties.mainAxisAlignment.value)
-            const cross = widget.properties.crossAxisAlignment.items.find(p => p.value === widget.properties.crossAxisAlignment.value)
+            const props = widget.properties;
+            const main = props.mainAxisAlignment.items.find(p => p.value === props.mainAxisAlignment.value);
+            const cross = props.crossAxisAlignment.items.find(p => p.value === props.crossAxisAlignment.value);
             return {
                 style: {
                     justifyContent: main.style,
@@ -22,13 +23,14 @@ class DisplayWidgetsStyle extends React.Component {
             if (widget.properties === undefined) {
                 return {};
             }
-            const main = widget.properties.mainAxisAlignment.items.find(p => p.value === widget.properties.mainAxisAlignment.value)
-            const cross = widget.properties.crossAxisAlignment.items.find(p => p.value === widget.properties.crossAxisAlignment.value)
+            const props = widget.properties;
+            const main = props.mainAxisAlignment.items.find(p => p.value === props.mainAxisAlignment.value);
+            const cross = props.crossAxisAlignment.items.find(p => p.value === props.crossAxisAlignment.value);
             return {
                 style: {
                     justifyContent: main.style,
                     alignItems: cross.style,
-                    width: widget.properties.width.value + "%"
+                    width: widget.properties.size.value.w + "%"
                 }
             };
         },
@@ -40,6 +42,20 @@ class DisplayWidgetsStyle extends React.Component {
                 style: {
                     justifyContent: widget.properties.mainAxisAlignment,
                     alignItems: widget.properties.crossAxisAlignment
+                }
+            };
+        },
+        'Stack': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            const props = widget.properties;
+            const align = props.alignment.items.find(p => p.value === props.alignment.value);
+            return {
+                style: {
+                    height: props.height.value,
+                    width: props.width.value,
+                    alignItems: align.style
                 }
             };
         },
@@ -90,11 +106,13 @@ class DisplayWidgetsStyle extends React.Component {
                 return {};
             }
             return {
-                display: widget.name,
                 style: {
                     borderRadius: widget.properties.rounded.value ? "20px" : "0",
-                    width: widget.properties.width.value,
-                    height: widget.properties.height.value
+                    width: widget.properties.size.value.w,
+                    height: widget.properties.size.value.h,
+                    backgroundImage: widget.properties.url.value ? `url(${widget.properties.url.value})` : null,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain'
                 }
             };
         },

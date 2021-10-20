@@ -1,1 +1,19 @@
 
+.phones {
+    display: flex;
+    flex-direction:row;
+    margin-left: 144px;
+}
+
+.phone-container {
+    padding-right: 50px;
+}
+
+.phone-toolbar {
+    background: #383838;
+    color: #8b8b8b;
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}

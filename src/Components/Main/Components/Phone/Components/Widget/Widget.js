@@ -8,10 +8,11 @@ import Phone from "../../Phone";
 import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 import Dialog from '../../../Dialog/Dialog';
 import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
+import Phones from "../../../Phones/Phones";
+import Main from "../../../../Main";
 
 const Widget = props => {
 
-    const phone = Phone.getInstance();
     const widget = WidgetProperties.getInstance();
     const dialog = Dialog.getInstance();
 
@@ -25,13 +26,22 @@ const Widget = props => {
             if (monitor.didDrop()) {
                 return;
             }
-            if (item.source === WidgetType.PHONE) {
+
+            if (item.applied) {
+                const itemID = Phones.phoneList[Main.selection].current.addToWidgetList(item);
+                Phones.phoneList[Main.selection].current.moveByID(itemID, props._id);
+                const itemApplied = Phones.phoneList[Main.selection].current.findByID(itemID);
+                const itemProps = Phones.phoneList[Main.selection].current.findByID(props._id);
+                itemApplied.child.list.push(itemProps.child);
+                itemApplied.parent.list = itemApplied.parent.list.filter(x => x._id !== props._id);
+                Phones.phoneList[Main.selection].current.forceUpdate();
+            } else if (item.source === WidgetType.PHONE) {
                 phone.current.moveByID(item._id, props._id)
             } else {
-                const itemID = phone.current.addToWidgetList(item)
-                phone.current.moveByID(itemID, props._id)
+                const itemID = Phones.phoneList[Main.selection].current.addToWidgetList(item)
+                Phones.phoneList[Main.selection].current.moveByID(itemID, props._id)
             }
-            phone.current.componentDidUpdate()
+            Phones.phoneList[Main.selection].current.componentDidUpdate()
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -42,7 +52,7 @@ const Widget = props => {
         item: {...props},
         isDragging: monitor => {
             if (state.dragging && monitor.getItem().source === WidgetType.PHONE) {
-                phone.current.removeByID(monitor.getItem()._id)
+                Phones.phoneList[Main.selection].current.removeByID(monitor.getItem()._id)
                 setState({dragging: false})
             }
         },
@@ -52,7 +62,7 @@ const Widget = props => {
         end: (draggedItem, monitor) => {
             const didDrop = monitor.didDrop();
             if (!didDrop) {
-                phone.current.componentDidUpdate()
+                Phones.phoneList[Main.selection].current.componentDidUpdate()
                 console.log("Connaître le widget ? " + widget.current)
                 //widget.current.deleteCodelinkFile()
                 console.log('dropped outside');
@@ -67,11 +77,17 @@ const Widget = props => {
 
     return (
         <div
-            className={"widget " + props.name.toLowerCase()}
+            className={"widget " + props.name.toLowerCase() + (props.selected ? " selected" : "")}
             style={isOver ? {...DisplayWidgetsStyle.Display[props.display](props).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
-                event.stopPropagation()
-                WidgetProperties.getInstance().current.handleSelect(props._id)
+                if (Main.selection !== null && Main.selection >= 0) {
+                    event.stopPropagation();
+                    /*console.log('select');
+                    let widget = phone.current.findWidgetByID(props._id);
+                    widget.selected = !widget.selected;
+                    phone.current.forceUpdate();*/
+                    WidgetProperties.getInstance().current.handleSelect(props._id);
+                }
             }}
             onContextMenu={(event => {
                 event.preventDefault();

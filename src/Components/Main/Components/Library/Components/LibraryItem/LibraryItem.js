@@ -10,7 +10,7 @@ const LibraryItem = props => {
     });
 
     return (
-        <div className={"library-item " + props.name.toLowerCase() + " item-" + props.group} ref={drag}>
+        <div className={"library-item " + "library-" + props.name.toLowerCase() + " item-" + props.group} ref={drag}>
             {props.name}
         </div>
     );

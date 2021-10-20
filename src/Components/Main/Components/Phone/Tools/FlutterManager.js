@@ -12,7 +12,7 @@ class FlutterManager {
     static exec = window.require('child_process');
 
 
-    static initialization = "";
+    static initialization = [];
 
     static getCode(codePathFile) {
         let result = null;
@@ -58,7 +58,7 @@ class FlutterManager {
                 declaration = TypeToGetValue[find.type](find.value);
             }
 
-            let varName = name + "_" + match[2];
+            let varName = name + match[2];
             if (result.length === 0) {
                 varName = name;
             }
@@ -100,7 +100,7 @@ class FlutterManager {
         const declarationsInfo = FlutterManager.declarationName(result, name, properties);
 
         initialisation = FlutterManager.initName(initialisation, declarationsInfo);
-        FlutterManager.initialization += initialisation + "\n";
+        FlutterManager.initialization.push(initialisation);
 
         return declarationsInfo;
     }
@@ -142,30 +142,42 @@ class FlutterManager {
     {
         let declarations = [];
         let childDeclarations;
+        let MyChild = [];
 
         widgetArray.map((widget) => {
             if (widget.codePathFile) {
-                declarations.push(FlutterManager.widgetToCodeHandlerFormat(widget));
+                const declaration = FlutterManager.widgetToCodeHandlerFormat(widget);
+
+                const index = FlutterManager.initialization.length - 1;
+                MyChild = [...MyChild, declaration]
 
                 if (widget.list && widget.list.length > 0) {
-                    childDeclarations = FlutterManager.getAllCode(widget.list);
+                    childDeclarations = FlutterManager.getAllCode(widget.list, index);
+
+                    if (childDeclarations?.MyChild) {
+                        let variablesString = "";
+
+                        childDeclarations.MyChild.map((variable) => {
+                            variablesString += variable.name + ',';
+                        });
+
+                        // si le IDEAL_CHILD est dans l'initialisation
+                        FlutterManager.initialization[index] = FlutterManager.initChild(FlutterManager.initialization[index], variablesString);
+
+                        // si le IDEAL_CHILD est dans les declarations
+                        declaration.children.map((child) => {
+                            child.code = FlutterManager.initChild(child.code, variablesString);
+                        });
+
+                        declarations = [...declarations, ...childDeclarations.declarations];
+                    }
                 }
+                declarations.push(declaration);
             }
         });
 
-        if (childDeclarations) {
-            let variablesString = "";
-            childDeclarations.declarations.map((variable) => {
 
-                variablesString += variable.name + ',\n'
-            })
-            FlutterManager.initialization = FlutterManager.initChild(FlutterManager.initialization, variablesString);
-
-            declarations = [...declarations, ...childDeclarations.declarations]
-        }
-
-
-        return {declarations: declarations, initialization:FlutterManager.initialization};
+        return {declarations: declarations, initialization:FlutterManager.initialization, MyChild: MyChild};
     }
 
     static writeCodeLink(code, path) {
@@ -183,11 +195,10 @@ class FlutterManager {
     }
 
     static formatDragAndDropToCodeHandler(jsonData, path) {
-        FlutterManager.initialization = "";
+        FlutterManager.initialization = [];
         const code = FlutterManager.getAllCode([jsonData]);
 
-
-        console.log(code);
+        code.initialization = code.initialization.reduce((prev, next) => {return prev + "\n" + next})
         return code;
     }
 

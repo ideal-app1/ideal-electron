@@ -6,9 +6,10 @@ import {WidgetType} from "../../../../utils/WidgetUtils";
 import Main from "../../Main";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
+import Phones from "../Phones/Phones";
 
 const clone = require("rfdc/default");
-const { ipcRenderer } = window.require('electron');
+const {ipcRenderer} = window.require('electron');
 
 class Phone extends React.Component {
 
@@ -34,15 +35,6 @@ class Phone extends React.Component {
         });
     }
 
-    static instance = null;
-
-    static getInstance = () => {
-        if (Phone.instance == null)
-            Phone.instance = React.createRef();
-
-        return Phone.instance;
-    }
-
     resetState() {
         this._id = uuid()
         this.setState({
@@ -58,15 +50,23 @@ class Phone extends React.Component {
     }
 
     load() {
-        if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
-            const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-            this.setState(jsonCode);
-            this._id = jsonCode.idList._id;
+        const toLoad = Phones.loadByIndex(this.props.myId);
+        if (toLoad) {
+            this.setState(toLoad);
+            this._id = toLoad.idList._id;
         }
     }
 
     componentDidMount() {
         this.load();
+    }
+
+    deleteView() {
+        let data = JsonManager.get(Path.build(Main.MainProjectPath, "Ideal_config.json"));
+        console.log(data.view);
+        data.view.splice(this.props.myId, 1);
+        console.log(data.view);
+        JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -75,7 +75,12 @@ class Phone extends React.Component {
         }
         this.pushHistory();
         const finalWidgetList = this.state;
-        JsonManager.saveThis(finalWidgetList, Path.build(Main.MainProjectPath, "Ideal_config.json"));
+        let data = JsonManager.get(Path.build(Main.MainProjectPath, "Ideal_config.json"));
+        if (data === null) {
+            data = {view: []};
+        }
+        data.view[this.props.myId] = finalWidgetList;
+        JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
     }
 
     pushHistory = () => {
@@ -166,8 +171,7 @@ class Phone extends React.Component {
                     parent: idItem,
                     child: idItem.list[i]
                 };
-            }
-            else {
+            } else {
                 const res = this.deepFind(id, idItem.list[i])
                 if (res != null)
                     return res
@@ -182,8 +186,7 @@ class Phone extends React.Component {
             if (idItem.list[i]._id === id) {
                 idItem.list.splice(i, 1)
                 return;
-            }
-            else
+            } else
                 this.deepRemove(id, idItem.list[i])
         }
     }
@@ -206,7 +209,7 @@ class Phone extends React.Component {
 
     findByID = id => {
         if (id === this._id)
-            return { child: this.state.idList };
+            return {child: this.state.idList};
         return this.deepFind(id, this.state.idList);
     }
 
@@ -234,11 +237,17 @@ class Phone extends React.Component {
         return this.state.idList.list;
     }
 
+    static createRef = () => {
+        return React.createRef();
+    }
+
     render() {
         return (
             <Fragment>
                 <div className={"phone"}>
                     <Layout
+                        disable={this.props.disable}
+                        myId={this.props.myId}
                         _id={this._id}
                         name={"root"}
                         group={"layout"}

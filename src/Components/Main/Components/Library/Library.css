@@ -1,5 +1,5 @@
 #library {
-    background-color: #333333;
+    background-color: #292929;
     height: 100%;
     padding: 1vh !important;
     left: 0;
@@ -16,11 +16,7 @@
 }
 
 #library > li > div {
-    color: black;
+    color: #8d8d8d;
     font-size: 15px;
-}
-
-.widget-button {
-    color: black;
-    font-size: 15px;
+    font-weight: 500;
 }
