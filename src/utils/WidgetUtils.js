@@ -22,7 +22,7 @@ export const PropType = {
 
 export const TypeToGetValue = {
     'textfield': (value) => {return "\"" + value + "\"";},
-    'numfield': (value) => {return value;},
+    'numfield': (value) => {return value + ".0";},
     'check': (value) => {return (value);},
     'combo': (value) => {return value;},
     'file': (value) => {return value;},

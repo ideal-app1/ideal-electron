@@ -151,7 +151,7 @@ export const Library = () => {
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
-                    variableName: "ideal_text",
+                    variableName: "_text",
                 },
                 color: {
                     value: "#2190d9",
@@ -165,17 +165,17 @@ export const Library = () => {
                 enable: {
                     value: true,
                     type: PropType.CHECKBOX,
-                    variableName: "ideal_enable",
+                    variableName: "_enable",
                 },
                 width: {
                     value: 80,
                     type: PropType.NUMFIELD,
-                    variableName: "ideal_width",
+                    variableName: "_width",
                 },
                 height: {
                     value: 40,
                     type: PropType.NUMFIELD,
-                    variableName: "ideal_height",
+                    variableName: "_height",
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Button
@@ -193,7 +193,7 @@ export const Library = () => {
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
-                    variableName: "ideal_data",
+                    variableName: "_data",
                 },
                 fontSize: {
                     value: 15,
@@ -223,7 +223,7 @@ export const Library = () => {
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
-                    variableName: "ideal_placeholder",
+                    variableName: "_placeholder",
                 },
                 focus: false
             },
@@ -237,7 +237,7 @@ export const Library = () => {
                 url: {
                     value: null,
                     type: PropType.TEXTFIELD,
-                    variableName: "ideal_url",
+                    variableName: "_url",
                 },
                 rounded: {
                     value: true,
