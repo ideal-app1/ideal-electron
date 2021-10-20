@@ -40,6 +40,11 @@ class Phones extends React.Component {
         }
     }
 
+    static getView(index) {
+        // todo faire des truc logique
+        return ('View' + index);
+    }
+
     static getRoutes() {
         let result = [];
         Phones.phoneList.map((elem, key) => {
@@ -114,6 +119,7 @@ class Phones extends React.Component {
             data
         );
     }
+
 }
 
 export default Phones

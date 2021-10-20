@@ -128,7 +128,7 @@ export default function Menu(props) {
             'requestType': 'creator',
             'parameters': {
                 'path': Main.MainProjectPath,
-                'view': Main.CurrentView,
+                'view': Phones.getView(index),
                 'routes': Phones.getRoutes(),
                 'code': {
                     'imports': new Set(),
