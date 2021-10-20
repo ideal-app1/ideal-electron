@@ -198,6 +198,8 @@ class FlutterManager {
         FlutterManager.initialization = [];
         const code = FlutterManager.getAllCode([jsonData]);
 
+        code.initialization.reverse();
+
         code.declarations.push({code:"var placeholder;", name: "placeholder"});
         code.initialization.push("placeholder = " + jsonData.properties.name.value + ";");
 
