@@ -76,10 +76,13 @@ console.log(data.view);
         this.pushHistory();
         const finalWidgetList = this.state;
         let data = JsonManager.get(Path.build(Main.MainProjectPath, "Ideal_config.json"));
+
         if (data === null) {
             data = {view: []};
         }
         data.view[this.props.myId] = finalWidgetList;
+        console.log('PRINT DATA');
+        console.log(data);
         JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
     }
 

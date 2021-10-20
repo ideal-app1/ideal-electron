@@ -5,7 +5,7 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 const createMethodNode = (method, className, LCanvas, path) => {
 //your node constructor class
     function MethodNode() {
-        inheritNodeBase(MethodNode);
+        inheritNodeBase(MethodNode, this);
         this.addInput("Linked class", LiteGraph.ACTION);
         method["parameters"].forEach((param) => {
             this.addInput(param["name"] + "(" + param["type"] + ")", param["type"]);
@@ -21,7 +21,6 @@ const createMethodNode = (method, className, LCanvas, path) => {
 
 //name to show on the canvas
     MethodNode.title = method["name"];
-
 
     MethodNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         console.log("Je suis connecté ? " + isConnected + " du type ? " + type);

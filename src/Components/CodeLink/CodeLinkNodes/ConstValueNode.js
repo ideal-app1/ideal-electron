@@ -16,7 +16,7 @@ const createConstValueNode = (constValue, LCanvas, path) => {
 
     function ConstValueNode() {
 
-        inheritNodeBase(ConstValueNode)
+        inheritNodeBase(ConstValueNode, this)
         this.addOutput("value", constValue["type"]);
         this.addProperty("value", constValue["value"]);
 
@@ -28,7 +28,6 @@ const createConstValueNode = (constValue, LCanvas, path) => {
 
     ConstValueNode.title = constValue["type"] + " " + constValue["name"];
     ConstValueNode.desc = constValue["type"] + " " + constValue["name"];
-
 
     function handleCaseString(type, value) {
         if (type.toUpperCase() == "String".toUpperCase()) {

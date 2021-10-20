@@ -10,8 +10,8 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
     ConstructorAttributeNode.description = param["name"];
 
     function ConstructorAttributeNode() {
-        inheritNodeBase(ConstructorAttributeNode);
-        this.addInput("Linked Class", LiteGraph.ACTION);
+        inheritNodeBase(ConstructorAttributeNode, this);
+        this.addInput("Linked Class");
         this.addInput(param["name"] + "(" + param["type"] + ")");
 
         this.properties = {precision: 1};
@@ -47,15 +47,23 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
     };
 
+
+
+
     ConstructorAttributeNode.prototype.onExecute = function () {
         const linkedClass = this.getInputData(0);
         const linkedData = this.getInputData(1);
+        console.log(this.getCallbackData);
+        const codeToAdd = this.getCallbackData(linkedData, param['type']);
         let buffer = "";
 
 
+        console.log(this.getInputData(0));
+        console.log(this.getInputData(1));
+
         if (linkedClass === undefined || linkedData === undefined)
             return;
-        buffer = linkedClass["varName"] + '_' + param["name"] + " = " + linkedData['varName'] + ';';
+        buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
     };
     console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"]);

@@ -66,7 +66,7 @@ export default function Menu(props) {
     const createIdealProject = () => {
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
             fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
+            //fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
             createDirectories();
             JsonManager.saveThis({
                 ProjectPathAutoSaved: Main.MainProjectPath,
@@ -116,6 +116,20 @@ export default function Menu(props) {
         }
     };
 
+    const createCodeLinkInitFunc = (functions) => {
+        let buffer = '';
+
+
+        functions.forEach((func) => {
+            buffer += `\t${func.name}();\n`;
+        })
+        buffer += '}\n';
+        functions.push({
+            'name': 'CodeLinkInit',
+            'code': buffer,
+        });
+    }
+
     const afterCodeCreator = () => {
         //Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
         console.log('AFTER');
@@ -147,7 +161,9 @@ export default function Menu(props) {
                 }
             }
         };
+
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        createCodeLinkInitFunc(data['parameters']['code']['functions']);
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
 
         return new Buffer(JSON.stringify(data)).toString('base64');
@@ -159,8 +175,8 @@ export default function Menu(props) {
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {
-        });
+        Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+        //Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);

@@ -9,8 +9,8 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
     ClassNode.description = NodeInfos["name"];
 
     function ClassNode() {
-        inheritNodeBase(ClassNode);
-        this.addOutput("Linked class", LiteGraph.ACTION);
+        inheritNodeBase(ClassNode, this);
+        this.addOutput("Linked class");
 
         this.properties = {precision: 1};
         this.varName = varName;
