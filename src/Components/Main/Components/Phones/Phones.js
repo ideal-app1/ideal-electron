@@ -40,6 +40,16 @@ class Phones extends React.Component {
         }
     }
 
+    static getRoutes() {
+        let result = [];
+        Phones.phoneList.map((elem, key) => {
+            const view = ('View' + key);
+            const path = key === 0 ? "/" : "/" + view;
+            result.push({path: path, view: view});
+        });
+        return result;
+    }
+
     static loadByIndex(index) {
         if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
             let jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));

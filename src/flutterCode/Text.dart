@@ -2,10 +2,10 @@
 
 var ideal_text;
 
-var ideal_data;
+var _data;
 
 /* IDEAL_INITIALISATION_START */
-ideal_text = new Text(ideal_data,
+ideal_text = new Text(_data,
   style: TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 22

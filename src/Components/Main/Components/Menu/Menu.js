@@ -135,24 +135,15 @@ export default function Menu(props) {
         console.log('AFTER');
     };
 
-    const getDataToCreate = (jsonCode) => {
-        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[0].current.deepConstruct(jsonCode.view[0].idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
+    const getDataToCreate = (jsonCode, index) => {
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[index].current.deepConstruct(jsonCode.view[0].idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
         console.log(codeHandlerFormat);
         const data = {
             'requestType': 'creator',
             'parameters': {
                 'path': Main.MainProjectPath,
                 'view': Main.CurrentView,
-                'routes': [
-                    {
-                        'path': '/',
-                        'view': 'Main'
-                    },
-                    {
-                        'path': '/bite',
-                        'view': 'Bite'
-                    }
-                ],
+                'routes': Phones.getRoutes(),
                 'code': {
                     'imports': new Set(),
                     'functions': [],
@@ -161,6 +152,7 @@ export default function Menu(props) {
                 }
             }
         };
+        console.log(data);
 
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         createCodeLinkInitFunc(data['parameters']['code']['functions']);
@@ -171,7 +163,7 @@ export default function Menu(props) {
 
     const runProject = (_) => {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const data = getDataToCreate(jsonCode);
+        const data = getDataToCreate(jsonCode, 0);
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
