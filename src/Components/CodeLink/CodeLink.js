@@ -26,7 +26,7 @@ const app = window.require('electron').remote.app;
 const path = require('path');
 
 import CloseIcon from '@material-ui/icons/Close';
-
+import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 
 function CodeLink(props) {
 
@@ -79,6 +79,7 @@ function CodeLink(props) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
         CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
+        createSetStateNode();
         afterLoad(className, flutterJson);
     };
 

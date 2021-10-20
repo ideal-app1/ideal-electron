@@ -36,7 +36,7 @@ const Widget = props => {
                 itemApplied.parent.list = itemApplied.parent.list.filter(x => x._id !== props._id);
                 Phones.phoneList[Main.selection].current.forceUpdate();
             } else if (item.source === WidgetType.PHONE) {
-                phone.current.moveByID(item._id, props._id)
+                Phones.phoneList[Main.selection].current.moveByID(item._id, props._id)
             } else {
                 const itemID = Phones.phoneList[Main.selection].current.addToWidgetList(item)
                 Phones.phoneList[Main.selection].current.moveByID(itemID, props._id)
