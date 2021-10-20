@@ -52,7 +52,7 @@ export const Library = () => {
                 },
                 direction: "column",
                 child: {
-                    value: "<Widget>[/* IDEAL_CHILD */]",
+                    value: "[]",
                     type: PropType.HIDDEN,
                     variableName: "ideal_child",
                 },
