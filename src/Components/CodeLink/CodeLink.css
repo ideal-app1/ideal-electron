@@ -21,7 +21,7 @@
 .CodeLink-widget-content {
     margin-top: 15px;
     overflow: auto;
-    max-height: 800px;
+    max-height: 830px;
 }
 
 .CodeLink-canvas {
@@ -30,7 +30,7 @@
 
 .CodeLink-canvas-Box {
     overflow: auto;
-    max-height: 900px;
+    max-height: 935px;
 }
 
 .CodeLink-bar-item .MuiButton-contained {

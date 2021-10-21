@@ -4,6 +4,7 @@ import Alert from '@material-ui/lab/Alert';
 import {Grid, Button, IconButton, Collapse, Container} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import authService from "../../service/auth-service";
+import IdealLogo from "../../../assets/icon.png";
 
 
 async function loginUser(credentials) {
@@ -76,7 +77,7 @@ export default function Login({setAuthenticated}) {
                         <h1 className={"login-header-title"}>IDEAL</h1>
                     </Grid>
                     <Grid item xs={12} className={"login-content"}>
-                        <img src={'../assets/icon.png'} alt=''/>
+                        <img src={IdealLogo} alt={'ideal logo'}/>
                         <Collapse in={open}>
                             <Alert
                                 severity="error"

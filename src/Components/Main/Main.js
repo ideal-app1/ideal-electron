@@ -89,7 +89,7 @@ class Main extends React.Component {
                                     container
                                     className={'phone-toolbar phone-w'}
                                     alignItems={'center'}
-                                    justify={'space-between'}>
+                                    justifyContent={'space-between'}>
                                     <ViewModuleIcon
                                         onClick={() => {
                                             this.setState({selection:-1});

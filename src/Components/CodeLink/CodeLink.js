@@ -3,7 +3,7 @@ import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "liteg
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
-import {Box, Grid, Button} from "@material-ui/core";
+import {Box, Grid, Button, Typography} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
@@ -14,18 +14,16 @@ import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Compo
 import CodeLinkWidgetList from "./CodeLinkWidgetList/CodeLinkWidgetList";
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
-<<<<<<< HEAD
-
-=======
 import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
->>>>>>> origin/preprod
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
 
-import CloseIcon from '@material-ui/icons/Close';
+import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
+import IdealLogo from "../../../assets/icon.png";
+
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 
 function CodeLink(props) {
@@ -42,8 +40,9 @@ function CodeLink(props) {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
 
         widgetList = []
-        phone.current.getWidgetIdList().forEach(widget =>
-            widgetList.push(phone.current.findWidgetByID(widget._id))
+
+        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach(widget =>
+            widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
          );
 
         if (hasBeenCalled) return;
@@ -51,7 +50,9 @@ function CodeLink(props) {
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
+
         widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
+
         setHasBeenCalled(true);
     };
 
@@ -175,64 +176,26 @@ function CodeLink(props) {
         <div>
             <Dialog ref={Dialog.getInstance()}/>
             <Grid container direction={'column'} className={"CodeLink-Content"}>
-                <Grid container item alignItems={'center'} justify={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
+                <Grid container item alignItems={'center'} justifyContent={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
                     <Grid container item alignItems={'center'} className={"CodeLink-bar-item"}>
-                        <CloseIcon style={{fontSize: '2.5rem', paddingRight: '20px'}} onClick={() => {props.history.push('/')}}/>
+                        <img src={IdealLogo} style={{marginLeft: '1rem', marginRight: '1rem'}} height={'32'} width={'32'} alt={'ideal logo'}/>
                         <h3>CODELINK</h3>
+                        <PhoneAndroid style={{fontSize: '2.5rem', marginLeft: '5rem'}} onClick={() => {props.history.push('/')}}/>
+                        <ArrowLeft style={{fontSize: '2.5rem'}} onClick={() => {props.history.push('/')}}/>
                     </Grid>
                     <Grid container item className={"CodeLink-bar-item"}>
                         <Grid item className={"CodeLink-bar-item"}>
                             <Box>
-<<<<<<< HEAD
-                                <h2>CodeLink</h2>
-                            </Box>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="primary" onClick={() => {props.history.push('/')}}>
-                                    Phone view
-                                </Button>
-                            </Box>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={() => {
-                                    ipcEnabling();
-                                }}>
-                                    IPC
-                                </Button>
-                            </Box>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={() => {
-                                    setCounter(counter + 1);
-                                }}>
-                                    counter
-                                </Button>
-                            </Box>
-                        </Grid>
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={() => {
-=======
                                 <Button variant="contained" color="primary" onClick={() => {
->>>>>>> origin/preprod
                                     saveCodeLinkData();
                                 }}>
                                     Exec
                                 </Button>
                             </Box>
                         </Grid>
-<<<<<<< HEAD
-                        <Grid className={"CodeLink-bar-item"}>
-                            <Box marginTop={"1.25rem"}>
-                                <Button variant="contained" color="secondary" onClick={() => {
-=======
                         <Grid item className={"CodeLink-bar-item"}>
                             <Box>
                                 <Button variant="contained" color="primary" onClick={() => {
->>>>>>> origin/preprod
                                     savegraph(graph.serialize())
                                 }}>
                                     Save
@@ -248,31 +211,20 @@ function CodeLink(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-<<<<<<< HEAD
-                <Grid item xs={2} className={"CodeLink-widget-menu"}>
-                    <Grid container
-                          spacing={0}
-                          direction="row"
-                          alignItems="center"
-                          justifyContent="center"
-                    >
-                        { widgetList
-                            ? <CodeLinkWidgetList widgetList={widgetList} />
-                            : <p>No result</p>
-                        }
-=======
                 <Grid container item direction={'row'}>
                     <Grid item xs={2} className={"CodeLink-widget-menu"}>
                         <Grid container
                               spacing={0}
                               direction="column"
                               alignItems="center"
-                              justify="center"
+                              justifyContent="center"
                         >
                             <Typography variant="h6" style={{paddingTop: '15px'}}>
                                 Widget Menu
                             </Typography>
                             <div>
+                                <CodeLinkWidgetList widgetList={widgetList} />
+
                                 {/*    <List>*/}
                                 {/*        {this.generate(*/}
                                 {/*            <ListItem>*/}
@@ -295,7 +247,6 @@ function CodeLink(props) {
                                 //init()
                             }}/>
                         </Box>
->>>>>>> origin/preprod
                     </Grid>
                 </Grid>
             </Grid>

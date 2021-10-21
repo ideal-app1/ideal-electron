@@ -146,7 +146,7 @@ class WidgetProperties extends React.Component {
                       item
                       direction={'row'}
                       alignItems={'center'}
-                      justify={'space-between'}>
+                      justifyContent={'space-between'}>
                       <div className={"property-name-" + this.state.widget.group}>group</div>
                       {this.state.widget.group}
                   </Grid>
@@ -161,7 +161,7 @@ class WidgetProperties extends React.Component {
                                           item
                                           direction={'row'}
                                           alignItems={'center'}
-                                          justify={'space-between'}>
+                                          justifyContent={'space-between'}>
                                           <div className={"property-name-" + this.state.widget.group}>{key}</div>
                                           {this.widgetPropType(value)}
                                       </Grid>

@@ -1,4 +1,6 @@
 import React from "react";
+import {Search} from "@material-ui/icons";
+import {Grid} from "@material-ui/core";
 
 function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setFilteredWidgets}) {
 
@@ -16,18 +18,21 @@ function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setF
     const search = () => {
         return (
             <div>
-                <input
-                    id="widgets-search"
-                    type="text"
-                    placeholder="Search widgets"
-                    value={searchQuery}
-                    style={{color: '#aaaaaa'}}
-                    onChange={e => {
-                        e.preventDefault();
-                        setSearchQuery(e.target.value);
-                        setFilteredWidgets(filterWidgets(widgetList, e.target.value));
-                    }}
-                />
+                <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
+                    <Search style={{fontSize: '1.5rem'}}/>
+                    <input
+                        id="widgets-search"
+                        type="text"
+                        placeholder="Search widgets"
+                        value={searchQuery}
+                        style={{color: '#aaaaaa', margin: '10px'}}
+                        onChange={e => {
+                            e.preventDefault();
+                            setSearchQuery(e.target.value);
+                            setFilteredWidgets(filterWidgets(widgetList, e.target.value));
+                        }}
+                    />
+                </Grid>
             </div>
         );
     }
