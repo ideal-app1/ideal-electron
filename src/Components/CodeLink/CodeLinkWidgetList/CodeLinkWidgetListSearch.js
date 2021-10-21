@@ -1,6 +1,6 @@
 import React from "react";
 import {Search} from "@material-ui/icons";
-import {Grid} from "@material-ui/core";
+import { Grid, InputAdornment, TextField } from '@material-ui/core';
 
 function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setFilteredWidgets}) {
 
@@ -19,17 +19,21 @@ function CodeLinkWidgetListSearch({widgetList, searchQuery, setSearchQuery, setF
         return (
             <div>
                 <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
-                    <Search style={{fontSize: '1.5rem'}}/>
-                    <input
+                    <TextField
                         id="widgets-search"
                         type="text"
                         placeholder="Search widgets"
                         value={searchQuery}
-                        style={{color: '#aaaaaa', margin: '10px'}}
+                        style={{color: '#aaaaaa', padding: 10}}
                         onChange={e => {
                             e.preventDefault();
                             setSearchQuery(e.target.value);
                             setFilteredWidgets(filterWidgets(widgetList, e.target.value));
+                        }}
+                        InputProps={{ startAdornment:
+                                <InputAdornment position="end">
+                                    <Search style={{fontSize: '1.5rem', paddingRight: 10}}/>
+                                </InputAdornment>,
                         }}
                     />
                 </Grid>

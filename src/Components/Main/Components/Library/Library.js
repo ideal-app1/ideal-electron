@@ -9,7 +9,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
 import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
 import {Search} from "@material-ui/icons";
-import {Grid} from "@material-ui/core";
+import { Grid, InputAdornment } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 
 export const Library = () => {
@@ -284,7 +285,7 @@ export const Library = () => {
                                 />
                             </ListItem>
                         </Fragment>
-                    ) : <></>
+                    ) : null
                     ))
                 }
             </Fragment>
@@ -294,16 +295,20 @@ export const Library = () => {
     return (
         <List id={"library"}>
             <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
-                <Search style={{fontSize: '1.5rem'}}/>
-                <input
+                <TextField
                     id="widgets-search"
                     type="text"
                     placeholder="Search widgets"
                     value={searchQuery}
-                    style={{color: '#aaaaaa', margin: '10px'}}
+                    style={{color: '#aaaaaa', padding: 10}}
                     onChange={e => {
                         e.preventDefault();
                         setSearchQuery(e.target.value);
+                    }}
+                    InputProps={{ startAdornment:
+                            <InputAdornment position="end">
+                                <Search style={{fontSize: '1.5rem', paddingRight: 10}}/>
+                            </InputAdornment>,
                     }}
                 />
             </Grid>

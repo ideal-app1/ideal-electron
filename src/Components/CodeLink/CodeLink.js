@@ -27,6 +27,8 @@ import IdealLogo from "../../../assets/icon.png";
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariables';
 import createRValueNode from './CodeLinkNodes/RValueNode';
+import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
+import CloseIcon from '@material-ui/icons/Close';
 
 function CodeLink(props) {
 
@@ -173,7 +175,7 @@ function CodeLink(props) {
 
     const loadCodeLinkBlocks = async () => {
         const codeLinkBlocks = await dialog.current.createDialog(<Modal modal={<LoadCodeLinkBlocks/>}/>);
-
+        dialog.current.createDialog(<Loading/>);
         if (!codeLinkBlocks)
             return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
@@ -190,6 +192,7 @@ function CodeLink(props) {
         Process.runScript(command +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
+            dialog.current.unsetDialog();
         });
     };
 
@@ -199,10 +202,8 @@ function CodeLink(props) {
             <Grid container direction={'column'} className={"CodeLink-Content"}>
                 <Grid container item alignItems={'center'} justifyContent={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
                     <Grid container item alignItems={'center'} className={"CodeLink-bar-item"}>
-                        <img src={IdealLogo} style={{marginLeft: '1rem', marginRight: '1rem'}} height={'32'} width={'32'} alt={'ideal logo'}/>
+                        <CloseIcon style={{fontSize: '2.5rem', paddingRight: '20px'}} onClick={() => {props.history.push('/')}}/>
                         <h3>CODELINK</h3>
-                        <PhoneAndroid style={{fontSize: '2.5rem', marginLeft: '5rem'}} onClick={() => {props.history.push('/')}}/>
-                        <ArrowLeft style={{fontSize: '2.5rem'}} onClick={() => {props.history.push('/')}}/>
                     </Grid>
                     <Grid container item className={"CodeLink-bar-item"}>
                         <Grid item className={"CodeLink-bar-item"}>
