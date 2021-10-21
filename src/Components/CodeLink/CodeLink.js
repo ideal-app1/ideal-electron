@@ -186,7 +186,8 @@ function CodeLink(props) {
             }
         };
 
-        Process.runScript('dart pub global run ideal_dart_code_handler ' +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+        const command = Main.debug ? 'dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' :  'dart pub global run ideal_dart_code_handler ';
+        Process.runScript(command +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
         });

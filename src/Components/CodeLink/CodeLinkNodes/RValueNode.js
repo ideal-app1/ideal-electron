@@ -44,7 +44,7 @@ const createRValueNode = (type, defaultValue) => {
 
   RValueNode.prototype.onExecute = function () {
 
-    let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)}\n`
+    let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)};\n`
 
     console.log(`Data ? `, this.value);
     this.setOutputData(0, this);

@@ -6,7 +6,6 @@ import JsonManager from '../Components/Main/Tools/JsonManager';
 
 const fs = require('fs');
 
-const debug = false;
 let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
 
 
@@ -17,7 +16,7 @@ class VersionHandler {
   static hasBeenRun = false;
 
   constructor() {
-    if (debug) {
+    if (Main.debug) {
       // Easier to debug than to submit a new version of the Code Handler.
       // Change to the path of the dart file for debugging purpose.
       execDartHandler = ' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ';
