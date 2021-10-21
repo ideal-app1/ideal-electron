@@ -232,7 +232,9 @@
     "rfdc": "^1.3.0",
     "source-map-support": "^0.5.19",
     "tree-kill": "latest",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "write": "^2.0.0",
+    "yaml": "^1.10.2"
   },
   "devEngines": {
     "node": ">=10.x",

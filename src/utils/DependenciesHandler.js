@@ -1,4 +1,6 @@
 import React from 'react';
+import YAML from "yaml";
+import write from "write";
 
 class DependenciesHandler {
 
@@ -6,34 +8,39 @@ class DependenciesHandler {
     static fs = window.require('fs');
 
     static addDependencyToProject(projectPath, dependency) {
-        let readYaml = require('read-yaml');
-        const fileName = "." + DependenciesHandler.Sep + "pubspec.yaml"
+        const YAML = require('yaml')
+        const readYaml = require('read-yaml');
+        const write = require('write');
+
+        const filePath = projectPath + DependenciesHandler.Sep + "pubspec.yaml"
 
         if (!DependenciesHandler.fs.existsSync(projectPath)) {
             console.log("Project Path:" + projectPath + " do not exist.")
             return
         }
-        console.log("Project Path:" + projectPath)
 
-        if (!DependenciesHandler.fs.existsSync(projectPath + DependenciesHandler.Sep + fileName)) {
-            console.log("Dependencies file:" + fileName + " do not exist.")
+        if (!DependenciesHandler.fs.existsSync(filePath)) {
+            console.log("Dependencies file:" + filePath + " do not exist.")
             return
         }
-        console.log("Dependencies file:" + fileName)
 
-        // Read le yaml
-        readYaml(projectPath + DependenciesHandler.Sep + fileName, "",function (err, data) {
+        readYaml(filePath, "",function (err, data) {
             if (err) throw err;
-            // Contenu du yaml
-            console.log("Contenu du YAML")
-            console.log(data)
-            // Merge de deux objects (en gros ajout de la dependance)
-            data.dependencies = {...data.dependencies, dependency}
-            // Résultat avec ajout
-            console.log(data)
-            // Need écrire dans le fichier
 
-            // Lien peut être utile (Déso j'ai pas testé ...) https://www.npmjs.com/package/write
+            dependency = JSON.parse(dependency);
+
+            data.dependencies = {...data.dependencies, ...dependency}
+
+            const doc = new YAML.Document();
+            doc.contents = data
+
+            write.sync(filePath, doc.toString(), {increment: true}, error => {
+                if (error) throw error;
+            })
+            // https://www.npmjs.com/package/write
+            // write.sync(filePath, doc.toString(), {override: true}, error => {
+            //     if (error) throw error;
+            // })
         })
     }
 }

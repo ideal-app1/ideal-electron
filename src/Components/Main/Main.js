@@ -60,6 +60,8 @@ class Main extends React.Component {
                 Main.fs.mkdirSync(Main.IdealDir);
             Main.fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'default'), {recursive: true});
         }
+
+        // DependenciesHandler.addDependencyToProject(Main.MainProjectPath, '{"truc": "blabla"}')
     }
 
     render() {
