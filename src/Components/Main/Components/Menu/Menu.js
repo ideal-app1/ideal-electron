@@ -31,7 +31,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 const fs = window.require('fs');
 const mainTemplateCode = require("../../../../flutterCode/Main.dart");
-
+const debug = false;
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
 import CogIcon from "./Assets/Icons/cog.svg";
@@ -167,8 +167,8 @@ export default function Menu(props) {
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
-        //Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+        if (debug) Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+        else Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
