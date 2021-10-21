@@ -10,7 +10,7 @@ const createSetStateNode = () => {
   SetStateNode.nodeType = 'SetStateNode';
 
   function SetStateNode() {
-    inheritNodeBase(SetStateNode);
+    inheritNodeBase(SetStateNode, this);
     this.addInput("Function");
     this.addOutput("", LiteGraph.ACTION, {'color_on': '#FF7F7F'});
 
