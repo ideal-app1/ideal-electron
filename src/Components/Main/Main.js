@@ -19,6 +19,8 @@ import { Grid } from '@material-ui/core';
 const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
 
+import DependenciesHandler from "../../utils/DependenciesHandler";
+
 class Main extends React.Component {
 
     static IdealDir = "";
@@ -28,7 +30,7 @@ class Main extends React.Component {
     static FlutterSDK = "";
     static FlutterRoot = '';
     static fs = window.require('fs');
-    static debug = false;
+    static debug = true;
     static selection = 0;
 
     constructor(props) {
@@ -58,6 +60,8 @@ class Main extends React.Component {
                 Main.fs.mkdirSync(Main.IdealDir);
             Main.fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'default'), {recursive: true});
         }
+
+        // DependenciesHandler.addDependencyToProject(Main.MainProjectPath, '{"truc": "blabla"}')
     }
 
     render() {
