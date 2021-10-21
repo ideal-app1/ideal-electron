@@ -99,7 +99,8 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
+
+        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", `View${Main.selection}`, this.state.widget._id, );
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
         return;
 

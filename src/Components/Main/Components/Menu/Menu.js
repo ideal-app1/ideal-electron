@@ -163,7 +163,7 @@ export default function Menu(props) {
             }
         };
 
-        getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
+        getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', `View${index}`));
         createCodeLinkInitFunc(data['parameters']['code']['functions']);
         data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
 

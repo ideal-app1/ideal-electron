@@ -52,7 +52,7 @@ function CodeLink(props) {
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
-            fs.mkdirSync(props.location.state.path);
+            fs.mkdirSync(props.location.state.path, {recursive: true});
         }
 
         widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
