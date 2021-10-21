@@ -62,6 +62,15 @@ export default function Menu(props) {
         fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
     };
 
+    const addDependencies = () => {
+        const dependencies = ['http', 'url_launcher'];
+
+        dependencies.forEach((dependency) => {
+            DependenciesWritter.write(Main.MainProjectPath ,dependency);
+        });
+        Process.runScript(`${Main.FlutterSDK} pub get`);
+    };
+
     const createIdealProject = () => {
         Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
             fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
