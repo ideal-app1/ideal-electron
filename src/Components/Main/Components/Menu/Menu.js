@@ -170,23 +170,27 @@ export default function Menu(props) {
         return new Buffer(JSON.stringify(data)).toString('base64');
     };
 
-    const runProject = (_) => {
-        if (!Main.fs.existsSync(Main.MainProjectPath))
-            return
-
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        jsonCode.view.map((j) => {
-            const data = getDataToCreate(j, 0);
+    const callCodeHandler = (jsonCode, index) => {
+        if (!jsonCode.view[index]) {
+            Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+            return;
+        }
+        const data = getDataToCreate(jsonCode.view[index], index);
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
         if (Main.debug)
             Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
         else
-            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");});
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {callCodeHandler(jsonCode, index + 1)});
+    };
 
+    const runProject = (_) => {
+        if (!Main.fs.existsSync(Main.MainProjectPath))
+            return
 
-        })
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        callCodeHandler(jsonCode, 0);
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
