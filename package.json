@@ -227,11 +227,12 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-transition-group": "^4.4.1",
+    "read-yaml": "^1.1.0",
     "regenerator-runtime": "^0.13.5",
     "rfdc": "^1.3.0",
     "source-map-support": "^0.5.19",
-    "uuid": "^8.3.2",
-    "tree-kill": "latest"
+    "tree-kill": "latest",
+    "uuid": "^8.3.2"
   },
   "devEngines": {
     "node": ">=10.x",
