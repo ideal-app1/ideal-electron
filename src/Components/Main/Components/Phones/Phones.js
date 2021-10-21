@@ -70,7 +70,7 @@ class Phones extends React.Component {
 
     static resetState() {
         Phones.phoneList.map((elem) => {
-            elem.current.resetState();
+            elem.current?.resetState();
         });
     }
 

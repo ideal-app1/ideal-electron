@@ -45,7 +45,7 @@ const Layout = props => {
             onClick={(event) => {
                 if (props.disable !== true) {
                     event.stopPropagation();
-                    WidgetProperties.getInstance().current.handleSelect(props._id)
+                    WidgetProperties.getInstance().current?.handleSelect(props._id)
                 }
             }}
             onContextMenu={(event => {
