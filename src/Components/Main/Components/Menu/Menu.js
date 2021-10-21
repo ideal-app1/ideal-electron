@@ -45,7 +45,7 @@ import Phones from "../Phones/Phones";
 import { Grid } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
-
+import DependenciesHandler from '../../../../utils/DependenciesHandler';
 import IdealLogo from "../../../../../assets/icon.png";
 
 //TODO renommer cette class
@@ -64,11 +64,13 @@ export default function Menu(props) {
 
     const addDependencies = () => {
         const dependencies = ['http', 'url_launcher'];
+        const object = {};
 
         dependencies.forEach((dependency) => {
-            DependenciesWritter.write(Main.MainProjectPath ,dependency);
+            object[dependency] = 'any';
         });
-        Process.runScript(`${Main.FlutterSDK} pub get`);
+        DependenciesHandler.addDependencyToProject(Main.MainProjectPath, object);
+        Process.runScript(`${Main.FlutterSDK} pub get`, null, {'cwd': Main.MainProjectPath});
     };
 
     const createIdealProject = () => {
@@ -83,6 +85,7 @@ export default function Menu(props) {
             }, Path.build(Main.IdealDir, "config.json"));
             Phones.resetState();
             dialog.current.unsetDialog();
+            addDependencies();
         });
     };
 
