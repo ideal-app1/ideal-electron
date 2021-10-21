@@ -147,8 +147,7 @@ export default function Menu(props) {
     };
 
     const getDataToCreate = (jsonCode, index) => {
-        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[index].current.deepConstruct(jsonCode.view[0].idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
-        console.log(codeHandlerFormat);
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[index].current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
         const data = {
             'requestType': 'creator',
             'parameters': {
@@ -163,7 +162,6 @@ export default function Menu(props) {
                 }
             }
         };
-        console.log(data);
 
         getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
         createCodeLinkInitFunc(data['parameters']['code']['functions']);
@@ -177,12 +175,18 @@ export default function Menu(props) {
             return
 
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const data = getDataToCreate(jsonCode, 0);
+        jsonCode.view.map((j) => {
+            const data = getDataToCreate(j, 0);
 
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        if (Main.debug) Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
-        else Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+        if (Main.debug)
+            Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+        else
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");});
+
+
+        })
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);

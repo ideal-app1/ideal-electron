@@ -201,7 +201,8 @@ export const Library = () => {
                 },
                 fontSize: {
                     value: 15,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    variableName: "_size",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -242,6 +243,10 @@ export const Library = () => {
                     value: null,
                     type: PropType.TEXTFIELD,
                     variableName: "_url",
+                },
+                name: {
+                    value: "name",
+                    type: PropType.TEXTFIELD,
                 },
                 rounded: {
                     value: true,
