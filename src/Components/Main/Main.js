@@ -67,6 +67,21 @@ class Main extends React.Component {
                 <header className="App-header">
                     <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
+                        {/*{ Main.fs.existsSync(Main.MainProjectPath)*/}
+                        {/*    ? [*/}
+                        {/*        <Library/>,*/}
+                        {/*        <Phones/>,*/}
+                        {/*        <WidgetProperties ref={WidgetProperties.getInstance()}/>,*/}
+                        {/*        <Menu/>*/}
+                        {/*    ]*/}
+                        {/*    : [*/}
+                        {/*        <Menu/>,*/}
+                        {/*        <div>*/}
+                        {/*            <h4>Please load or create a project</h4>*/}
+                        {/*        </div>*/}
+                        {/*    ]*/}
+                        {/*}*/}
+
                         {Main.selection >= 0 ?
                             <Fragment>
                                 <Library/>
@@ -74,7 +89,7 @@ class Main extends React.Component {
                                     container
                                     className={'phone-toolbar phone-w'}
                                     alignItems={'center'}
-                                    justify={'space-between'}>
+                                    justifyContent={'space-between'}>
                                     <ViewModuleIcon
                                         onClick={() => {
                                             this.setState({selection:-1});
@@ -96,6 +111,5 @@ class Main extends React.Component {
         );
     }
 }
-
 
 export default Main

@@ -63,7 +63,7 @@ class Phone extends React.Component {
 
     deleteView() {
         let data = JsonManager.get(Path.build(Main.MainProjectPath, "Ideal_config.json"));
-console.log(data.view);
+        console.log(data.view);
         data.view.splice(this.props.myId, 1);
         console.log(data.view);
         JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
@@ -236,6 +236,10 @@ console.log(data.view);
         }
     }
 
+    getWidgetIdList = () => {
+        return this.state.idList.list;
+    }
+
     static createRef = () => {
         return React.createRef();
     }
@@ -252,7 +256,7 @@ console.log(data.view);
                         group={"layout"}
                         properties={{
                             direction: "column",
-                            justify: "flex-start",
+                            justifyContent: "flex-start",
                             align: "flex-start"
                         }}
                         list={this.state.idList.list}
