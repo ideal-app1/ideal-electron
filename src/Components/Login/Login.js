@@ -5,7 +5,7 @@ import {Grid, Button, IconButton, Collapse, Container} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import authService from "../../service/auth-service";
 import IdealLogo from "../../../assets/icon.png";
-
+import {Email, Lock} from "@material-ui/icons";
 
 async function loginUser(credentials) {
     try {
@@ -73,11 +73,16 @@ export default function Login({setAuthenticated}) {
         <div className={"login-background"}>
             <Container maxWidth="sm" className={"login-wrapper"}>
                 <Grid container className={"login-container"}>
-                    <Grid item xs={12} className={"login-header"}>
+                    <Grid container item xs={12} className={"login-header-title"} direction={'row'}>
+                        <img
+                            src={IdealLogo}
+                            height={38}
+                            width={38}
+                            style={{margin: "20px"}}
+                            alt={'ideal logo'}/>
                         <h1 className={"login-header-title"}>IDEAL</h1>
                     </Grid>
-                    <Grid item xs={12} className={"login-content"}>
-                        <img src={IdealLogo} alt={'ideal logo'}/>
+                    <Grid container item xs={12} className={"login-content"}>
                         <Collapse in={open}>
                             <Alert
                                 severity="error"
@@ -99,25 +104,29 @@ export default function Login({setAuthenticated}) {
                         </Collapse>
                         <form onSubmit={handleSubmit} >
                             <label>
-                                <h4>Email</h4>
+                                <Grid container item justifyContent={"left"} direction={"row"}>
+                                    <Email style={{fontSize: '1.5rem', marginRight: "1rem", marginTop: "18px"}} />
+                                    <h4>Email</h4>
+                                </Grid>
                                 <input className={"login-input"} type="text" onChange={e => setEmail(e.target.value)} />
                             </label>
                             <label>
-                                <h4>Password</h4>
+                                <Grid container item justifyContent={"left"} direction={"row"}>
+                                    <Lock style={{fontSize: '1.5rem', marginRight: "1rem", marginTop: "18px"}} />
+                                    <h4>Password</h4>
+                                </Grid>
                                 <input className={"login-input"} type="password" onChange={e => setPassword(e.target.value)} />
                             </label>
-                            <Grid container className={"login-submit"} justifyContent={"center"}>
-                                <Button variant="contained" color="primary" type="submit">Login</Button>
+                            <Grid container justifyContent={"center"}>
+                                <Button className={"login-button"} variant="contained" color="primary" type="submit">Login</Button>
                             </Grid>
                         </form>
-                        <Grid container className={"login-redirect"} justifyContent={"center"}>
-                            <Grid item>
-                                <Button variant="contained" color="secondary" onClick={openWebSiteForgotPassword}>Forgot Password</Button>
-                            </Grid>
+                        <Grid container item justifyContent={"center"}>
+                            <Button className={"forgot-password-button"} variant="contained" color="secondary" onClick={openWebSiteForgotPassword}>Forgot Password</Button>
                         </Grid>
                     </Grid>
-                    <Grid container className={"login-header"} justifyContent={"center"}>
-                        <h1 className={"login-header-title"}><Button variant="contained" color="primary" onClick={openWebSiteRegister}>Register</Button></h1>
+                    <Grid container className={"register-box"}>
+                        <Button className={"register-button"} variant="contained" color="primary" onClick={openWebSiteRegister}>Register</Button>
                     </Grid>
                 </Grid>
             </Container>
