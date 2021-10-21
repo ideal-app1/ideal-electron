@@ -25,6 +25,8 @@ import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
 import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
+import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariables';
+import createRValueNode from './CodeLinkNodes/RValueNode';
 
 function CodeLink(props) {
 
@@ -71,6 +73,22 @@ function CodeLink(props) {
       }
     };
 
+    const loadGenericViewAttributes = () => {
+        const attribtues = ['this', 'context'];
+
+        attribtues.forEach((attribute) => {
+            createInnerClassVariable(attribute);
+        });
+    }
+
+    const loadRValues = () => {
+        const values = [{type: 'string', 'defaultValue': ''}, {type: 'number', 'defaultValue': 0}]
+
+        values.forEach((value) => {
+            createRValueNode(value.type, value.defaultValue);
+        });
+    }
+
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
         const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
@@ -81,6 +99,8 @@ function CodeLink(props) {
         }
         CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
         createSetStateNode();
+        loadGenericViewAttributes();
+        loadRValues();
         afterLoad(className, flutterJson);
     };
 

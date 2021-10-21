@@ -6,7 +6,7 @@ import JsonManager from '../Components/Main/Tools/JsonManager';
 
 const fs = require('fs');
 
-const debug = true;
+const debug = false;
 let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
 
 

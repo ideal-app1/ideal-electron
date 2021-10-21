@@ -28,6 +28,7 @@ const createFunctionNode = (func, LCanvas, path) => {
         this.nbOfParameters = nbOfParameters;
         if (func["return"] === "void") {
             this.addOutput("", LiteGraph.ACTION);
+
         } else {
             this.addOutput(func["return"], ""/*func["return"]*/);
         }
@@ -101,7 +102,8 @@ const createFunctionNode = (func, LCanvas, path) => {
     }
 
     FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        if (!link)
+        console.log('connection changed');
+        if (!link || type === LiteGraph.INPUT)
             return
         const node = LCanvas.graph.getNodeById(link.origin_id);
         console.log(node.name);
@@ -111,34 +113,11 @@ const createFunctionNode = (func, LCanvas, path) => {
         //isACallbackParameter(node, index, isConnected);
         this.verifyIfItIsACallback(link, isConnected);
         console.log(`How many ? ${this.notACallbackCounter}`);
-
+        console.log(this.isAPureCallback());
     }
 
 
 
-    /*FunctionNode.prototype.createCode = function () {
-        let funcCall = "final "  + this.varName + " = ";
-        let buffer = this.title + "(";
-        const nbOfInputs = func["parameters"].length;
-        let node = undefined;
-
-        for (let i = 1; i < nbOfInputs; i++) {
-            node = this.getInputData(i);
-            if (node === undefined) {
-                continue;
-            }
-            console.log('?')
-            console.log('I ? ');
-            console.log(i);
-            buffer = handleAParam(node, buffer, i);
-        }
-        buffer = endBuffer(buffer);
-        if (this.isNotAPureCallback()) {
-            sharedBuffer.addCode(funcCall + buffer);
-        }
-        this.callbackCode = buffer;
-        this.setOutputData(0, this);
-    }*/
 
     Function.prototype.createCallbackWrapper = function () {
 
@@ -191,26 +170,16 @@ const createFunctionNode = (func, LCanvas, path) => {
 
         buffer = endBuffer(buffer);
         if (this.isAPureCallback() === false) {
-            console.log('Is a pure callback!');
+            console.log('Is NOT a pure callback!');
 
             sharedBuffer.addCode(funcCall + buffer);
         } else {
-            console.log('Is NOT a pure callback!');
+            console.log('Is  a pure callback!');
         }
         console.log(this);
         console.log('end');
         this.setOutputData(0, this);
 
-
-        /*if (this.callbackTracker.find((val) => val === true) !== undefined) {
-            console.log("goooo NOT UNDEF")
-            this.createCallback();
-        } else {
-            console.log("UNDEF")
-            console.log(this.callbackTracker)
-            this.createCode();
-        }
-        console.log("WHAT IS MY FUNC IMPORT ? " + func['import']);*/
         sharedBuffer.addImport(func['import']);
     }
 
