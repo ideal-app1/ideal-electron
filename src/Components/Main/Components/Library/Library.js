@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
 import "./Library.css"
 import {v4 as uuid} from 'uuid';
 import LibraryItem from './Components/LibraryItem/LibraryItem';
@@ -8,6 +8,9 @@ import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
 import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
+import {Search} from "@material-ui/icons";
+import {Grid} from "@material-ui/core";
+
 
 export const Library = () => {
 
@@ -254,12 +257,23 @@ export const Library = () => {
         {name: "Layouts", group: WidgetGroup.LAYOUT, widgets: layouts}
     ]
 
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filterWidget = (widget, query) => {
+        if (!query) {
+            return widget;
+        }
+
+        return widget.name.toLowerCase().includes(query.toLowerCase());
+    }
+
     const groupSection = (group) => {
         return (
             <Fragment key={group.name}>
                 <ListSubheader>{group.name}</ListSubheader>
                 {
-                    Object.values(group.widgets).map(widget => (
+                    Object.values(group.widgets).map(widget =>
+                    ( filterWidget(widget, searchQuery) ? (
                         <Fragment key={widget._id.toString()}>
                             <ListItem>
                                 <LibraryItem
@@ -270,6 +284,7 @@ export const Library = () => {
                                 />
                             </ListItem>
                         </Fragment>
+                    ) : <></>
                     ))
                 }
             </Fragment>
@@ -278,6 +293,20 @@ export const Library = () => {
 
     return (
         <List id={"library"}>
+            <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
+                <Search style={{fontSize: '1.5rem'}}/>
+                <input
+                    id="widgets-search"
+                    type="text"
+                    placeholder="Search widgets"
+                    value={searchQuery}
+                    style={{color: '#aaaaaa', margin: '10px'}}
+                    onChange={e => {
+                        e.preventDefault();
+                        setSearchQuery(e.target.value);
+                    }}
+                />
+            </Grid>
             {groups.map(groupSection)}
         </List>
     )

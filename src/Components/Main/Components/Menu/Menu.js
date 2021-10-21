@@ -162,6 +162,9 @@ export default function Menu(props) {
     };
 
     const runProject = (_) => {
+        if (!Main.fs.existsSync(Main.MainProjectPath))
+            return
+
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         const data = getDataToCreate(jsonCode, 0);
 

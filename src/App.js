@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import './App.css';
 import Main from "./Components/Main/Main";
@@ -19,19 +19,19 @@ async function authentication({setAuthenticated}) {
 }
 
 function App () {
-    /*const [authenticated, setAuthenticated] = useState();
+    // const [authenticated, setAuthenticated] = useState();
+    //
+    // (async () => await authentication({setAuthenticated}))();
+    //
+    // if (authenticated === undefined) {
+    //     return (<div> <p>Loading</p> </div>);
+    // }
+    //
+    // if (!authenticated) {
+    //     return <Login setAuthenticated={setAuthenticated} />
+    // }
 
-    (async () => await authentication({setAuthenticated}))();
-
-    if (authenticated === undefined) {
-        return (<div> <p>Loading</p> </div>);
-    }
-
-    if (!authenticated) {
-        return <Login setAuthenticated={setAuthenticated} />
-    }*/
-
-    const darkTheme = createMuiTheme({
+    const darkTheme = createTheme({
         palette: {
             type: 'dark',
         },

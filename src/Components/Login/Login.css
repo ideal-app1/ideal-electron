@@ -1,43 +1,61 @@
 
-.login-background {
-}
-
 .login-wrapper {
-    color: #282c34;
-    margin-top: 5rem;
-    border: #8e8e8e;
-    border-radius: 16px;
-    padding: 2rem;
-}
-
-.login-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #cccccc;
-    color: #282c34;
-    border: #8e8e8e;
+    color: #b3b3b3 !important;
+    margin-top: 6rem;
     border-radius: 16px;
     padding: 2rem;
 }
 
 .login-header-title {
-    background-color: indianred;
-    color: #eeeeee;
-    border: #8e8e8e;
+    background-color: #383838 !important;
+    color: #b3b3b3;
     border-radius: 16px;
+    text-align: center;
+    justify-content: left;
+}
+
+.login-content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center !important;
+    background-color: #8e8e8e !important;
+    color: #383838 !important;
+    border-radius: 16px;
+    margin-top: 2rem !important;
     padding: 2rem;
 }
 
 .login-input {
-    color: #eeeeee;
+    color: #b3b3b3 !important;
     padding: 0.5rem;
 }
 
-.login-submit {
-    padding-top: 2rem;
+.login-button {
+    text-align: center;
+    background-color: #383838 !important;
+    color: #b3b3b3 !important;
+    margin-top: 1rem !important;
 }
 
-.login-redirect {
-    padding-top: 2rem;
+.forgot-password-button {
+    text-align: center;
+    background-color: #383838 !important;
+    color: #b3b3b3 !important;
+    margin-top: 1rem !important;
+}
+
+.register-box {
+    background-color: #383838 !important;
+    color: #b3b3b3;
+    border-radius: 16px;
+    text-align: center !important;
+    justify-content: center !important;
+    margin-top: 2rem !important;
+    padding: 5px !important;
+}
+
+.register-button {
+    text-align: center;
+    background-color: #383838 !important;
+    color: #b3b3b3 !important;
 }

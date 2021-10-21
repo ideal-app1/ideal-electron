@@ -3,8 +3,7 @@ import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "liteg
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
-import {Box, Grid, Button, Typography, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
-import {Loop} from "@material-ui/icons";
+import {Box, Grid, Button, Typography} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
 import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
@@ -12,6 +11,7 @@ import Phone from "../Main/Components/Phone/Phone";
 import Dialog from '../Main/Components/Dialog/Dialog';
 import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import CodeLinkWidgetList from "./CodeLinkWidgetList/CodeLinkWidgetList";
 import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
 import Phones from "../Main/Components/Phones/Phones";
@@ -21,7 +21,9 @@ const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
 
-import CloseIcon from '@material-ui/icons/Close';
+import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
+import IdealLogo from "../../../assets/icon.png";
+
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 
 function CodeLink(props) {
@@ -30,18 +32,27 @@ function CodeLink(props) {
     let graph = new LiteGraph.LGraph();
     let Lcanvas = null;
     let widget = null;
+    let widgetList = null;
 
     const dialog = Dialog.getInstance();
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
 
+        widgetList = []
+
+        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach(widget =>
+            widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
+         );
+
         if (hasBeenCalled) return;
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path);
         }
+
         widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
+
         setHasBeenCalled(true);
     };
 
@@ -133,7 +144,6 @@ function CodeLink(props) {
         ));
     };
 
-
     const saveCodeLinkData = () => {
 
         BufferSingleton.erase();
@@ -166,10 +176,12 @@ function CodeLink(props) {
         <div>
             <Dialog ref={Dialog.getInstance()}/>
             <Grid container direction={'column'} className={"CodeLink-Content"}>
-                <Grid container item alignItems={'center'} justify={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
+                <Grid container item alignItems={'center'} justifyContent={'space-between'} direction={'row'} className={"CodeLink-bar-menu"}>
                     <Grid container item alignItems={'center'} className={"CodeLink-bar-item"}>
-                        <CloseIcon style={{fontSize: '2.5rem', paddingRight: '20px'}} onClick={() => {props.history.push('/')}}/>
+                        <img src={IdealLogo} style={{marginLeft: '1rem', marginRight: '1rem'}} height={'32'} width={'32'} alt={'ideal logo'}/>
                         <h3>CODELINK</h3>
+                        <PhoneAndroid style={{fontSize: '2.5rem', marginLeft: '5rem'}} onClick={() => {props.history.push('/')}}/>
+                        <ArrowLeft style={{fontSize: '2.5rem'}} onClick={() => {props.history.push('/')}}/>
                     </Grid>
                     <Grid container item className={"CodeLink-bar-item"}>
                         <Grid item className={"CodeLink-bar-item"}>
@@ -205,12 +217,14 @@ function CodeLink(props) {
                               spacing={0}
                               direction="column"
                               alignItems="center"
-                              justify="center"
+                              justifyContent="center"
                         >
                             <Typography variant="h6" style={{paddingTop: '15px'}}>
                                 Widget Menu
                             </Typography>
                             <div>
+                                <CodeLinkWidgetList widgetList={widgetList} />
+
                                 {/*    <List>*/}
                                 {/*        {this.generate(*/}
                                 {/*            <ListItem>*/}
@@ -238,8 +252,6 @@ function CodeLink(props) {
             </Grid>
         </div>
     );
-
-
 }
 
 export default CodeLink
