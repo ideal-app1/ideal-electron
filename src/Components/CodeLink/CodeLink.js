@@ -40,16 +40,27 @@ function CodeLink(props) {
 
     const dialog = Dialog.getInstance();
 
+    const loadOtherWidgets = () => {
+        console.log('go')
+        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach((widget) => {
+
+              console.log(widget);
+              console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
+          }
+        );
+    }
+
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
 
         widgetList = []
 
-        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach(widget =>
+        Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
             widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
          );
 
         if (hasBeenCalled) return;
+        loadOtherWidgets();
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -82,6 +93,8 @@ function CodeLink(props) {
             createInnerClassVariable(attribute);
         });
     }
+
+
 
     const loadRValues = () => {
         const values = [{type: 'string', 'defaultValue': ''}, {type: 'number', 'defaultValue': 0}]

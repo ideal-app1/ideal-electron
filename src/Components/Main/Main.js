@@ -30,7 +30,7 @@ class Main extends React.Component {
     static FlutterSDK = "";
     static FlutterRoot = '';
     static fs = window.require('fs');
-    static debug = false;
+    static debug = true;
     static selection = 0;
 
     constructor(props) {

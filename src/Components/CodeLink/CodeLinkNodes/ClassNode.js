@@ -5,15 +5,25 @@ import inheritNodeBase from "./NodeBase";
 
 const createClassNode = (varName, NodeInfos, LCanvas, path) => {
 
-    ClassNode.title = NodeInfos["name"];
+    ClassNode.title = `class ${NodeInfos["name"]}${getClassName()}`;
     ClassNode.description = NodeInfos["name"];
 
+    function getClassName() {
+        if (varName !== undefined) {
+            return ` ->  ${varName}`;
+        }
+        return '';
+    }
+
     function ClassNode() {
+        console.log('size ? ');
+        console.log(this.size);
         inheritNodeBase(ClassNode, this);
-        this.addOutput("Linked class");
+        this.addOutput(`Linked class ${NodeInfos['name']}`);
 
         this.properties = {precision: 1};
         this.varName = varName;
+
     }
 
     ClassNode.prototype.onAdded = function () {

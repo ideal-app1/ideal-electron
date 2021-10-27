@@ -44,53 +44,7 @@ const createFunctionNode = (func, LCanvas, path) => {
         return (buffer);
     }
 
-    function setInputCallbackProperty(node, index, isConnected, annotation) {
-        if (annotation.parameters.length !== 2 ||
-            parseInt(annotation.parameters[0].value) !== index + 1) {
-            return;
-        }
-        if (annotation.parameters[1].value === "true") {
-            if (isConnected) {
-                console.log("Je suis " + func["name"] + " Lets go add an entry")
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        } else {
-            if (isConnected) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        }
-    }
 
-    function parameterIsFunction(node, index, isConnect) {
-        if (func["parameters"][index]["type"].toUpperCase().search("FUNC") == -1) {
-            if (isConnect) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        } else {
-            if (isConnect) {
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        }
-
-    }
-
-    function isACallbackParameter(node, index, isConnected) {
-        console.log(node);
-        func.annotations.forEach((annotation) => {
-            if (annotation.name === "CallbackParameter") {
-                setInputCallbackProperty(node, index, isConnected, annotation);
-            } else {
-            }
-        });
-    }
 
     FunctionNode.prototype.verifyIfItIsACallback = function (link, isConnected) {
         const targetNode = LCanvas.graph.getNodeById(link.target_id);
@@ -117,8 +71,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     }
 
 
-
-
     Function.prototype.createCallbackWrapper = function () {
 
         /*for (let i = 0; i < nbOfInputs; i++) {
@@ -136,10 +88,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     FunctionNode.prototype.isAPureCallback = function () {
         return this.notACallbackCounter <= 0 && this.outputs[0]['links'] != null;
     };
-
-    FunctionNode.prototype.casePureCallback = function () {
-
-    }
 
     FunctionNode.prototype.handleAParam = function (node, buffer, inputIndex) {
         console.log(func);

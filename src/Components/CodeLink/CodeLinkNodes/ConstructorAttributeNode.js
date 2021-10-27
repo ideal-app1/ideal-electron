@@ -13,7 +13,9 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         inheritNodeBase(ConstructorAttributeNode, this);
         this.addInput("Linked Class");
         this.addInput(param["name"] + "(" + param["type"] + ")");
+        this.addOutput('value');
 
+        this.setOutputData(0, this);
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
     }
@@ -33,10 +35,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
                 node.removeAnEntry(true);
             }
         }
-
     }
-
-
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         if (!link)
@@ -63,6 +62,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
         if (linkedClass === undefined || linkedData === undefined)
             return;
+        this.varName = `${linkedClass["varName"]}_${param["name"]}`;
         buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
     };
