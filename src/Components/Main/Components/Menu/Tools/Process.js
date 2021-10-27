@@ -23,7 +23,7 @@ class Process {
             console.log('stdout: ' + stdout);
             console.log('stderr: ' + stderr);
             if (callback) {
-                callback();
+                callback(stdout, stderr);
             }
         },);
     }

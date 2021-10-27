@@ -16,7 +16,8 @@ export const PropType = {
     COMBOBOX: 'combo',
     FILE: 'file',
     ALIGNMENT: 'alignment',
-    SIZE: 'SIZE',
+    SIZE: 'size',
+    VAR: 'var',
     HIDDEN: 'hidden', // special type (can t be parameter by widgets property)
 }
 

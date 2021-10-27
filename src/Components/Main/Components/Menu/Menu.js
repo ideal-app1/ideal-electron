@@ -36,13 +36,14 @@ import BoltIcon from "../../../../../assets/icon.svg";
 import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
+import RefreshIcon from '@material-ui/icons/Refresh';
 import CaretIcon from "./Assets/Icons/caret.svg";
 import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
 import Phones from "../Phones/Phones";
-import { Grid } from '@material-ui/core';
+import { Badge, Grid } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 import DependenciesHandler from '../../../../utils/DependenciesHandler';
@@ -50,6 +51,12 @@ import IdealLogo from "../../../../../assets/icon.png";
 
 //TODO renommer cette class
 export default function Menu(props) {
+
+    const [run, setRun] = React.useState('stopped');
+
+    const handleRunState = (state) => {
+        setRun(state);
+    };
 
     const dialog = Dialog.getInstance();
 
@@ -176,6 +183,7 @@ export default function Menu(props) {
 
     const callCodeHandler = (jsonCode, index) => {
         if (!jsonCode.view[index]) {
+            handleRunState('running');
             Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
             return;
         }
@@ -186,13 +194,16 @@ export default function Menu(props) {
         if (Main.debug)
             Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
         else
-            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {callCodeHandler(jsonCode, index + 1)});
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {
+                callCodeHandler(jsonCode, index + 1);
+            });
     };
 
     const runProject = (_) => {
         if (!Main.fs.existsSync(Main.MainProjectPath))
-            return
+            return;
 
+        handleRunState('building');
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         callCodeHandler(jsonCode, 0);
     };
@@ -219,6 +230,27 @@ export default function Menu(props) {
         Phones.phoneList[Main.selection].current.load();
     }
 
+    const listEmulator = async () => {
+        Process.runScript(Main.FlutterSDK + " emulator", (stdout) => {
+            let res = stdout.split('\n');
+            for (let i = 2; i < res.length; i++) {
+                if (res[i] === "")
+                    break;
+                console.log(res[i].split(' • ')[1]);
+            }
+        });
+
+    }
+
+    const runProjectButton = () => {
+        const states = {
+            stopped: <ChevronIcon onClick={runProject} />,
+            building: <RefreshIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            running: <RefreshIcon onClick={runProject} />
+        }
+        return states[run];
+    }
+
     return (
         <div className={"new"}>
             <Navbar>
@@ -229,7 +261,12 @@ export default function Menu(props) {
                 <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
                     <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
                     <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                    <NavItem icon={<ChevronIcon onClick={runProject} />}/>
+                    <NavItem icon={<PlusIcon onClick={listEmulator}/>}/>
+                    <NavItem icon={
+                        <Badge color={'primary'} variant="dot" invisible={run === 'stopped'}>
+                            {runProjectButton()}
+                        </Badge>
+                    }/>
                     <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         Settings
                     </Button>

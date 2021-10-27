@@ -25,6 +25,7 @@ import propCheckBox from './Components/PropCheckBox';
 import propComboBox from './Components/PropComboBox';
 import propFile from './Components/PropFile';
 import propAlignment from './Components/PropAlignment';
+import propVarName from './Components/PropVarName';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -76,7 +77,6 @@ class WidgetProperties extends React.Component {
     }
 
     widgetPropType = prop => {
-
         let propMap = {
             [PropType.TEXTFIELD]: propTextField,
             [PropType.NUMFIELD]: propNumField,
@@ -84,7 +84,8 @@ class WidgetProperties extends React.Component {
             [PropType.COMBOBOX]: propComboBox,
             [PropType.FILE]: propFile,
             [PropType.ALIGNMENT]: propAlignment,
-            [PropType.SIZE]: propSize
+            [PropType.SIZE]: propSize,
+            [PropType.VAR]: propVarName
         }
         return propMap[prop.type]?.(prop, this.updateState) || prop?.toString()
     }

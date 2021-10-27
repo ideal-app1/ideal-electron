@@ -133,6 +133,16 @@ class Phone extends React.Component {
         }
     }
 
+    alreadyExist = (self, name) => {
+        const searchWidgetList = this.state.widgetList.filter(x => x !== self);
+        for (let i = 0; i < searchWidgetList.length; i++) {
+            console.log(searchWidgetList[i].properties.name.value, name);
+            if (searchWidgetList[i].properties.name.value === name)
+                return true;
+        }
+        return false;
+    }
+
     removeWidgetByID = id => {
         for (let i = 0; i < this.state.widgetList.length; i++) {
             if (this.state.widgetList[i]._id === id) {
@@ -148,6 +158,8 @@ class Phone extends React.Component {
             _id: id || uuid(),
             source: WidgetType.PHONE
         }
+        item.index = this.state.widgetList.filter(w => w.name === widget.name).lastItem?.index + 1 || 0;
+        item.properties.name.value += item.index;
         this.state.widgetList.push(item);
         return item._id;
     }
