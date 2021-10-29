@@ -1,24 +1,25 @@
-
-
-SizedBox /* IDEAL_VARIABLE_NAME */;
-
-var /* IDEAL_VARIABLE_NAME */onPressed = null;
+var ideal_button;
+var _onPressed;
+var _text;
+var _enable;
+var _width;
+var _height;
 
 
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new SizedBox(
-width: /* IDEAL_BUTTON_WIDTH */,
-height: /* IDEAL_BUTTON_HEIGHT */,
-child: FlatButton(
-onPressed: '/* IDEAL_BUTTON_STATE */' == 'disabled' ? null : /* IDEAL_VARIABLE_NAME */onPressed,
-child: Text(
-'/* IDEAL_BUTTON_TEXT */',
-style: TextStyle(
-fontSize: 16
-),
-),
-color: Color.fromRGBO(33, 8, 174, 1),
-textColor: Colors.white
+ideal_button = new SizedBox(
+  width: _width,
+  height: _height,
+  child: FlatButton(
+    onPressed: _enable ? _onPressed : null,
+      child: Text(
+      _text,
+      style: TextStyle(
+      fontSize: 16
+    ),
+  ),
+  color: Color.fromRGBO(33, 8, 174, 1),
+  textColor: Colors.white
 ),
 );
 /* IDEAL_INITIALISATION_END */

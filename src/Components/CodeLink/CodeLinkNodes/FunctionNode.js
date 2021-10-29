@@ -3,38 +3,38 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 
-const createFunctionNode = (func, LCanvas) => {
+const createFunctionNode = (func, LCanvas, path) => {
 
     FunctionNode.title = func["name"];
     FunctionNode.description = func["name"];
-
-
-
+    FunctionNode.callbackCode = "";
 
     function FunctionNode() {
-        inheritNodeBase(FunctionNode);
+        inheritNodeBase(FunctionNode, this);
         this.handleInputsOutputs();
         this.properties = {precision: 1};
         this.isAlreadyComputed = false;
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
     FunctionNode.prototype.handleInputsOutputs = function ()  {
         let nbOfParameters = 0;
 
+        this.addInput("", LiteGraph.EVENT);
         func["parameters"].forEach((param) => {
             this.addInput(param["name"] + "(" + param["type"] + ")", ""/*param["type"]*/);
             nbOfParameters++;
         })
         this.nbOfParameters = nbOfParameters;
-        this.addOutput(func["return"], ""/*func["return"]*/);
+        if (func["return"] === "void") {
+            this.addOutput("", LiteGraph.ACTION);
+
+        } else {
+            this.addOutput(func["return"], ""/*func["return"]*/);
+        }
     }
 
-    function handleAParam(node, buffer) {
-        buffer += node.randomName + ", ";
 
-        return (buffer);
-    }
 
     function endBuffer(buffer) {
         if (buffer[buffer.length - 2] === ',') {
@@ -83,6 +83,7 @@ const createFunctionNode = (func, LCanvas) => {
     }
 
     function isACallbackParameter(node, index, isConnected) {
+        console.log(node);
         func.annotations.forEach((annotation) => {
             if (annotation.name === "CallbackParameter") {
                 setInputCallbackProperty(node, index, isConnected, annotation);
@@ -91,31 +92,32 @@ const createFunctionNode = (func, LCanvas) => {
         });
     }
 
-    FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        const node = LCanvas.graph.getNodeById(link.origin_id);
+    FunctionNode.prototype.verifyIfItIsACallback = function (link, isConnected) {
+        const targetNode = LCanvas.graph.getNodeById(link.target_id);
+        const name = targetNode.inputs[link.target_slot].name;
 
-        isACallbackParameter(node, index, isConnected);
-
-    }
-
-    FunctionNode.prototype.createCode = function () {
-        console.log("This is my tracker: ");
-        console.log(this.callbackTracker);
-        let buffer = "const " + func["return"] + " " + this.randomName + " = " + this.title + "(";
-        const nbOfInputs = func["parameters"].length;
-        let node = undefined;
-
-        for (let i = 0; i < nbOfInputs; i++) {
-            node = this.getInputData(i);
-            if (node === undefined) {
-                continue;
-            }
-            buffer = handleAParam(node, buffer);
+        if (name.toLowerCase().search('func') === -1) {
+            this.notACallbackCounter += isConnected ? 1 : -1;
         }
-        buffer = endBuffer(buffer);
-        sharedBuffer.addCode(buffer);
-        this.setOutputData(0, this);
     }
+
+    FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+        console.log('connection changed');
+        if (!link || type === LiteGraph.INPUT)
+            return
+        const node = LCanvas.graph.getNodeById(link.origin_id);
+        console.log(node.name);
+        console.log(LCanvas.graph.getNodeById(link.target_id).name);
+        console.log(index)
+        console.log(link.target_slot);
+        //isACallbackParameter(node, index, isConnected);
+        this.verifyIfItIsACallback(link, isConnected);
+        console.log(`How many ? ${this.notACallbackCounter}`);
+        console.log(this.isAPureCallback());
+    }
+
+
+
 
     Function.prototype.createCallbackWrapper = function () {
 
@@ -126,24 +128,61 @@ const createFunctionNode = (func, LCanvas) => {
 
     FunctionNode.prototype.createCallback = function () {
 
-        let buffer = 'const dynamic ' + this.randomName + ' = ' + func['name'] + ';'
+        let buffer = 'const dynamic ' + this.varName + ' = ' + func['name'] + ';'
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, this);
     }
 
+    FunctionNode.prototype.isAPureCallback = function () {
+        return this.notACallbackCounter <= 0 && this.outputs[0]['links'] != null;
+    };
+
+    FunctionNode.prototype.casePureCallback = function () {
+
+    }
+
+    FunctionNode.prototype.handleAParam = function (node, buffer, inputIndex) {
+        console.log(func);
+        console.log(inputIndex);
+        const inputName = func['parameters'][inputIndex - 1]['type'];
+        const data = this.getCallbackData(node, inputName);
+
+        buffer += data + ", ";
+        return (buffer);
+    }
+
     FunctionNode.prototype.onExecute = function () {
-        if (this.callbackTracker.find((val) => val === true) !== undefined) {
-            console.log("goooo NOT UNDEF")
-            this.createCallback();
-        } else {
-            console.log("UNDEF")
-            console.log(this.callbackTracker)
-            this.createCode();
+
+        let funcCall = "final "  + this.varName + " = ";
+        let buffer = this.title + "(";
+        const nbOfInputs = func["parameters"].length;
+        let node = undefined;
+
+        for (let i = 1; i <= nbOfInputs ; i++) {
+            node = this.getInputData(i);
+            if (node === undefined) {
+                continue;
+            }
+            buffer = this.handleAParam(node, buffer, i);
+            console.log('Input ' + i);
         }
-        console.log("WHAT IS MY FUNC IMPORT ? " + func['import']);
+        this.callbackCode = buffer + ')';
+
+        buffer = endBuffer(buffer);
+        if (this.isAPureCallback() === false) {
+            console.log('Is NOT a pure callback!');
+
+            sharedBuffer.addCode(funcCall + buffer);
+        } else {
+            console.log('Is  a pure callback!');
+        }
+        console.log(this);
+        console.log('end');
+        this.setOutputData(0, this);
+
         sharedBuffer.addImport(func['import']);
     }
 
-    LiteGraph.registerNodeType("Custom Functions/" + func["name"], FunctionNode);
+    LiteGraph.registerNodeType(path + func["name"], FunctionNode);
 }
 export default createFunctionNode

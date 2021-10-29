@@ -15,7 +15,7 @@ import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 const electron = require('electron');
-const {SocketIPC} = require('./SocketIPC');
+const {SocketIPC} = require('./ProcessIPC');
 import MenuBuilder from './menu';
 
 const {ipcMain, dialog} = require('electron')
@@ -91,8 +91,8 @@ const createWindow = async () => {
     mainWindow.focus();
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+  // const menuBuilder = new MenuBuilder(mainWindow);
+  // menuBuilder.buildMenu();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -130,9 +130,8 @@ app.on('activate', () => {
   if (mainWindow === null) createWindow();
 });
 
-//ipcMain.on('')
 
-//SocketIPC();
+SocketIPC();
 
 ipcMain.on('select-file', (event, arg) => {
   event.returnValue = dialog.showOpenDialogSync({
@@ -153,4 +152,8 @@ ipcMain.on('select-directory-hidden', async (event, arg) => {
   event.returnValue = await dialog.showOpenDialog({
     properties: ['openDirectory', 'showHiddenFiles']
   });
+});
+
+ipcMain.on('update-window-title',(event, arg) => {
+  mainWindow.setTitle(arg);
 });

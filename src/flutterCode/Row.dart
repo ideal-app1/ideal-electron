@@ -1,10 +1,8 @@
-Row /* IDEAL_VARIABLE_NAME */;
-
-
+var ideal_row;
+var _child;
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new Row(
-children: <Widget>[
-/* IDEAL_CHILD */
-],
+_child = <Widget>[/* IDEAL_CHILD */];
+ideal_row = new Row(
+  children: _child,
 );
 /* IDEAL_INITIALISATION_END */

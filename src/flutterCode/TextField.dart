@@ -1,18 +1,16 @@
 
 
-
-
-TextField /* IDEAL_VARIABLE_NAME */;
-
+var ideal_textField;
+var _placeholder;
 
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new TextField(
-decoration: InputDecoration(
-border: InputBorder.none,
-filled: true,
-fillColor: Colors.white,
-hintText: '/* IDEAL_PLACEHOLDER */'
-),
-obscureText: true,
+ideal_textfield = new TextField(
+  decoration: InputDecoration(
+    border: InputBorder.none,
+    filled: true,
+    fillColor: Colors.white,
+    hintText: _placeholder
+  ),
+  obscureText: true,
 );
 /* IDEAL_INITIALISATION_END */

@@ -1,17 +1,46 @@
 
 .column {
-    background-color: lightsalmon;
+    border-color: lightskyblue;
 }
 
 .row {
-    background-color: lightgreen;
+    border-color: lightgreen;
 }
 
 .center {
-    background-color: lightskyblue;
+    border-color: lightsalmon;
+}
+
+.stack {
+    border-color: mediumpurple;
+}
+
+.layout.stack > div {
+    position: absolute;
+}
+
+.layout.padding {
+    height: auto;
+    min-height: 40px;
+    width: auto;
+    min-width: 40px;
+}
+
+.layout.base {
+    background-color: white;
+}
+
+.layout.root {
+    background-color: white !important;
+    padding: 30px 0 0; /* safe zone */
+    border: 0;
 }
 
 .layout {
+    padding: 1px;
+    border-width: 3px;
+    border-style: solid;
+    border-radius: 10px;
     height: 100%;
     cursor: pointer;
 }

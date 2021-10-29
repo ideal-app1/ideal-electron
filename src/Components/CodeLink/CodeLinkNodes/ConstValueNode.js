@@ -12,23 +12,22 @@ const convertDartTypeToLiteral = (type) => {
 }
 
 
-const createConstValueNode = (constValue, LCanvas) => {
+const createConstValueNode = (constValue, LCanvas, path) => {
 
     function ConstValueNode() {
 
-        inheritNodeBase(ConstValueNode)
+        inheritNodeBase(ConstValueNode, this)
         this.addOutput("value", constValue["type"]);
         this.addProperty("value", constValue["value"]);
 
         this.widget = this.addWidget(convertDartTypeToLiteral(constValue["type"]) ,"value",constValue["value"],"value");
         this.widgets_up = true;
         this.size = [180, 30];
-        this.randomName = this.makeId(15);
+        this.varName = this.makeId(15);
     }
 
     ConstValueNode.title = constValue["type"] + " " + constValue["name"];
     ConstValueNode.desc = constValue["type"] + " " + constValue["name"];
-
 
     function handleCaseString(type, value) {
         if (type.toUpperCase() == "String".toUpperCase()) {
@@ -43,7 +42,7 @@ const createConstValueNode = (constValue, LCanvas) => {
         console.log("wot")
         console.log(constValue)
         console.log("stopwot")
-        let buffer = "const " + constValue["type"] + " " + this.randomName + " = " +
+        let buffer = "const " + constValue["type"] + " " + this.varName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 
         this.setOutputData(0, this);
@@ -62,7 +61,7 @@ const createConstValueNode = (constValue, LCanvas) => {
         this.setProperty("value",v);
     }
 
-    LiteGraph.registerNodeType("Custom/const/" + constValue["name"], ConstValueNode);
+    LiteGraph.registerNodeType(path + constValue["name"], ConstValueNode);
 
 }
 export default createConstValueNode

@@ -1,29 +1,41 @@
 
 .CodeLink-Content {
-    background-color: #282c34;
-    color: #aaaaaa;
+    background-color: #292929;
+    color: #8b8b8b;
 }
 
 .CodeLink-bar-menu {
-    background-color: #282c34;
-    padding-bottom: 1rem;
+    background-color: #292929;
+    border: 1px solid #1c1c1c;
 }
 
 .CodeLink-bar-item {
-    margin-left: 2rem;
+    margin: 0 0.5rem !important;
+    width: auto !important;
 }
 
 .CodeLink-widget-menu {
-    background-color: #1c1c1c;
+    background-color: #292929;
+}
+
+.CodeLink-widget-content {
+    margin-top: 15px;
+    overflow: auto;
+    max-height: 830px;
 }
 
 .CodeLink-canvas {
-    background-color: #282c34;
+    background-color: #212121;
 }
 
 .CodeLink-canvas-Box {
     overflow: auto;
-    max-height: 900px;
+    max-height: 935px;
+}
+
+.CodeLink-bar-item .MuiButton-contained {
+    color: #8b8b8b !important;
+    background-color: #383838 !important;
 }
 
 ::-webkit-scrollbar { width: 8px; height: 6px;}

@@ -1,11 +1,8 @@
-
-Column /* IDEAL_VARIABLE_NAME */;
-
-
+var ideal_column;
+var _child;
 /* IDEAL_INITIALISATION_START */
-/* IDEAL_VARIABLE_NAME */ = new Column(
-children: <Widget>[
-/* IDEAL_CHILD */
-],
+_child = <Widget>[/* IDEAL_CHILD */];
+ideal_column = new Column(
+  children: _child,
 );
 /* IDEAL_INITIALISATION_END */

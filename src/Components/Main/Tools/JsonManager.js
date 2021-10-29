@@ -8,13 +8,18 @@ class JsonManager {
     static exec = window.require('child_process');
 
     static saveThis(toSave, path) {
-        //console.log(toSave);
+        if (JsonManager.exist(path)) {
+            let file = JsonManager.get(path);
+            toSave = {...file, ...toSave}
+        }
         const json = JSON.stringify(toSave);
-        //console.log(json);
         JsonManager.fs.writeFileSync(path, json);
     }
 
     static get(path) {
+        if (!JsonManager.exist(path)) {
+            return null;
+        }
         let file = JsonManager.fs.readFileSync(path, 'utf8');
         const result = JSON.parse(file);
         return result;

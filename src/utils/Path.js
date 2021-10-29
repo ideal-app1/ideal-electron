@@ -2,15 +2,8 @@ import React from 'react';
 
 class Path {
 
-    static Sep = "/";
-    static CopyCmd = "cp";
-
-    constructor() {
-        if (window.navigator.platform === "Win32") {
-            Path.CopyCmd = 'copy';
-            Path.Sep = '\\';
-        }
-    }
+    static Sep = window.navigator.platform === "Win32" ? '\\' : "/";
+    static CopyCmd = window.navigator.platform === "Win32" ? 'copy' : "cp";
 
     static build = (...values) => {
         let res = values[0];

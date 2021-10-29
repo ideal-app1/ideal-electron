@@ -4,9 +4,13 @@ import Button from '@material-ui/core/Button';
 import UiMenu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+const {ipcRenderer} = window.require('electron');
+
 import Process from "./Tools/Process"
 import "./Menu.css"
 import "./Dropdrownmenu.css"
+
+const path = require('path');
 
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
@@ -22,47 +26,87 @@ import FlutterSDK from '../Dialog/Components/Modal/Components/FlutterSDK/Flutter
 import Loading from '../Dialog/Components/Loading/Loading';
 
 import Path from '../../../../utils/Path';
-const fs = window.require('fs');
-const mainDartCode = require("../../../../flutterCode/main.dart")
+import LoadProject from "../Dialog/Components/Modal/Components/LoadProject/LoadProject";
+import FolderIcon from '@material-ui/icons/Folder';
 
+const fs = window.require('fs');
+const mainTemplateCode = require("../../../../flutterCode/Main.dart");
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
 import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
 import CaretIcon from "./Assets/Icons/caret.svg";
+import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import moveFiles from './Tools/MoveFiles';
+import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
+import VersionHandler from '../../../../utils/VersionHandler';
+import Phones from "../Phones/Phones";
+import { Grid } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
+import DependenciesHandler from '../../../../utils/DependenciesHandler';
+import IdealLogo from "../../../../../assets/icon.png";
 
-export default function Menu() {
+//TODO renommer cette class
+export default function Menu(props) {
 
-    const phone = Phone.getInstance();
     const dialog = Dialog.getInstance();
+
+    const createDirectories = () => {
+        fs.mkdirSync(Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.MainProjectPath, 'lib', 'codelink', 'default'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
+        fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
+    };
+
+    const addDependencies = () => {
+        const dependencies = ['http', 'url_launcher'];
+        const object = {};
+
+        dependencies.forEach((dependency) => {
+            object[dependency] = 'any';
+        });
+        DependenciesHandler.addDependencyToProject(Main.MainProjectPath, object);
+        Process.runScript(`${Main.FlutterSDK} pub get`, null, {'cwd': Main.MainProjectPath});
+    };
+
+    const createIdealProject = () => {
+        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
+            fs.unlinkSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
+            //fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'Main.dart'), mainTemplateCode);
+            createDirectories();
+            JsonManager.saveThis({
+                ProjectPathAutoSaved: Main.MainProjectPath,
+                FlutterRoot: Main.FlutterRoot,
+                FlutterSDK: Main.FlutterSDK
+            }, Path.build(Main.IdealDir, "config.json"));
+            Phones.resetState();
+            dialog.current.unsetDialog();
+            addDependencies();
+        });
+    };
 
     const newProject = async () => {
         if (!Main.FlutterSDK) {
-            const project = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
-            Main.FlutterSDK = Path.build(project.dir, "bin", "flutter");
+            const flutter = await dialog.current.createDialog(<Modal modal={<FlutterSDK/>}/>);
+            Main.FlutterRoot = flutter.dir;
+            Main.FlutterSDK = Path.build(flutter.dir, "bin", "flutter");
         }
         const project = await dialog.current.createDialog(<Modal modal={<CreateProject/>}/>);
         dialog.current.createDialog(<Loading/>);
         Main.MainProjectPath = Path.build(project.dir, project.name);
-
-        Process.runScript(Main.FlutterSDK + " create " + Main.MainProjectPath, () => {
-            fs.writeFileSync(Path.build(Main.MainProjectPath, 'lib', 'main.dart'), mainDartCode)
-            fs.mkdirSync(Path.build(Main.MainProjectPath, 'codelink'));
-            JsonManager.saveThis({
-                ProjectPathAutoSaved: Main.MainProjectPath,
-                FlutterSDK: Main.FlutterSDK
-            }, Path.build(Main.IdealDir, "config.json"));
-            phone.current.resetState();
-            dialog.current.unsetDialog();
-        });
+        ipcRenderer.send('update-window-title', project.name);
+        createIdealProject();
     }
 
     const getACodeLinkData = (fullData, file) => {
-        const data =  JSON.parse(fs.readFileSync(file).toString());
+        const data = JSON.parse(fs.readFileSync(file).toString());
 
+        console.log("Data ? ");
+        console.log(data)
         data.imports.forEach((elem) => fullData.imports.add(elem));
         fullData.functions.push(data.function);
 
@@ -70,31 +114,88 @@ export default function Menu() {
 
     const getEveryCodeLinkData = (fullData, dirPath) => {
         const filesInDirectory = fs.readdirSync(dirPath);
+
         for (const file of filesInDirectory) {
-            const absolute = path.join(dirPath, file);
+            const absolute = Path.build(dirPath, file);
+
             if (fs.statSync(absolute).isDirectory()) {
                 getEveryCodeLinkData(fullData, absolute);
             } else if (path.extname(absolute) === ".json" &&
-              path.basename(absolute).startsWith('CodeLinkCode_')) {
+                path.basename(absolute).startsWith('CodeLinkCode_')) {
                 getACodeLinkData(fullData, absolute);
             }
         }
+    };
+
+    const createCodeLinkInitFunc = (functions) => {
+        let buffer = '';
+
+
+        functions.forEach((func) => {
+            buffer += `\t${func.name}();\n`;
+        })
+        buffer += '\n';
+        functions.push({
+            'name': 'CodeLinkInit',
+            'code': buffer,
+        });
     }
 
-    const runProject = (event) => {
-        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'main.dart'));
-        Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+    const afterCodeCreator = () => {
+        //Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
+        console.log('AFTER');
+    };
+
+    const getDataToCreate = (jsonCode, index) => {
+        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[index].current.deepConstruct(jsonCode.idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
         const data = {
-            'imports': new Set(),
-            'functions': [],
-        }
+            'requestType': 'creator',
+            'parameters': {
+                'path': Main.MainProjectPath,
+                'view': Phones.getView(index),
+                'routes': Phones.getRoutes(),
+                'code': {
+                    'imports': new Set(),
+                    'functions': [],
+                    'declarations': codeHandlerFormat['declarations'],
+                    'initialization': codeHandlerFormat['initialization'],
+                }
+            }
+        };
 
-        getEveryCodeLinkData(data, path.join(Main.MainProjectPath, '.ideal_project', 'codelink'));
-        console.log(data);
-        //FlutterManager.writeCode(phone.current.deepConstruct(jsonCode.idList.list[0]), Main.MainProjectPath + Main.FileSeparator + 'lib' + Main.FileSeparator + 'main.dart');
-        Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
-    }
+        try {
+            getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', `View${index}`));
+        } catch (e) {
+            
+        }
+        createCodeLinkInitFunc(data['parameters']['code']['functions']);
+        data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
+
+        return new Buffer(JSON.stringify(data)).toString('base64');
+    };
+
+    const callCodeHandler = (jsonCode, index) => {
+        if (!jsonCode.view[index]) {
+            Process.runScript("cd " + Main.MainProjectPath + " && flutter run ");
+            return;
+        }
+        const data = getDataToCreate(jsonCode.view[index], index);
+
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
+        if (Main.debug)
+            Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+        else
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {callCodeHandler(jsonCode, index + 1)});
+    };
+
+    const runProject = (_) => {
+        if (!Main.fs.existsSync(Main.MainProjectPath))
+            return
+
+        const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
+        callCodeHandler(jsonCode, 0);
+    };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -106,29 +207,45 @@ export default function Menu() {
         setAnchorEl(null);
     };
 
-    const { shell } = window.require('electron');
+    const {shell} = window.require('electron');
+
+    const loadProject = async () => {
+        const project = await dialog.current.createDialog(<Modal modal={<LoadProject/>}/>);
+        Main.MainProjectPath = project.dir;
+        JsonManager.saveThis({
+            ProjectPathAutoSaved: Main.MainProjectPath,
+            FlutterSDK: Main.FlutterSDK
+        }, Path.build(Main.IdealDir, "config.json"));
+        Phones.phoneList[Main.selection].current.load();
+    }
 
     return (
         <div className={"new"}>
             <Navbar>
-                <h1>IDEAL</h1>
-                <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                <NavItem icon={<ChevronIcon onClick={runProject} />}/>
-                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                    Settings
-                </Button>
-                <UiMenu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={() => {shell.openExternal('https://docs.idealapp.fr')}}>Documentation</MenuItem>
-                    <MenuItem onClick={() => {shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')}}>Feedback</MenuItem>
-                    <MenuItem onClick={() => {shell.openExternal('https://discord.gg/jUeEwq7Max')}}>Report Bug/Need help</MenuItem>
-                    <MenuItem onClick={() => {authService.logout()}}>Logout</MenuItem>
-                </UiMenu>
+                <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
+                    <img src={IdealLogo} style={{marginRight: '5px'}} height={'24'} width={'24'} alt={'ideal logo'}/>
+                    <h1>IDEAL</h1>
+                </Grid>
+                <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
+                    <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
+                    <NavItem icon={<PlusIcon onClick={newProject}/>}/>
+                    <NavItem icon={<ChevronIcon onClick={runProject} />}/>
+                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        Settings
+                    </Button>
+                    <UiMenu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={() => {shell.openExternal('https://docs.idealapp.fr')}}>Documentation</MenuItem>
+                        <MenuItem onClick={() => {shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')}}>Feedback</MenuItem>
+                        <MenuItem onClick={() => {shell.openExternal('https://discord.gg/jUeEwq7Max')}}>Report Bug/Need help</MenuItem>
+                        <MenuItem onClick={() => {authService.logout()}}>Logout</MenuItem>
+                    </UiMenu>
+                </Grid>
             </Navbar>
         </div>
     );
@@ -153,6 +270,125 @@ function NavItem(props) {
 
             {open && props.children}
         </li>
+    );
+}
+
+function Dropdown() {
+    const [activeMenu, setActiveMenu] = useState('main');
+    const [menuHeight, setMenuHeight] = useState(null);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        setMenuHeight(dropdownRef.current?.firstChild.offsetHeight)
+    }, [])
+
+    function calcHeight(el) {
+        const height = el.offsetHeight;
+        setMenuHeight(height);
+    }
+
+    function DropdownItem(props) {
+        return (
+            <a href="#" className="menu-item" onClick={() => props.goToMenu && setActiveMenu(props.goToMenu)}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function Discord() {
+        const {shell} = window.require('electron');
+        shell.openExternal('https://discord.gg/4T9DGFvA')
+    }
+
+    function Feedback() {
+        const {shell} = window.require('electron');
+        shell.openExternal('https://forms.gle/sQU17XHw3LiHXLdS6')
+    }
+
+    function DocumentationLink() {
+        const {shell} = window.require('electron');
+        shell.openExternal('https://docs.idealapp.fr')
+    }
+
+    function DiscordButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Discord}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function FeedbackButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={Feedback}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function DocButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={DocumentationLink}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    function LogoutAuth() {
+        authService.logout();
+    }
+
+    function LogoutButton(props) {
+        return (
+            <a href="#" className="menu-item" onClick={LogoutAuth}>
+                <span className="icon-button">{props.leftIcon}</span>
+                {props.children}
+                <span className="icon-right">{props.rightIcon}</span>
+            </a>
+        );
+    }
+
+    return (
+        <div className="dropdown" style={{height: menuHeight}} ref={dropdownRef}>
+            <CSSTransition
+                in={activeMenu === 'main'}
+                timeout={500}
+                classNames="menu-primary"
+                unmountOnExit
+                onEnter={calcHeight}>
+                <div className="menu">
+                    <LogoutButton leftIcon={<BoltIcon/>}>Logout</LogoutButton>
+                    <DropdownItem
+                        leftIcon={<CogIcon/>}
+                        goToMenu="settings">
+                        Settings
+                    </DropdownItem>
+                </div>
+            </CSSTransition>
+
+
+            <CSSTransition
+                in={activeMenu === 'settings'}
+                timeout={500}
+                classNames="menu-secondary"
+                unmountOnExit
+                onEnter={calcHeight}>
+                <div className="menu">
+                    <DropdownItem goToMenu="main" leftIcon={<PlayIcon/>}/>
+                    <FeedbackButton>Feedback</FeedbackButton>
+                    <DocButton>Documentation</DocButton>
+                    <DiscordButton>Report bug / Need help</DiscordButton>
+                </div>
+            </CSSTransition>
+        </div>
     );
 }
 
