@@ -3,6 +3,7 @@ import Main from '../Components/Main/Main';
 import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
 import JsonManager from '../Components/Main/Tools/JsonManager';
+import TemporaryFile from './TemporaryFile';
 
 const fs = require('fs');
 
@@ -52,7 +53,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -83,7 +84,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -96,7 +97,7 @@ class VersionHandler {
         'verbose' : false
       }
     };
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 

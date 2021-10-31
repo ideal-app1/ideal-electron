@@ -40,14 +40,12 @@ function CodeLink(props) {
 
     const dialog = Dialog.getInstance();
 
-    const loadOtherWidgets = () => {
-        console.log('go')
-        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach((widget) => {
+    const loadOtherWidgets = (widgets) => {
+        widgets.forEach((widget) => {
+            //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
+            loadOtherWidgets(widget.list);
+        });
 
-              console.log(widget);
-              console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-          }
-        );
     }
 
     const useConstructor = () => {
@@ -60,7 +58,7 @@ function CodeLink(props) {
          );
 
         if (hasBeenCalled) return;
-        loadOtherWidgets();
+        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -112,7 +110,7 @@ function CodeLink(props) {
         if (dataJson) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
-        CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
+        CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
@@ -202,7 +200,7 @@ function CodeLink(props) {
         };
 
         const command = Main.debug ? 'dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' :  'dart pub global run ideal_dart_code_handler ';
-        Process.runScript(command +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+        Process.runScript(command +  JSON.stringify(indexerArguments), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
