@@ -9,6 +9,8 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];
 
+    console.log(currentClass);
+    console.log(param);
     function ConstructorAttributeNode() {
         inheritNodeBase(ConstructorAttributeNode, this);
         this.addInput("Linked Class");

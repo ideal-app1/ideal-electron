@@ -47,6 +47,7 @@ import { Grid } from '@material-ui/core';
 //import FlashIcon from "./Assets/Icons/flash.svg";
 import DependenciesHandler from '../../../../utils/DependenciesHandler';
 import IdealLogo from "../../../../../assets/icon.png";
+import TemporaryFile from '../../../../utils/TemporaryFile';
 
 //TODO renommer cette class
 export default function Menu(props) {
@@ -186,16 +187,16 @@ export default function Menu(props) {
             data['parameters']['viewsCode'][i]['imports'] = Array.from(data['parameters']['viewsCode'][i]['imports']);
         }
         console.log(data);
-        return new Buffer(JSON.stringify(data)).toString('base64');
+        return data;
     }
 
     const execCodeHandler = (jsonCode, data) => {
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
         if (Main.debug)
-            Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
+            Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
         else
-            Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
     };
 
     const runProject = (_) => {
