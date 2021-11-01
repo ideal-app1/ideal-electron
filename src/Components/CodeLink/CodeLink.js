@@ -25,8 +25,9 @@ import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
 import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
-import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariables';
+import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
 import createRValueNode from './CodeLinkNodes/RValueNode';
+import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -114,6 +115,7 @@ function CodeLink(props) {
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
+        createCallbackWrapper(Lcanvas);
         afterLoad(className, flutterJson);
     };
 

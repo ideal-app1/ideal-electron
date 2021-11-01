@@ -5,25 +5,26 @@ import inheritNodeBase from "../NodeBase";
 
 const createInnerClassVariable = (name) => {
 
-  InnerClassVariable.title = name;
-  InnerClassVariable.description = name;
+  InnerClassVariableNode.title = name;
+  InnerClassVariableNode.description = name;
 
-  function InnerClassVariable() {
-    inheritNodeBase(InnerClassVariable, this);
+
+  function InnerClassVariableNode() {
+    inheritNodeBase(InnerClassVariableNode, this);
     this.addOutput(name,);
 
   }
 
-  InnerClassVariable.prototype.onAdded = function () {
+  InnerClassVariableNode.prototype.onAdded = function () {
     if (this.varName === undefined) {
       this.varName = name;
     }
   };
 
-  InnerClassVariable.prototype.onExecute = function () {
+  InnerClassVariableNode.prototype.onExecute = function () {
     this.setOutputData(0, this);
   };
 
-  LiteGraph.registerNodeType(`This/${name}`, InnerClassVariable);
+  LiteGraph.registerNodeType(`This/${name}`, InnerClassVariableNode);
 };
 export default createInnerClassVariable
