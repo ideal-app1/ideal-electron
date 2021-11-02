@@ -4,12 +4,13 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import createConstructorAttributeNode from './ConstructorAttributeNode';
 import CodeLinkNodeLoader from '../CodeLinkNodeLoader';
+import CodeLink from '../CodeLink';
 
 const createClassNode = (varName, NodeInfos, LCanvas, path) => {
 
     ClassNode.title = `class ${NodeInfos["name"]}${getClassName()}`;
     ClassNode.description = NodeInfos["name"];
-
+    let nodeHasBeenDeserialized = false;
 
     function getMainConstructor() {
         let mainConstructor = undefined;
@@ -28,6 +29,11 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         return '';
     }
 
+    ClassNode.prototype.onConnectionsChange = function(type, slot, isConnected, link, ioSlot) {
+        if (CodeLink.deserializationDone === false) {
+            nodeHasBeenDeserialized = true;
+        }
+    }
 
     function ClassNode() {
         inheritNodeBase(ClassNode, this);
@@ -46,7 +52,13 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         if (this.varName === undefined) {
             this.varName = this.makeId(15);
         }
-        CodeLinkNodeLoader.createAttributes(this, mainConstructor);
+        console.log(`Done? ${CodeLink.deserializationDone}`);
+
+        nodeHasBeenDeserialized = CodeLink.deserializationDone;
+        // Prevent deserialization from creating two new attributes each time
+        // CodeLink is opened.
+        if (CodeLink.deserializationDone)
+            CodeLinkNodeLoader.createAttributes(this, mainConstructor);
     };
 
     ClassNode.prototype.onExecute = function () {

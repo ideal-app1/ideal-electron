@@ -39,6 +39,9 @@ function CodeLink(props) {
     let widget = null;
     let widgetList = null;
 
+    // Static variable to know whether deserialization has been done
+    CodeLink.deserializationDone = false;
+
     const dialog = Dialog.getInstance();
 
     const loadOtherWidgets = (widgets) => {
@@ -128,11 +131,24 @@ function CodeLink(props) {
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
         loadEverything(variableName, className, (_, __) => {
             graph.load(currentpath);
+            handleDeserialization();
         });
 
     };
 
+    /*
+       This function assume that the deserialization takes less than 1 second.
+       This is the only way for nodes to know whether deserialization has happened
+       ot not.
+    */
+    const handleDeserialization = () => {
+        setTimeout(function () {
+            CodeLink.deserializationDone = true;
+        }, 1000);
+    }
+
     const init = () => {
+        console.log(`Deserialize ? ${CodeLink.deserializationDone}`);
         const variableName = props.location.state.variableName.value;
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
@@ -288,5 +304,7 @@ function CodeLink(props) {
         </div>
     );
 }
+
+
 
 export default CodeLink

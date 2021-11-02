@@ -2,6 +2,7 @@ import {LiteGraph} from "litegraph.js";
 import BufferSingleton from "../../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
+import CodeLink from '../../CodeLink';
 
 const createCallbackWrapper = (LCanvas) => {
 
@@ -40,9 +41,12 @@ const createCallbackWrapper = (LCanvas) => {
   }
 
   CallbackWrapperNode.prototype.addNewInput = function (newNode) {
-
     linkedNodes.push(newNode);
-    this.addInput(`Function ${this.inputs.length + 1}`);
+    console.log(`Add input ${CodeLink.deserializationDone}`);
+
+    // Prevent deserialization of the node from creating too much inputs
+    if (this.inputs.length <= linkedNodes.length)
+      this.addInput(`Function ${this.inputs.length + 1}`);
   }
 
   CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
@@ -61,10 +65,12 @@ const createCallbackWrapper = (LCanvas) => {
 
   }
 
+
   CallbackWrapperNode.prototype.onAdded = function () {
     if (this.varName === undefined) {
       this.varName = name;
     }
+    console.log(`Added ${this.inputs.length}`);
   };
 
   CallbackWrapperNode.prototype.onExecute = function () {
