@@ -102,15 +102,18 @@ class VersionHandler {
   };
 
   verifyFlutterIndex = () => {
-    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'FlutterSDKIndex', 'classes.json'));
+    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex', 'data.json'));
   };
 
   verifyUpgrade = (toUpdateList) => {
     const oldFlutterVersion = VersionHandler.FlutterVersion;
 
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
-    if (oldFlutterVersion === oldFlutterVersion && this.verifyFlutterIndex()) {
+    console.log(`Old ${oldFlutterVersion} - new ${VersionHandler.FlutterVersion} ? verify ? ${this.verifyFlutterIndex()}`);
+
+    if (oldFlutterVersion === VersionHandler.FlutterVersion && this.verifyFlutterIndex()) {
       this.update(toUpdateList);
+      return;
     }
     this.indexFlutterSources(toUpdateList);
   };
@@ -132,6 +135,7 @@ class VersionHandler {
       return false;
     VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
+    console.log(`Found version ${VersionHandler.FlutterVersion}`);
     this.update(toUpdateList);
     return true;
   };
