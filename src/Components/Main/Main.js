@@ -32,6 +32,7 @@ class Main extends React.Component {
     static fs = window.require('fs');
     static debug = false;
     static selection = 0;
+    static platform = window.navigator.platform;
 
     constructor(props) {
         super(props);

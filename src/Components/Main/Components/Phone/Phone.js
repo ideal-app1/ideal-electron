@@ -134,9 +134,8 @@ class Phone extends React.Component {
     }
 
     alreadyExist = (self, name) => {
-        const searchWidgetList = this.state.widgetList.filter(x => x !== self);
+        const searchWidgetList = this.state.widgetList.filter(x => x._id !== self._id);
         for (let i = 0; i < searchWidgetList.length; i++) {
-            console.log(searchWidgetList[i].properties.name.value, name);
             if (searchWidgetList[i].properties.name.value === name)
                 return true;
         }

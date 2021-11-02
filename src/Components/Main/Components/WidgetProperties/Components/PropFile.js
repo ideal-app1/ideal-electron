@@ -2,17 +2,17 @@ import React, { Fragment } from 'react';
 import Button from '@material-ui/core/Button';
 const { ipcRenderer } = window.require('electron');
 
-const propFile = (prop, updateState) => {
+function PropFile(props) {
     return (
         <Fragment>
-            {prop.value.split('/').pop()}
+            {props.prop.value.split('/').pop()}
             <Button
                 variant="contained"
                 onClick={
                     () => {
                         const file = ipcRenderer.sendSync('select-file', '')
                         if (file)
-                            updateState(prop, file[0])
+                            props.updateState(props.prop, file[0])
                     }
                 }
             >Select file</Button>
@@ -20,4 +20,4 @@ const propFile = (prop, updateState) => {
     )
 }
 
-export default propFile
+export default PropFile

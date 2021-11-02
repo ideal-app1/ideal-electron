@@ -3,21 +3,29 @@ import TextField from '@material-ui/core/TextField';
 import Phones from '../../Phones/Phones';
 import Main from '../../../Main';
 
-const propTextField = (prop, updateState) => {
+function PropVarName(props) {
+
+    const [error, setError] = React.useState(false);
+
+    const checkCamel = (value) => {
+        return /^[a-z][A-Za-z]*$/.test(value);
+    }
 
     return (
         <TextField
-            defaultValue={prop.value}
+            defaultValue={props.prop.value}
             variant="outlined"
-            //error={true}
+            error={error}
             onChange={entry => {
-                if (Phones.phoneList[Main.selection].current.alreadyExist(prop, entry.target.value)) {
+                if (Phones.phoneList[Main.selection].current.alreadyExist(props.widget, entry.target.value)) {
+                    setError(true);
                     return;
                 }
-                updateState(prop, entry.target.value)
+                props.updateState(props.prop, entry.target.value);
+                setError(false);
             }}
         />
     )
 }
 
-export default propTextField
+export default PropVarName

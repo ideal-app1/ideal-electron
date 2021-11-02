@@ -18,7 +18,6 @@ import FlutterManager from "../Phone/Tools/FlutterManager";
 import {CSSTransition} from "react-transition-group";
 import authService from "../../../../service/auth-service";
 
-import Phone from "../Phone/Phone";
 import Dialog from '../Dialog/Dialog';
 import Modal from '../Dialog/Components/Modal/Modal';
 import CreateProject from '../Dialog/Components/Modal/Components/CreateProject/CreateProject';
@@ -37,17 +36,16 @@ import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
 import RefreshIcon from '@material-ui/icons/Refresh';
-import CaretIcon from "./Assets/Icons/caret.svg";
-import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
 import Phones from "../Phones/Phones";
-import { Badge, Grid } from '@material-ui/core';
+import { Badge, Divider, Grid, InputLabel, Select } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
 import DependenciesHandler from '../../../../utils/DependenciesHandler';
 import IdealLogo from "../../../../../assets/icon.png";
+import Emulators from './Components/Emulators';
 
 //TODO renommer cette class
 export default function Menu(props) {
@@ -208,8 +206,6 @@ export default function Menu(props) {
         callCodeHandler(jsonCode, 0);
     };
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -230,17 +226,7 @@ export default function Menu(props) {
         Phones.phoneList[Main.selection].current.load();
     }
 
-    const listEmulator = async () => {
-        Process.runScript(Main.FlutterSDK + " emulator", (stdout) => {
-            let res = stdout.split('\n');
-            for (let i = 2; i < res.length; i++) {
-                if (res[i] === "")
-                    break;
-                console.log(res[i].split(' • ')[1]);
-            }
-        });
-
-    }
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const runProjectButton = () => {
         const states = {
@@ -261,7 +247,7 @@ export default function Menu(props) {
                 <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
                     <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
                     <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                    <NavItem icon={<PlusIcon onClick={listEmulator}/>}/>
+                    <Emulators/>
                     <NavItem icon={
                         <Badge color={'primary'} variant="dot" invisible={run === 'stopped'}>
                             {runProjectButton()}

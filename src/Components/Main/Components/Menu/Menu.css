@@ -28,3 +28,15 @@
 .new>input {
     display: none;
 }
+
+.emulator-list .MuiOutlinedInput-input {
+    padding: 5px 35px 5px 16px !important;
+}
+
+.emulator-list {
+    margin-right: 10px;
+}
+
+.emulator-list-menu .MuiButton-root {
+    width: 100%;
+}

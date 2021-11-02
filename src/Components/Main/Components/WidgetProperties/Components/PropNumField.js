@@ -2,10 +2,10 @@ import React from 'react';
 import { InputAdornment } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
-const propNumField = (prop, updateState) => {
+function PropNumField(props) {
     return (
         <TextField
-            defaultValue={prop.value}
+            defaultValue={props.prop.value}
             type="number"
             variant="outlined"
             InputProps={{
@@ -19,10 +19,10 @@ const propNumField = (prop, updateState) => {
                 }
                 console.log(value);
                 console.log(entry.target.value);
-                updateState(prop, value)
+                props.updateState(props.prop, value)
             }}
         />
     )
 }
 
-export default propNumField
+export default PropNumField
