@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Process from '../Tools/Process';
 import Main from '../../../Main';
-import { Divider, InputAdornment, Select } from '@material-ui/core';
+import { Divider, Select } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Path from '../../../../../utils/Path';
 import FormControl from '@material-ui/core/FormControl';
-import FolderIcon from '@material-ui/icons/Folder';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 function Emulators() {
 
@@ -22,7 +22,7 @@ function Emulators() {
                 if (res[i] === "")
                     break;
                 const platformInfo = res[i].split(' • ');
-                platformList.push({ id: platformInfo[0], name: platformInfo[1] })
+                platformList.push({ name: platformInfo[0], id: platformInfo[1] })
             }
             setState(platformList);
             if (setDefault)
@@ -60,19 +60,22 @@ function Emulators() {
                 onChange={event => {
                     setSelectedPlatform(event.target.value);
                 }}>
-                {emulators.map((x) => {
-                    return (
-                        <MenuItem key={x.id} value={x.id}
-                            onClick={() => {
-                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.id);
-                            }}>
-                            {x.name}
-                        </MenuItem>
-                    )
-                })}
+                <ListSubheader>Devices</ListSubheader>
                 {devices.map((x) => {
                     return <MenuItem key={x.id} value={x.id}>{x.name}</MenuItem>
                 })}
+                <ListSubheader>Launch Emulators</ListSubheader>
+                {emulators.map((x) => {
+                    return (
+                        <Button key={x.name} value={x.name}
+                            onClick={() => {
+                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name);
+                            }}>
+                            {x.id}
+                        </Button>
+                    )
+                })}
+
                 { Main.platform !== 'Win32' ? openXcode() : null }
                 <Divider/>
                 <Button onClick={() => {

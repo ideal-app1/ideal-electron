@@ -3,6 +3,11 @@ import Main from '../Components/Main/Main';
 import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
 import JsonManager from '../Components/Main/Tools/JsonManager';
+import Loading from '../Components/Main/Components/Dialog/Components/Loading/Loading';
+import React from 'react';
+
+import Dialog from '../Components/Main/Components/Dialog/Dialog';
+
 
 const fs = require('fs');
 
@@ -16,6 +21,7 @@ class VersionHandler {
   static hasBeenRun = false;
 
   constructor() {
+    this.dialog = Dialog.getInstance();
     if (Main.debug) {
       // Easier to debug than to submit a new version of the Code Handler.
       // Change to the path of the dart file for debugging purpose.
@@ -25,7 +31,12 @@ class VersionHandler {
   }
 
   scriptThen = (command, toUpdateList) => {
-    Process.runScript(command, () => this.update(toUpdateList));
+    console.log('test');
+    this.dialog.current.createDialog(<Loading/>);
+    Process.runScript(command, () => {
+      this.update(toUpdateList);
+      this.dialog.current.unsetDialog();
+    });
   };
 
   upgradeFlutter = (toUpdateList) => {
@@ -123,12 +134,15 @@ class VersionHandler {
   };
 
   versionCheck = (force = false) => {
+    console.log('v check');
     const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexUserCode, this.indexCodeLinkCode];
 
+    console.log(Main.MainProjectPath, Main.IdealDir, Main.FlutterRoot, force, VersionHandler.hasBeenRun);
     if (Main.MainProjectPath === undefined || Main.IdealDir === undefined ||
       Main.FlutterRoot === undefined ||
       (force === false && VersionHandler.hasBeenRun === true))
       return false;
+    console.log('ok');
     VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
     this.update(toUpdateList);
