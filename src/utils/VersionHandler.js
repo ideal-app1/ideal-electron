@@ -3,6 +3,7 @@ import Main from '../Components/Main/Main';
 import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
 import JsonManager from '../Components/Main/Tools/JsonManager';
+import TemporaryFile from './TemporaryFile';
 import Loading from '../Components/Main/Components/Dialog/Components/Loading/Loading';
 import React from 'react';
 
@@ -63,7 +64,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -94,7 +95,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -107,20 +108,23 @@ class VersionHandler {
         'verbose' : false
       }
     };
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
   verifyFlutterIndex = () => {
-    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'FlutterSDKIndex', 'classes.json'));
+    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex', 'data.json'));
   };
 
   verifyUpgrade = (toUpdateList) => {
     const oldFlutterVersion = VersionHandler.FlutterVersion;
 
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
-    if (oldFlutterVersion === oldFlutterVersion && this.verifyFlutterIndex()) {
+    console.log(`Old ${oldFlutterVersion} - new ${VersionHandler.FlutterVersion} ? verify ? ${this.verifyFlutterIndex()}`);
+
+    if (oldFlutterVersion === VersionHandler.FlutterVersion && this.verifyFlutterIndex()) {
       this.update(toUpdateList);
+      return;
     }
     this.indexFlutterSources(toUpdateList);
   };
@@ -134,17 +138,15 @@ class VersionHandler {
   };
 
   versionCheck = (force = false) => {
-    console.log('v check');
     const toUpdateList = [this.upgradeFlutter, this.activateCodeHandler, this.verifyUpgrade, this.moveCodeLinkCode, this.indexUserCode, this.indexCodeLinkCode];
 
-    console.log(Main.MainProjectPath, Main.IdealDir, Main.FlutterRoot, force, VersionHandler.hasBeenRun);
     if (Main.MainProjectPath === undefined || Main.IdealDir === undefined ||
       Main.FlutterRoot === undefined ||
       (force === false && VersionHandler.hasBeenRun === true))
       return false;
-    console.log('ok');
     VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
+    console.log(`Found version ${VersionHandler.FlutterVersion}`);
     this.update(toUpdateList);
     return true;
   };

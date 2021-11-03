@@ -25,8 +25,9 @@ import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
 import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
-import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariables';
+import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
 import createRValueNode from './CodeLinkNodes/RValueNode';
+import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -38,18 +39,30 @@ function CodeLink(props) {
     let widget = null;
     let widgetList = null;
 
+    // Static variable to know whether deserialization has been done
+    CodeLink.deserializationDone = false;
+
     const dialog = Dialog.getInstance();
+
+    const loadOtherWidgets = (widgets) => {
+        widgets.forEach((widget) => {
+            //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
+            loadOtherWidgets(widget.list);
+        });
+
+    }
 
     const useConstructor = () => {
         const [hasBeenCalled, setHasBeenCalled] = useState(false);
 
         widgetList = []
 
-        Phones.phoneList[Main.selection].current.getWidgetIdList().forEach(widget =>
+        Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
             widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
          );
 
         if (hasBeenCalled) return;
+        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -83,6 +96,8 @@ function CodeLink(props) {
         });
     }
 
+
+
     const loadRValues = () => {
         const values = [{type: 'string', 'defaultValue': ''}, {type: 'number', 'defaultValue': 0}]
 
@@ -99,10 +114,11 @@ function CodeLink(props) {
         if (dataJson) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
-        CodeLinkNodeLoader.loadSpecificFlutterNodes(variableName, className, flutterJson, safeID);
+        CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
+        createCallbackWrapper(Lcanvas);
         afterLoad(className, flutterJson);
     };
 
@@ -115,11 +131,24 @@ function CodeLink(props) {
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
         loadEverything(variableName, className, (_, __) => {
             graph.load(currentpath);
+            handleDeserialization();
         });
 
     };
 
+    /*
+       This function assume that the deserialization takes less than 1 second.
+       This is the only way for nodes to know whether deserialization has happened
+       ot not.
+    */
+    const handleDeserialization = () => {
+        setTimeout(function () {
+            CodeLink.deserializationDone = true;
+        }, 1000);
+    }
+
     const init = () => {
+        console.log(`Deserialize ? ${CodeLink.deserializationDone}`);
         const variableName = props.location.state.variableName.value;
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
@@ -189,7 +218,7 @@ function CodeLink(props) {
         };
 
         const command = Main.debug ? 'dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' :  'dart pub global run ideal_dart_code_handler ';
-        Process.runScript(command +  (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {
+        Process.runScript(command +  JSON.stringify(indexerArguments), () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
@@ -275,5 +304,7 @@ function CodeLink(props) {
         </div>
     );
 }
+
+
 
 export default CodeLink

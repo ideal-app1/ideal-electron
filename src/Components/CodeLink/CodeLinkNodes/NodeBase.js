@@ -29,10 +29,6 @@ function getCallbackData(node, inputName) {
     }
 }
 
-
-
-
-
 const inheritNodeBase = (func, node) => {
     func.prototype.makeId = makeid;
     func.prototype.callbackTracker = [];

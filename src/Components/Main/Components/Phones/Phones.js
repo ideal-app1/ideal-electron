@@ -40,6 +40,12 @@ class Phones extends React.Component {
         }
     }
 
+    static getViews() {
+        const views = [];
+
+
+    }
+
     static getView(index) {
         // todo faire des truc logique
         return ('View' + index);
