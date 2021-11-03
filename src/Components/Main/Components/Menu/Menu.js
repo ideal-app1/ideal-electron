@@ -202,7 +202,13 @@ export default function Menu(props) {
         if (Main.debug)
             Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
         else
-            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {
+                if (jsonCode.view.length > 0) {
+                    handleRunState('running');
+                    // TODO run with -d for selected devices
+                    Process.runScript(Main.FlutterSDK + " run ", null, {cwd: Main.MainProjectPath});
+                }
+            });
     };
 
     const runProject = (_) => {
@@ -214,7 +220,6 @@ export default function Menu(props) {
         const data = generateData(jsonCode);
 
         execCodeHandler(jsonCode, data);
-        //callCodeHandler(jsonCode, 0);
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -238,8 +243,6 @@ export default function Menu(props) {
         }, Path.build(Main.IdealDir, "config.json"));
         Phones.phoneList[Main.selection].current.load();
     }
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const runProjectButton = () => {
         const states = {
