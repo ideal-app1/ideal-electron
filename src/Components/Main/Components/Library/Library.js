@@ -9,7 +9,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
 import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
 import {Search} from "@material-ui/icons";
-import {Grid} from "@material-ui/core";
+import { Grid, InputAdornment } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 
 export const Library = () => {
@@ -49,10 +50,6 @@ export const Library = () => {
             name: "Column",
             codePathFile: "Column.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 direction: "column",
                 child: {
                     value: "[]",
@@ -69,10 +66,6 @@ export const Library = () => {
             name: "Row",
             codePathFile: "Row.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 direction: "row",
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment,
@@ -85,10 +78,6 @@ export const Library = () => {
             name: "Center",
             codePathFile: "Center.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 direction: "column",
                 mainAxisAlignment: "center",
                 crossAxisAlignment: "center"
@@ -100,10 +89,6 @@ export const Library = () => {
             name: "Stack",
             codePathFile: "Stack.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 height: {
                     value: 250,
                     type: PropType.NUMFIELD
@@ -147,10 +132,6 @@ export const Library = () => {
             name: "TextButton",
             codePathFile: "Button.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 text: {
                     value: "button",
                     type: PropType.TEXTFIELD,
@@ -189,10 +170,6 @@ export const Library = () => {
             name: "Text",
             codePathFile: "Text.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 data: {
                     value: "text",
                     type: PropType.TEXTFIELD,
@@ -200,7 +177,8 @@ export const Library = () => {
                 },
                 fontSize: {
                     value: 15,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    variableName: "_size",
                 },
                 overflow: {
                     value: 'TextOverflow.clip',
@@ -219,10 +197,6 @@ export const Library = () => {
             name: "TextField",
             codePathFile: "TextField.dart",
             properties: {
-                name: {
-                    value: "name",
-                    type: PropType.TEXTFIELD,
-                },
                 placeholder: {
                     value: "Placeholder",
                     type: PropType.TEXTFIELD,
@@ -279,12 +253,19 @@ export const Library = () => {
                                 <LibraryItem
                                     {...widget}
                                     group={group.group}
+                                    properties={{
+                                        name: {
+                                            value: widget.name,
+                                            type: PropType.VAR,
+                                        },
+                                        ...widget.properties
+                                    }}
                                     type={WidgetType.LIBRARY}
                                     codelink={'/'}
                                 />
                             </ListItem>
                         </Fragment>
-                    ) : <></>
+                    ) : null
                     ))
                 }
             </Fragment>
@@ -294,16 +275,20 @@ export const Library = () => {
     return (
         <List id={"library"}>
             <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
-                <Search style={{fontSize: '1.5rem'}}/>
-                <input
+                <TextField
                     id="widgets-search"
                     type="text"
                     placeholder="Search widgets"
                     value={searchQuery}
-                    style={{color: '#aaaaaa', margin: '10px'}}
+                    style={{color: '#aaaaaa', padding: 10}}
                     onChange={e => {
                         e.preventDefault();
                         setSearchQuery(e.target.value);
+                    }}
+                    InputProps={{ startAdornment:
+                            <InputAdornment position="end">
+                                <Search style={{fontSize: '1.5rem', paddingRight: 10}}/>
+                            </InputAdornment>,
                     }}
                 />
             </Grid>

@@ -7,11 +7,13 @@ class Process {
     static exec = window.require('child_process');
 
 
-    static runScript(command, callback = null) {
+    static runScript(command, callback = null, options = {}) {
 
         console.log('start : ' + command);
 
-        Process.exec.exec(command, (err, stdout, stderr) => {
+        console.log('mdr');
+        console.log(options);
+        Process.exec.exec(command,  options, (err, stdout, stderr) => {
             if (err) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
@@ -21,9 +23,9 @@ class Process {
             console.log('stdout: ' + stdout);
             console.log('stderr: ' + stderr);
             if (callback) {
-                callback();
+                callback(stdout, stderr);
             }
-        });
+        },);
     }
 }
 

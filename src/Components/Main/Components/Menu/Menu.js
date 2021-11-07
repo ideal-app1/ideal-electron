@@ -31,26 +31,32 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 const fs = window.require('fs');
 const mainTemplateCode = require("../../../../flutterCode/Main.dart");
-
 /*              icons               */
 import BoltIcon from "../../../../../assets/icon.svg";
 import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
-import CaretIcon from "./Assets/Icons/caret.svg";
-import LoadCodeLinkBlocks from '../Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import moveFiles from './Tools/MoveFiles';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
 import Phones from "../Phones/Phones";
-import { Grid } from '@material-ui/core';
+import { Badge, Divider, Grid, InputLabel, Select } from '@material-ui/core';
 //import PlayIcon from "./Assets/Icons/back-arrow.svg";
 //import FlashIcon from "./Assets/Icons/flash.svg";
-
+import DependenciesHandler from '../../../../utils/DependenciesHandler';
 import IdealLogo from "../../../../../assets/icon.png";
+import Emulators from './Components/Emulators';
+import TemporaryFile from '../../../../utils/TemporaryFile';
 
 //TODO renommer cette class
 export default function Menu(props) {
+
+    const [run, setRun] = React.useState('stopped');
+
+    const handleRunState = (state) => {
+        setRun(state);
+    };
 
     const dialog = Dialog.getInstance();
 
@@ -61,6 +67,17 @@ export default function Menu(props) {
         fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), {recursive: true});
         fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex'), {recursive: true});
         fs.mkdirSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FunctionBlocksIndex'), {recursive: true});
+    };
+
+    const addDependencies = () => {
+        const dependencies = ['http', 'url_launcher'];
+        const object = {};
+
+        dependencies.forEach((dependency) => {
+            object[dependency] = 'any';
+        });
+        DependenciesHandler.addDependencyToProject(Main.MainProjectPath, object);
+        Process.runScript(`${Main.FlutterSDK} pub get`, null, {'cwd': Main.MainProjectPath});
     };
 
     const createIdealProject = () => {
@@ -75,6 +92,7 @@ export default function Menu(props) {
             }, Path.build(Main.IdealDir, "config.json"));
             Phones.resetState();
             dialog.current.unsetDialog();
+            addDependencies();
         });
     };
 
@@ -94,11 +112,13 @@ export default function Menu(props) {
     const getACodeLinkData = (fullData, file) => {
         const data = JSON.parse(fs.readFileSync(file).toString());
 
-        console.log("Data ? ");
-        console.log(data)
-        data.imports.forEach((elem) => fullData.imports.add(elem));
-        fullData.functions.push(data.function);
+        console.log('codelink data');
 
+        data.imports.forEach((elem) => {
+            console.log(elem);
+            fullData.imports.add(elem);
+        });
+        fullData.functions.push(data.function);
     }
 
     const getEveryCodeLinkData = (fullData, dirPath) => {
@@ -130,48 +150,76 @@ export default function Menu(props) {
         });
     }
 
-    const afterCodeCreator = () => {
-        //Process.runScript("cd " + Main.MainProjectPath + " && " + Main.FlutterSDK + " run ");
-        console.log('AFTER');
-    };
+    const getCodeHandlerFormat = (jsonCodeView, index) => {
+        console.log(jsonCodeView)
+        const path = Path.build(Main.MainProjectPath, 'lib', 'Main.dart')
+        const construct = Phones.phoneList[index].current.deepConstruct(jsonCodeView.idList.list[0]);
 
-    const getDataToCreate = (jsonCode, index) => {
-        const codeHandlerFormat = FlutterManager.formatDragAndDropToCodeHandler(Phones.phoneList[index].current.deepConstruct(jsonCode.view[0].idList.list[0]), Path.build(Main.MainProjectPath, 'lib', 'Main.dart'));
-        console.log(codeHandlerFormat);
+        return FlutterManager.formatDragAndDropToCodeHandler(construct, path);
+    }
+
+    const getAViewData = (jsonCode, data, index) => {
+        const CodeLinkPath = Path.build(Main.MainProjectPath, '.ideal_project', 'codelink', `View${index}`)
+        const codeHandlerFormat = getCodeHandlerFormat(jsonCode.view[index], index);
+        const viewData = {
+            'imports': new Set(),
+            'functions': [],
+            'declarations': codeHandlerFormat['declarations'],
+            'initialization': codeHandlerFormat['initialization'],
+        };
+
+        if (Main.fs.existsSync(CodeLinkPath) === true) {
+            getEveryCodeLinkData(viewData, CodeLinkPath);
+        }
+        createCodeLinkInitFunc(viewData['functions']);
+        data.parameters.views.push(`View${index}`);
+        data.parameters.viewsCode.push(viewData);
+
+    }
+
+    const generateData = (jsonCode) => {
         const data = {
             'requestType': 'creator',
             'parameters': {
                 'path': Main.MainProjectPath,
-                'view': Phones.getView(index),
+                'views': [],
                 'routes': Phones.getRoutes(),
-                'code': {
-                    'imports': new Set(),
-                    'functions': [],
-                    'declarations': codeHandlerFormat['declarations'],
-                    'initialization': codeHandlerFormat['initialization'],
-                }
+                'viewsCode': []
             }
         };
+
+        for (let i = 0; jsonCode.view[i] !== undefined; i++) {
+            getAViewData(jsonCode, data, i);
+            data['parameters']['viewsCode'][i]['imports'] = Array.from(data['parameters']['viewsCode'][i]['imports']);
+        }
         console.log(data);
+        return data;
+    }
 
-        getEveryCodeLinkData(data['parameters']['code'], Path.build(Main.MainProjectPath, '.ideal_project', 'codelink'));
-        createCodeLinkInitFunc(data['parameters']['code']['functions']);
-        data['parameters']['code']['imports'] = Array.from(data['parameters']['code']['imports']);
-
-        return new Buffer(JSON.stringify(data)).toString('base64');
+    const execCodeHandler = (jsonCode, data) => {
+        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
+        moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
+        if (Main.debug)
+            Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
+        else
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {
+                if (jsonCode.view.length > 0) {
+                    handleRunState('running');
+                    // TODO run with -d for selected devices
+                    Process.runScript(Main.FlutterSDK + " run ", null, {cwd: Main.MainProjectPath});
+                }
+            });
     };
 
     const runProject = (_) => {
         if (!Main.fs.existsSync(Main.MainProjectPath))
-            return
+            return;
 
+        handleRunState('building');
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const data = getDataToCreate(jsonCode, 0);
+        const data = generateData(jsonCode);
 
-        moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
-        moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
-        Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + data, () => {});
-        //Process.runScript('dart pub global run ideal_dart_code_handler ' + data, () => {});
+        execCodeHandler(jsonCode, data);
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -196,6 +244,15 @@ export default function Menu(props) {
         Phones.phoneList[Main.selection].current.load();
     }
 
+    const runProjectButton = () => {
+        const states = {
+            stopped: <ChevronIcon onClick={runProject} />,
+            building: <RefreshIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            running: <RefreshIcon onClick={runProject} />
+        }
+        return states[run];
+    }
+
     return (
         <div className={"new"}>
             <Navbar>
@@ -206,7 +263,12 @@ export default function Menu(props) {
                 <Grid container direction={'row'} style={{width: 'auto'}} alignItems={'center'}>
                     <NavItem icon={<FolderIcon onClick={loadProject}/>}/>
                     <NavItem icon={<PlusIcon onClick={newProject}/>}/>
-                    <NavItem icon={<ChevronIcon onClick={runProject} />}/>
+                    <Emulators/>
+                    <NavItem icon={
+                        <Badge color={'primary'} variant="dot" invisible={run === 'stopped'}>
+                            {runProjectButton()}
+                        </Badge>
+                    }/>
                     <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         Settings
                     </Button>

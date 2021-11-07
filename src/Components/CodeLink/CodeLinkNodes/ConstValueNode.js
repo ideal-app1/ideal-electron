@@ -39,9 +39,6 @@ const createConstValueNode = (constValue, LCanvas, path) => {
 
     ConstValueNode.prototype.onExecute = function () {
 
-        console.log("wot")
-        console.log(constValue)
-        console.log("stopwot")
         let buffer = "const " + constValue["type"] + " " + this.varName + " = " +
             handleCaseString(constValue["type"], constValue["value"]) + ";\n";
 

@@ -4,11 +4,11 @@ import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import React, { Fragment } from 'react';
 
-const propSize = (prop, updateState) => {
+function PropSize(props) {
     const sizeNumfield = (x, y) => {
         return (
             <TextField
-                defaultValue={prop.value[x]}
+                defaultValue={props.prop.value[x]}
                 type="number"
                 variant="outlined"
                 InputProps={{
@@ -16,18 +16,18 @@ const propSize = (prop, updateState) => {
                 }}
                 onChange={entry => {
                         let values = {
-                            ...prop.value,
+                            ...props.prop.value,
                             [x]: parseInt(entry.target.value)
                         }
                         if (values[x] <= 0) {
                             values[x] = 0
                             entry.target.value = '0'
                         }
-                        if (prop.value.lockRatio) {
-                            values[y] -= (prop.value[x] - values[x]) | 0
+                        if (props.prop.value.lockRatio) {
+                            values[y] -= (props.prop.value[x] - values[x]) | 0
                             console.log(values)
                         }
-                        updateState(prop, values)
+                    props.updateState(props.prop, values)
                     }
                 }
             />
@@ -46,15 +46,15 @@ const propSize = (prop, updateState) => {
                     {sizeNumfield('w', 'h')}
                 </Grid>
                 {
-                    prop.value.lockRatio ?
+                    props.prop.value.lockRatio ?
                         <LockIcon style={lockStyle}
                             onClick={() => {
-                                updateState(prop, {...prop.value, lockRatio: false})
+                                props.updateState(props.prop, {...props.prop.value, lockRatio: false})
                             }}
                         /> :
                         <LockOpenIcon style={lockStyle}
                             onClick={() => {
-                                updateState(prop, {...prop.value, lockRatio: true})
+                                props.updateState(props.prop, {...props.prop.value, lockRatio: true})
                             }}
                         />
                 }
@@ -67,4 +67,4 @@ const propSize = (prop, updateState) => {
     )
 }
 
-export default propSize
+export default PropSize

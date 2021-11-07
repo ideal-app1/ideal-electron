@@ -1,14 +1,14 @@
 import React from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 
-const propCheckBox = (prop, updateState) => {
+function PropCheckBox(props) {
     return (
         <Checkbox
-            checked={prop.value}
+            checked={props.prop.value}
             color="primary"
-            onChange={entry => {updateState(prop, entry.target.checked)}}
+            onChange={entry => {props.updateState(props.prop, entry.target.checked)}}
         />
     )
 }
 
-export default propCheckBox
+export default PropCheckBox

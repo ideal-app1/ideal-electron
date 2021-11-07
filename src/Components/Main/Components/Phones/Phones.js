@@ -40,6 +40,12 @@ class Phones extends React.Component {
         }
     }
 
+    static getViews() {
+        const views = [];
+
+
+    }
+
     static getView(index) {
         // todo faire des truc logique
         return ('View' + index);
@@ -70,7 +76,7 @@ class Phones extends React.Component {
 
     static resetState() {
         Phones.phoneList.map((elem) => {
-            elem.current.resetState();
+            elem.current?.resetState();
         });
     }
 

@@ -3,10 +3,15 @@ import Main from '../Components/Main/Main';
 import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
 import JsonManager from '../Components/Main/Tools/JsonManager';
+import TemporaryFile from './TemporaryFile';
+import Loading from '../Components/Main/Components/Dialog/Components/Loading/Loading';
+import React from 'react';
+
+import Dialog from '../Components/Main/Components/Dialog/Dialog';
+
 
 const fs = require('fs');
 
-const debug = true;
 let execDartHandler = 'dart pub global run ideal_dart_code_handler  ';
 
 
@@ -17,7 +22,8 @@ class VersionHandler {
   static hasBeenRun = false;
 
   constructor() {
-    if (debug) {
+    this.dialog = Dialog.getInstance();
+    if (Main.debug) {
       // Easier to debug than to submit a new version of the Code Handler.
       // Change to the path of the dart file for debugging purpose.
       execDartHandler = ' dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ';
@@ -26,7 +32,12 @@ class VersionHandler {
   }
 
   scriptThen = (command, toUpdateList) => {
-    Process.runScript(command, () => this.update(toUpdateList));
+    console.log('test');
+    this.dialog.current.createDialog(<Loading/>);
+    Process.runScript(command, () => {
+      this.update(toUpdateList);
+      this.dialog.current.unsetDialog();
+    });
   };
 
   upgradeFlutter = (toUpdateList) => {
@@ -53,7 +64,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -84,7 +95,7 @@ class VersionHandler {
       }
     };
 
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
@@ -97,20 +108,23 @@ class VersionHandler {
         'verbose' : false
       }
     };
-    Process.runScript(execDartHandler + (new Buffer(JSON.stringify(indexerArguments)).toString('base64')), () => {});
+    Process.runScript(execDartHandler + TemporaryFile.createSync(JSON.stringify(indexerArguments)), () => {});
     this.update(toUpdateList);
   };
 
   verifyFlutterIndex = () => {
-    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'FlutterSDKIndex', 'classes.json'));
+    return fs.existsSync(Path.build(Main.IdealDir, 'codelink', 'Indexer', 'FlutterSDKIndex', 'data.json'));
   };
 
   verifyUpgrade = (toUpdateList) => {
     const oldFlutterVersion = VersionHandler.FlutterVersion;
 
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
-    if (oldFlutterVersion === oldFlutterVersion && this.verifyFlutterIndex()) {
+    console.log(`Old ${oldFlutterVersion} - new ${VersionHandler.FlutterVersion} ? verify ? ${this.verifyFlutterIndex()}`);
+
+    if (oldFlutterVersion === VersionHandler.FlutterVersion && this.verifyFlutterIndex()) {
       this.update(toUpdateList);
+      return;
     }
     this.indexFlutterSources(toUpdateList);
   };
@@ -132,6 +146,7 @@ class VersionHandler {
       return false;
     VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
+    console.log(`Found version ${VersionHandler.FlutterVersion}`);
     this.update(toUpdateList);
     return true;
   };

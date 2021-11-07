@@ -28,6 +28,7 @@ const createFunctionNode = (func, LCanvas, path) => {
         this.nbOfParameters = nbOfParameters;
         if (func["return"] === "void") {
             this.addOutput("", LiteGraph.ACTION);
+
         } else {
             this.addOutput(func["return"], ""/*func["return"]*/);
         }
@@ -43,102 +44,24 @@ const createFunctionNode = (func, LCanvas, path) => {
         return (buffer);
     }
 
-    function setInputCallbackProperty(node, index, isConnected, annotation) {
-        if (annotation.parameters.length !== 2 ||
-            parseInt(annotation.parameters[0].value) !== index + 1) {
-            return;
-        }
-        if (annotation.parameters[1].value === "true") {
-            if (isConnected) {
-                console.log("Je suis " + func["name"] + " Lets go add an entry")
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        } else {
-            if (isConnected) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        }
-    }
 
-    function parameterIsFunction(node, index, isConnect) {
-        if (func["parameters"][index]["type"].toUpperCase().search("FUNC") == -1) {
-            if (isConnect) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        } else {
-            if (isConnect) {
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        }
-
-    }
-
-    function isACallbackParameter(node, index, isConnected) {
-        console.log(node);
-        func.annotations.forEach((annotation) => {
-            if (annotation.name === "CallbackParameter") {
-                setInputCallbackProperty(node, index, isConnected, annotation);
-            } else {
-            }
-        });
-    }
 
     FunctionNode.prototype.verifyIfItIsACallback = function (link, isConnected) {
         const targetNode = LCanvas.graph.getNodeById(link.target_id);
-        const name = targetNode.inputs[link.target_slot].name;
+        const name = targetNode.inputs[link.target_slot]?.name;
 
-        if (name.toLowerCase().search('func') === -1) {
+
+        if (name !== undefined && name.toLowerCase().search('func') === -1) {
             this.notACallbackCounter += isConnected ? 1 : -1;
         }
     }
 
     FunctionNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        if (!link)
+        if (!link || type === LiteGraph.INPUT)
             return
-        const node = LCanvas.graph.getNodeById(link.origin_id);
-        console.log(node.name);
-        console.log(LCanvas.graph.getNodeById(link.target_id).name);
-        console.log(index)
-        console.log(link.target_slot);
-        //isACallbackParameter(node, index, isConnected);
         this.verifyIfItIsACallback(link, isConnected);
-        console.log(`How many ? ${this.notACallbackCounter}`);
-
     }
 
-
-
-    /*FunctionNode.prototype.createCode = function () {
-        let funcCall = "final "  + this.varName + " = ";
-        let buffer = this.title + "(";
-        const nbOfInputs = func["parameters"].length;
-        let node = undefined;
-
-        for (let i = 1; i < nbOfInputs; i++) {
-            node = this.getInputData(i);
-            if (node === undefined) {
-                continue;
-            }
-            console.log('?')
-            console.log('I ? ');
-            console.log(i);
-            buffer = handleAParam(node, buffer, i);
-        }
-        buffer = endBuffer(buffer);
-        if (this.isNotAPureCallback()) {
-            sharedBuffer.addCode(funcCall + buffer);
-        }
-        this.callbackCode = buffer;
-        this.setOutputData(0, this);
-    }*/
 
     Function.prototype.createCallbackWrapper = function () {
 
@@ -157,10 +80,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     FunctionNode.prototype.isAPureCallback = function () {
         return this.notACallbackCounter <= 0 && this.outputs[0]['links'] != null;
     };
-
-    FunctionNode.prototype.casePureCallback = function () {
-
-    }
 
     FunctionNode.prototype.handleAParam = function (node, buffer, inputIndex) {
         console.log(func);
@@ -185,32 +104,14 @@ const createFunctionNode = (func, LCanvas, path) => {
                 continue;
             }
             buffer = this.handleAParam(node, buffer, i);
-            console.log('Input ' + i);
         }
         this.callbackCode = buffer + ')';
 
         buffer = endBuffer(buffer);
         if (this.isAPureCallback() === false) {
-            console.log('Is a pure callback!');
-
             sharedBuffer.addCode(funcCall + buffer);
-        } else {
-            console.log('Is NOT a pure callback!');
         }
-        console.log(this);
-        console.log('end');
         this.setOutputData(0, this);
-
-
-        /*if (this.callbackTracker.find((val) => val === true) !== undefined) {
-            console.log("goooo NOT UNDEF")
-            this.createCallback();
-        } else {
-            console.log("UNDEF")
-            console.log(this.callbackTracker)
-            this.createCode();
-        }
-        console.log("WHAT IS MY FUNC IMPORT ? " + func['import']);*/
         sharedBuffer.addImport(func['import']);
     }
 

@@ -51,10 +51,15 @@ a {
 
 /* <li> */
 .nav-item {
-    width: calc(var(--nav-size) * 0.8);
+    /* width: calc(var(--nav-size) * 0.8); */
+    margin-right: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.MuiBadge-colorPrimary {
+    background-color: #57b53f !important;
 }
 
 /* Icon Button */

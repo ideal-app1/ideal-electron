@@ -1,6 +1,7 @@
 import React from 'react';
 import YAML from "yaml";
 import write from "write";
+import Path from '../utils/Path';
 
 class DependenciesHandler {
 
@@ -12,7 +13,7 @@ class DependenciesHandler {
         const readYaml = require('read-yaml');
         const write = require('write');
 
-        const filePath = projectPath + DependenciesHandler.Sep + "pubspec.yaml"
+        const filePath = Path.build(projectPath, 'pubspec.yaml');
 
         if (!DependenciesHandler.fs.existsSync(projectPath)) {
             console.log("Project Path:" + projectPath + " do not exist.")
@@ -26,8 +27,6 @@ class DependenciesHandler {
 
         readYaml(filePath, "",function (err, data) {
             if (err) throw err;
-
-            dependency = JSON.parse(dependency);
 
             data.dependencies = {...data.dependencies, ...dependency}
 

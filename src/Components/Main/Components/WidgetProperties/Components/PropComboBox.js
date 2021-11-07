@@ -3,9 +3,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-const propComboBox = (prop, updateState) => {
+function PropComboBox(props) {
     const items = []
-    prop.items.forEach(v => {
+    props.prop.items.forEach(v => {
         if (v.name && v.value)
             items.push(<MenuItem key={v.name} value={v.value}>{v.name}</MenuItem>)
         else
@@ -15,8 +15,8 @@ const propComboBox = (prop, updateState) => {
         <FormControl>
             <Select
                 displayEmpty
-                value={prop.value}
-                onChange={event => {updateState(prop, event.target.value)}}
+                value={props.prop.value}
+                onChange={event => {props.updateState(props.prop, event.target.value)}}
             >
                 {items}
             </Select>
@@ -24,4 +24,4 @@ const propComboBox = (prop, updateState) => {
     )
 }
 
-export default propComboBox
+export default PropComboBox

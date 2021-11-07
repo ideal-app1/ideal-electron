@@ -1,30 +1,23 @@
 import React, { Fragment } from 'react';
 import './WidgetProperties.css';
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import { PropType, WidgetGroup } from '../../../../utils/WidgetUtils';
+import { PropType } from '../../../../utils/WidgetUtils';
 import { Route } from 'react-router-dom';
 import Main from '../../Main';
 import Path from '../../../../utils/Path';
 import MenuFunctions from '../../Tools/MenuFunctions';
 import Phones from "../Phones/Phones";
-import { Grid, InputAdornment } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
-import propSize from './Components/PropSize'
-
-import LockIcon from '@material-ui/icons/Lock';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import propTextField from './Components/PropTextField';
-import propNumField from './Components/PropNumField';
-import propCheckBox from './Components/PropCheckBox';
-import propComboBox from './Components/PropComboBox';
-import propFile from './Components/PropFile';
-import propAlignment from './Components/PropAlignment';
+import PropTextField from './Components/PropTextField';
+import PropNumField from './Components/PropNumField';
+import PropCheckBox from './Components/PropCheckBox';
+import PropComboBox from './Components/PropComboBox';
+import PropFile from './Components/PropFile';
+import PropAlignment from './Components/PropAlignment';
+import PropSize from './Components/PropSize'
+import PropVarName from './Components/PropVarName';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -75,18 +68,23 @@ class WidgetProperties extends React.Component {
         Phones.phoneList[Main.selection].current.forceUpdate()
     }
 
-    widgetPropType = prop => {
-
-        let propMap = {
-            [PropType.TEXTFIELD]: propTextField,
-            [PropType.NUMFIELD]: propNumField,
-            [PropType.CHECKBOX]: propCheckBox,
-            [PropType.COMBOBOX]: propComboBox,
-            [PropType.FILE]: propFile,
-            [PropType.ALIGNMENT]: propAlignment,
-            [PropType.SIZE]: propSize
+    widgetPropType = (widget, prop) => {
+        const props = {
+            widget: widget,
+            prop: prop,
+            updateState: this.updateState
         }
-        return propMap[prop.type]?.(prop, this.updateState) || prop?.toString()
+        let propMap = {
+            [PropType.TEXTFIELD]: <PropTextField {...props}/>,
+            [PropType.NUMFIELD]: <PropNumField {...props}/>,
+            [PropType.CHECKBOX]: <PropCheckBox {...props}/>,
+            [PropType.COMBOBOX]: <PropComboBox {...props}/>,
+            [PropType.FILE]: <PropFile {...props}/>,
+            [PropType.ALIGNMENT]: <PropAlignment {...props}/>,
+            [PropType.SIZE]: <PropSize {...props}/>,
+            [PropType.VAR]: <PropVarName {...props}/>,
+        }
+        return propMap[prop.type] || <div>{prop?.toString()}</div>
     }
 
     createFile(path) {
@@ -99,7 +97,8 @@ class WidgetProperties extends React.Component {
     }
 
     onCodelink = () => {
-        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", this.state.widget._id);
+
+        this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", `View${Main.selection}`, this.state.widget._id, );
         let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
         return;
 
@@ -163,7 +162,7 @@ class WidgetProperties extends React.Component {
                                           alignItems={'center'}
                                           justifyContent={'space-between'}>
                                           <div className={"property-name-" + this.state.widget.group}>{key}</div>
-                                          {this.widgetPropType(value)}
+                                          {this.widgetPropType(this.state.widget, value)}
                                       </Grid>
                                       <Divider/>
                                   </Fragment>
