@@ -62,8 +62,6 @@ input {
 }
 
 #menu- > div.MuiPaper-root.MuiMenu-paper.MuiPopover-paper.MuiPaper-elevation8.MuiPaper-rounded {
-    background-color: #565656 !important;
-    color: white;
-    width: 150px;
-    margin-top: 50px;
+    min-width: 150px !important;
+    margin-top: 25px;
 }

@@ -4,6 +4,11 @@ import Path from './Path';
 import codelinkBlocks from '../Components/CodeLink/Tools/FunctionBlocks';
 import JsonManager from '../Components/Main/Tools/JsonManager';
 import TemporaryFile from './TemporaryFile';
+import Loading from '../Components/Main/Components/Dialog/Components/Loading/Loading';
+import React from 'react';
+
+import Dialog from '../Components/Main/Components/Dialog/Dialog';
+
 
 const fs = require('fs');
 
@@ -17,6 +22,7 @@ class VersionHandler {
   static hasBeenRun = false;
 
   constructor() {
+    this.dialog = Dialog.getInstance();
     if (Main.debug) {
       // Easier to debug than to submit a new version of the Code Handler.
       // Change to the path of the dart file for debugging purpose.
@@ -26,7 +32,12 @@ class VersionHandler {
   }
 
   scriptThen = (command, toUpdateList) => {
-    Process.runScript(command, () => this.update(toUpdateList));
+    console.log('test');
+    this.dialog.current.createDialog(<Loading/>);
+    Process.runScript(command, () => {
+      this.update(toUpdateList);
+      this.dialog.current.unsetDialog();
+    });
   };
 
   upgradeFlutter = (toUpdateList) => {

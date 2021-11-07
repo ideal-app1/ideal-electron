@@ -1,14 +1,14 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 
-const propTextField = (prop, updateState) => {
+function PropTextField(props) {
     return (
         <TextField
-            defaultValue={prop.value}
+            defaultValue={props.prop.value}
             variant="outlined"
-            onChange={entry => {updateState(prop, entry.target.value)}}
+            onChange={entry => {props.updateState(props.prop, entry.target.value)}}
         />
     )
 }
 
-export default propTextField
+export default PropTextField
