@@ -23,6 +23,7 @@ const createRValueNode = (type, defaultValue) => {
     this.widget = this.addWidget(type, "value", defaultValue, (v) => {
       this.value = v;}, );
 
+    this.properties = {precision: 1};
     this.widgets_up = true;
     this.size = [180, 30];
     this.varName = this.makeId(15);
@@ -62,6 +63,7 @@ const createRValueNode = (type, defaultValue) => {
     this.value = v;
   }
 
+  console.log(`I create [RValues/${type}]`)
   LiteGraph.registerNodeType(`RValues/${type}`, RValueNode);
 
 }

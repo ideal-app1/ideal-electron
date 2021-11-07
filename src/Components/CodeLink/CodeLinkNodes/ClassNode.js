@@ -56,8 +56,10 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         nodeHasBeenDeserialized = CodeLink.deserializationDone;
         // Prevent deserialization from creating two new attributes each time
         // CodeLink is opened.
-        if (CodeLink.deserializationDone)
+        if (CodeLink.deserializationDone) {
+            console.log('Deserialization is done');
             CodeLinkNodeLoader.createAttributes(this, mainConstructor);
+        }
     };
 
     ClassNode.prototype.onExecute = function () {

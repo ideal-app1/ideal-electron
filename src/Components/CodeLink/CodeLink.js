@@ -30,6 +30,7 @@ import createRValueNode from './CodeLinkNodes/RValueNode';
 import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
+import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
 
 function CodeLink(props) {
 
@@ -119,6 +120,7 @@ function CodeLink(props) {
         loadGenericViewAttributes();
         loadRValues();
         createCallbackWrapper(Lcanvas);
+        createForLoopNode(Lcanvas);
         afterLoad(className, flutterJson);
     };
 

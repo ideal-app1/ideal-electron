@@ -103,9 +103,8 @@ const createFunctionNode = (func, LCanvas, path) => {
             }
             buffer = this.handleAParam(node, buffer, i);
         }
-        this.callbackCode = buffer + ')';
-
-        buffer = endBuffer(buffer);
+        buffer += ');';
+        this.callbackCode = `() {${buffer}}`;
         if (this.isAPureCallback() === false) {
             sharedBuffer.addCode(funcCall + buffer);
         }

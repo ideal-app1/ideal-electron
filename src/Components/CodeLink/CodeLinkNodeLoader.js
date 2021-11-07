@@ -49,7 +49,6 @@ const CodeLinkNodeLoader = {
       if (requiredOnly === true && constructorParameter.isRequired !== 'true') {
         return;
       }
-      console.log(widget);
       attribute = LiteGraph.createNode(widget.name + ' constructor\'s attributes/' + constructorParameter['name']);
       tmpPos[1] += offset + (previousAttribute ? previousAttribute.size[1] : 0);
       LCanvas.graph.add(attribute);
