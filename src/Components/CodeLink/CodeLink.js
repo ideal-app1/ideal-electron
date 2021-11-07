@@ -108,7 +108,7 @@ function CodeLink(props) {
 
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
-        const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
+        const flutterJson = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
         const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
         if (dataJson) {
@@ -122,14 +122,14 @@ function CodeLink(props) {
         afterLoad(className, flutterJson);
     };
 
-    const initNewFile =  (variableName, className, currentpath) => {
+    const initNewFile =  (variableName, className, _) => {
         loadEverything(variableName, className, (className, flutterJson) => {
             CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
         })
     };
 
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
-        loadEverything(variableName, className, (_, __) => {
+        loadEverything(variableName, className, (_, flutterJson) => {
             graph.load(currentpath);
             handleDeserialization();
         });
@@ -146,6 +146,9 @@ function CodeLink(props) {
             CodeLink.deserializationDone = true;
         }, 1000);
     }
+
+
+
 
     const init = () => {
         console.log(`Deserialize ? ${CodeLink.deserializationDone}`);

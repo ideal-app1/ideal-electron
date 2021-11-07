@@ -82,8 +82,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     };
 
     FunctionNode.prototype.handleAParam = function (node, buffer, inputIndex) {
-        console.log(func);
-        console.log(inputIndex);
         const inputName = func['parameters'][inputIndex - 1]['type'];
         const data = this.getCallbackData(node, inputName);
 

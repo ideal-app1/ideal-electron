@@ -42,7 +42,6 @@ const createCallbackWrapper = (LCanvas) => {
 
   CallbackWrapperNode.prototype.addNewInput = function (newNode) {
     linkedNodes.push(newNode);
-    console.log(`Add input ${CodeLink.deserializationDone}`);
 
     // Prevent deserialization of the node from creating too much inputs
     if (this.inputs.length <= linkedNodes.length)
@@ -70,7 +69,6 @@ const createCallbackWrapper = (LCanvas) => {
     if (this.varName === undefined) {
       this.varName = name;
     }
-    console.log(`Added ${this.inputs.length}`);
   };
 
   CallbackWrapperNode.prototype.onExecute = function () {

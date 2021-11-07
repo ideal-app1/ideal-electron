@@ -21,7 +21,6 @@ const createRValueNode = (type, defaultValue) => {
     this.addProperty("value", defaultValue);
 
     this.widget = this.addWidget(type, "value", defaultValue, (v) => {
-      console.log(`called ${v}`);
       this.value = v;}, );
 
     this.widgets_up = true;
@@ -46,7 +45,6 @@ const createRValueNode = (type, defaultValue) => {
 
     let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)};\n`
 
-    console.log(`Data ? `, this.value);
     this.setOutputData(0, this);
     sharedBuffer.addCode(buffer);
   }
@@ -60,7 +58,6 @@ const createRValueNode = (type, defaultValue) => {
 
   RValueNode.prototype.setValue = function(v)
   {
-    console.log('value ? ');
     this.setProperty("value", v);
     this.value = v;
   }
