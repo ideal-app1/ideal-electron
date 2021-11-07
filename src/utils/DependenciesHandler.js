@@ -34,13 +34,9 @@ class DependenciesHandler {
             const doc = new YAML.Document();
             doc.contents = data
 
-            write.sync(filePath, doc.toString(), {increment: true}, error => {
+            write.sync(filePath, doc.toString(), {overwrite: true}, error => {
                 if (error) throw error;
             })
-            // https://www.npmjs.com/package/write
-            // write.sync(filePath, doc.toString(), {override: true}, error => {
-            //     if (error) throw error;
-            // })
         })
     }
 }
