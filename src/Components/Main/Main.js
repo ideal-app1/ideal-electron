@@ -9,17 +9,14 @@ import Phones from "./Components/Phones/Phones";
 import Dialog from './Components/Dialog/Dialog';
 import JsonManager from './Tools/JsonManager';
 import Path from '../../utils/Path';
-import Phone from "./Components/Phone/Phone";
-import Button from "@material-ui/core/Button";
 import VersionHandler from '../../utils/VersionHandler';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { Grid } from '@material-ui/core';
+import DependenciesHandler from "../../utils/DependenciesHandler";
 
 const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
-
-import DependenciesHandler from "../../utils/DependenciesHandler";
 
 class Main extends React.Component {
 
@@ -70,21 +67,6 @@ class Main extends React.Component {
                 <header className="App-header">
                     <Dialog ref={Dialog.getInstance()}/>
                     <DndProvider backend={HTML5Backend}>
-                        {/*{ Main.fs.existsSync(Main.MainProjectPath)*/}
-                        {/*    ? [*/}
-                        {/*        <Library/>,*/}
-                        {/*        <Phones/>,*/}
-                        {/*        <WidgetProperties ref={WidgetProperties.getInstance()}/>,*/}
-                        {/*        <Menu/>*/}
-                        {/*    ]*/}
-                        {/*    : [*/}
-                        {/*        <Menu/>,*/}
-                        {/*        <div>*/}
-                        {/*            <h4>Please load or create a project</h4>*/}
-                        {/*        </div>*/}
-                        {/*    ]*/}
-                        {/*}*/}
-
                         {Main.selection >= 0 ?
                             <Fragment>
                                 <Library/>

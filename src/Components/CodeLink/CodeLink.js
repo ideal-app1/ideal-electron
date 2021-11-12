@@ -16,13 +16,11 @@ import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
 import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
+
 const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
-
-import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
-import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
@@ -275,19 +273,6 @@ function CodeLink(props) {
                             </Typography>
                             <div>
                                 <CodeLinkWidgetList widgetList={widgetList} />
-
-                                {/*    <List>*/}
-                                {/*        {this.generate(*/}
-                                {/*            <ListItem>*/}
-                                {/*                <ListItemText*/}
-                                {/*                    primary="Widget item Id"*/}
-                                {/*                />*/}
-                                {/*                <ListItemIcon>*/}
-                                {/*                    <Loop />*/}
-                                {/*                </ListItemIcon>*/}
-                                {/*            </ListItem>,*/}
-                                {/*        )}*/}
-                                {/*    </List>*/}
                             </div>
                         </Grid>
                     </Grid>

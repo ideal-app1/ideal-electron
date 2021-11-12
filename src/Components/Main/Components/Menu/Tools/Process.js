@@ -11,7 +11,6 @@ class Process {
 
         console.log('start : ' + command);
 
-        console.log('mdr');
         console.log(options);
         Process.exec.exec(command,  options, (err, stdout, stderr) => {
             if (err) {

@@ -71,13 +71,10 @@ export default function Menu(props) {
 
     const addDependencies = () => {
         const dependencies = ['http', 'url_launcher'];
-        const object = {};
 
         dependencies.forEach((dependency) => {
-            object[dependency] = 'any';
+            DependenciesHandler.addDependencyToProject(Main.FlutterSDK, Main.MainProjectPath, dependency);
         });
-        DependenciesHandler.addDependencyToProject(Main.MainProjectPath, object);
-        Process.runScript(`${Main.FlutterSDK} pub get`, null, {'cwd': Main.MainProjectPath});
     };
 
     const createIdealProject = () => {
