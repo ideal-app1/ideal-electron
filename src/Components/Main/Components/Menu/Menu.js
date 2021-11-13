@@ -253,6 +253,11 @@ export default function Menu(props) {
         return states[run];
     }
 
+    const hotReloadButton = () => {
+        console.log("Test Hot Reload");
+        Process.runHotReload();
+    }
+
     return (
         <div className={"new"}>
             <Navbar>
@@ -269,6 +274,9 @@ export default function Menu(props) {
                             {runProjectButton()}
                         </Badge>
                     }/>
+                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={hotReloadButton}>
+                        Hot Reload
+                    </Button>
                     <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         Settings
                     </Button>

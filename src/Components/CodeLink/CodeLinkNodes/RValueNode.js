@@ -22,6 +22,7 @@ const createRValueNode = (type, defaultValue) => {
 
     this.widget = this.addWidget(type, "value", defaultValue, (v) => {
       console.log(`called ${v}`);
+      this.setProperty("value", v);
       this.value = v;}, );
 
     this.widgets_up = true;
@@ -57,6 +58,8 @@ const createRValueNode = (type, defaultValue) => {
     }
     return this.title;
   };
+
+  
 
   RValueNode.prototype.setValue = function(v)
   {
