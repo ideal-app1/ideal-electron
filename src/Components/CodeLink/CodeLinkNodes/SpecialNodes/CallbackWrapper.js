@@ -1,8 +1,6 @@
 import {LiteGraph} from "litegraph.js";
-import BufferSingleton from "../../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
-import CodeLink from '../../CodeLink';
 
 const createCallbackWrapper = (LCanvas) => {
 
@@ -49,7 +47,7 @@ const createCallbackWrapper = (LCanvas) => {
       this.addInput(`Function ${this.inputs.length + 1}`);
   }
 
-  CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+  CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, _) {
     if (!link || type === LiteGraph.OUTPUT || connectionChangeInProgress === true)
       return;
 

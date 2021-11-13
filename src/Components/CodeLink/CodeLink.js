@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
+import { LiteGraph, } from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, Typography} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
-import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
-import Phone from "../Main/Components/Phone/Phone";
 import Dialog from '../Main/Components/Dialog/Dialog';
 import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
@@ -16,13 +14,9 @@ import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
 import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
-const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
-
-import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
-import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
@@ -45,6 +39,14 @@ function CodeLink(props) {
 
     const dialog = Dialog.getInstance();
 
+    const catchMountError = (func) => {
+      try {
+          func();
+      } catch (_) {
+          props.history.push('/')
+      }
+    };
+
     const loadOtherWidgets = (widgets) => {
         widgets.forEach((widget) => {
             //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
@@ -60,7 +62,7 @@ function CodeLink(props) {
 
         Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
             widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
-         );
+        );
 
         if (hasBeenCalled) return;
         loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
@@ -76,13 +78,15 @@ function CodeLink(props) {
 
     useEffect(() => {
         app.allowRendererProcessReuse = false;
-        init();
+        catchMountError(init);
     });
 
-    useConstructor();
+
+    catchMountError(useConstructor);
 
     const loadUserCode = () => {
       try {
+          console.log('mdr')
           return (JsonManager.get(Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources', 'data.json')));
       } catch (_) {
           return undefined;
@@ -131,7 +135,7 @@ function CodeLink(props) {
     };
 
     const loadCodeLinkSave =  (variableName, className, currentpath) => {
-        loadEverything(variableName, className, (_, flutterJson) => {
+        loadEverything(variableName, className, (_, __) => {
             graph.load(currentpath);
             handleDeserialization();
         });
@@ -153,7 +157,6 @@ function CodeLink(props) {
 
 
     const init = () => {
-        console.log(`Deserialize ? ${CodeLink.deserializationDone}`);
         const variableName = props.location.state.variableName.value;
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
@@ -171,18 +174,8 @@ function CodeLink(props) {
 
     const savegraph = (event) =>
     {
-        let currentpath = props.location.state.path;
-
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
-    };
-
-    const generate = (element) => {
-        return [0, 1, 2].map((value) =>
-          React.cloneElement(element, {
-              key: value,
-          }),
-        );
     };
 
     const writeCodeLinkData = () => {

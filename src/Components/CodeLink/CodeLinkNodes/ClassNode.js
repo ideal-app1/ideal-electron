@@ -1,8 +1,6 @@
 import {LiteGraph} from "litegraph.js";
-import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
-import createConstructorAttributeNode from './ConstructorAttributeNode';
 import CodeLinkNodeLoader from '../CodeLinkNodeLoader';
 import CodeLink from '../CodeLink';
 
@@ -11,6 +9,18 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
     ClassNode.title = `class ${NodeInfos["name"]}${getClassName()}`;
     ClassNode.description = NodeInfos["name"];
     let nodeHasBeenDeserialized = false;
+
+
+
+    function ClassNode() {
+        inheritNodeBase(ClassNode, this);
+        this.addOutput(`Linked class ${NodeInfos['name']}`);
+
+        this.properties = {precision: 1};
+        this.varName = varName;
+        this.name = NodeInfos['name'];
+
+    }
 
     function getMainConstructor() {
         let mainConstructor = undefined;
@@ -29,21 +39,12 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         return '';
     }
 
-    ClassNode.prototype.onConnectionsChange = function(type, slot, isConnected, link, ioSlot) {
+    ClassNode.prototype.onConnectionsChange = function(_, __, ___, ____, _____) {
         if (CodeLink.deserializationDone === false) {
             nodeHasBeenDeserialized = true;
         }
     }
 
-    function ClassNode() {
-        inheritNodeBase(ClassNode, this);
-        this.addOutput(`Linked class ${NodeInfos['name']}`);
-
-        this.properties = {precision: 1};
-        this.varName = varName;
-        this.name = NodeInfos['name'];
-
-    }
 
 
     ClassNode.prototype.onAdded = function () {
@@ -57,7 +58,6 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         // Prevent deserialization from creating two new attributes each time
         // CodeLink is opened.
         if (CodeLink.deserializationDone) {
-            console.log('Deserialization is done');
             CodeLinkNodeLoader.createAttributes(this, mainConstructor);
         }
     };
