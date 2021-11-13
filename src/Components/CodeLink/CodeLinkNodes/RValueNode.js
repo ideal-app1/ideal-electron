@@ -25,6 +25,7 @@ const createRValueNode = (type, defaultValue) => {
       this.setProperty("value", v);
       this.value = v;}, );
 
+    this.properties = {precision: 1};
     this.widgets_up = true;
     this.size = [180, 30];
     this.varName = this.makeId(15);
@@ -47,7 +48,6 @@ const createRValueNode = (type, defaultValue) => {
 
     let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)};\n`
 
-    console.log(`Data ? `, this.value);
     this.setOutputData(0, this);
     sharedBuffer.addCode(buffer);
   }
@@ -63,11 +63,11 @@ const createRValueNode = (type, defaultValue) => {
 
   RValueNode.prototype.setValue = function(v)
   {
-    console.log('value ? ');
     this.setProperty("value", v);
     this.value = v;
   }
 
+  console.log(`I create [RValues/${type}]`)
   LiteGraph.registerNodeType(`RValues/${type}`, RValueNode);
 
 }

@@ -14,6 +14,7 @@ const createCallbackWrapper = (LCanvas) => {
     inheritNodeBase(CallbackWrapperNode, this);
     this.addInput('Function 1');
     this.addOutput('Wrapped functions',);
+    this.varName = this.makeId(15);
 
   }
 
@@ -42,7 +43,6 @@ const createCallbackWrapper = (LCanvas) => {
 
   CallbackWrapperNode.prototype.addNewInput = function (newNode) {
     linkedNodes.push(newNode);
-    console.log(`Add input ${CodeLink.deserializationDone}`);
 
     // Prevent deserialization of the node from creating too much inputs
     if (this.inputs.length <= linkedNodes.length)
@@ -67,10 +67,6 @@ const createCallbackWrapper = (LCanvas) => {
 
 
   CallbackWrapperNode.prototype.onAdded = function () {
-    if (this.varName === undefined) {
-      this.varName = name;
-    }
-    console.log(`Added ${this.inputs.length}`);
   };
 
   CallbackWrapperNode.prototype.onExecute = function () {
@@ -84,6 +80,7 @@ const createCallbackWrapper = (LCanvas) => {
       buffer += `${node.callbackCode};\n`;
     }
     buffer += '};\n'
+    this.callbackCode = this.varName;
     sharedBuffer.addCode(buffer);
     this.setOutputData(0, this);
   };

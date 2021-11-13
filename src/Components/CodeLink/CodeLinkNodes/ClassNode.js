@@ -52,13 +52,14 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         if (this.varName === undefined) {
             this.varName = this.makeId(15);
         }
-        console.log(`Done? ${CodeLink.deserializationDone}`);
 
         nodeHasBeenDeserialized = CodeLink.deserializationDone;
         // Prevent deserialization from creating two new attributes each time
         // CodeLink is opened.
-        if (CodeLink.deserializationDone)
+        if (CodeLink.deserializationDone) {
+            console.log('Deserialization is done');
             CodeLinkNodeLoader.createAttributes(this, mainConstructor);
+        }
     };
 
     ClassNode.prototype.onExecute = function () {
@@ -67,7 +68,6 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         sharedBuffer.addImport(NodeInfos['import']);
     };
 
-    console.log(`Je créé ${path + NodeInfos["name"]}`);
     LiteGraph.registerNodeType(path + NodeInfos["name"], ClassNode);
 };
 export default createClassNode
