@@ -19,7 +19,6 @@ const createForLoopNode = (LCanvas) => {
   }
 
 
-
   ForLoopNode.prototype.addDefaultFromTo = function () {
     const from = LiteGraph.createNode('RValues/number');
     const to = LiteGraph.createNode('RValues/number');
@@ -63,7 +62,7 @@ const createForLoopNode = (LCanvas) => {
     if (!args)
       return;
 
-    buffer = `for (let ${iteratorName} = ${args[0].varName}; ${iteratorName} < ${args[1].varName}; ${iteratorName}++) {\n${args[2].callbackCode}();\n}`;
+    buffer = `for (var ${iteratorName} = ${args[0].varName}; ${iteratorName} < ${args[1].varName}; ${iteratorName}++) {\n${args[2].callbackCode}();\n}`;
 
     sharedBuffer.addCode(buffer);
     this.setOutputData(0, this);
