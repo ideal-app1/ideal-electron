@@ -16,7 +16,6 @@ const createRValueNode = (type, defaultValue) => {
 
   function RValueNode() {
 
-    console.log('called')
     inheritNodeBase(RValueNode, this)
     this.addOutput("value", type);
     this.widget = this.addWidget(type, "value", defaultValue, (v) => {

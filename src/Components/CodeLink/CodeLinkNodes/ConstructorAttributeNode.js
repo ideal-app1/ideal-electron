@@ -3,6 +3,7 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import { useDrag } from 'react-dnd';
+import Path from '../../../utils/Path';
 
 const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
@@ -62,7 +63,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
     };
-    LiteGraph.registerNodeType(currentClass + " constructor's attributes/" + param["name"], ConstructorAttributeNode);
+    LiteGraph.registerNodeType(`${path}${currentClass} constructor's attributes/${param["name"]}`, ConstructorAttributeNode);
 };
 export default createConstructorAttributeNode
 

@@ -8,6 +8,8 @@ class Path {
     static build = (...values) => {
         let res = values[0];
         for (let i = 1; i < values.length; i++) {
+            if (values[i].length === 0)
+                continue
             res = res.concat(Path.Sep, values[i]);
         }
         return res;

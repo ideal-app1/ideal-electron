@@ -42,15 +42,19 @@ function CodeLink(props) {
     const catchMountError = (func) => {
       try {
           func();
-      } catch (_) {
+      } catch (e) {
+          console.log(e)
           props.history.push('/')
       }
     };
 
-    const loadOtherWidgets = (widgets) => {
+    // Will be enabled when the reworking of the View system will works
+    const loadOtherWidgets = (widgets, parsed) => {
+        return;
         widgets.forEach((widget) => {
-            //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-            loadOtherWidgets(widget.list);
+            console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
+            CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name, widget.name, parsed, widget._id, `View0/`)
+            loadOtherWidgets(widget.list, parsed);
         });
 
     }
@@ -65,7 +69,8 @@ function CodeLink(props) {
         );
 
         if (hasBeenCalled) return;
-        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
+        const parsed = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
+        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList(), parsed);
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -86,7 +91,6 @@ function CodeLink(props) {
 
     const loadUserCode = () => {
       try {
-          console.log('mdr')
           return (JsonManager.get(Path.build(Main.MainProjectPath, '.ideal_project', 'code_handler', 'indexer', 'user_sources', 'data.json')));
       } catch (_) {
           return undefined;

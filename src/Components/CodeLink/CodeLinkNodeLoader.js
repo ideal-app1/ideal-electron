@@ -4,6 +4,7 @@ import createFunctionNode from './CodeLinkNodes/FunctionNode';
 import createValue from './CodeLinkNodes/ConstValueNode';
 import createClassNode from './CodeLinkNodes/ClassNode';
 import createConstructorAttributeNode from './CodeLinkNodes/ConstructorAttributeNode';
+import Path from '../../utils/Path';
 
 let LCanvas = null;
 
@@ -65,14 +66,16 @@ const CodeLinkNodeLoader = {
   },
 
 
-  loadClassAndAttributes: (variableName, className, parsed, id) => {
+  // Path parameter is where the node will be loaded on LiteGraph
+  // It must be either empty or in this format: `path/to/something/`
+  loadClassAndAttributes: (variableName, className, parsed, id, path = '') => {
     const constructor = getConstructor(className, parsed['classes']);
     const specificClass = getClass(className, parsed['classes']);
 
-    createClassNode(variableName, specificClass, LCanvas, 'Classes/');
+    createClassNode(variableName, specificClass, LCanvas, `${path}Classes/`);
     if (constructor) {
       constructor['parameters'].forEach((constructorParameter) => {
-        createConstructorAttributeNode(className, constructorParameter, LCanvas, 'Current Flutter class attributes/');
+        createConstructorAttributeNode(className, constructorParameter, LCanvas, path);
       });
     }
   },
