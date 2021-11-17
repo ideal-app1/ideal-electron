@@ -82,8 +82,6 @@ const createFunctionNode = (func, LCanvas, path) => {
     };
 
     FunctionNode.prototype.handleAParam = function (node, buffer, inputIndex) {
-        console.log(func);
-        console.log(inputIndex);
         const inputName = func['parameters'][inputIndex - 1]['type'];
         const data = this.getCallbackData(node, inputName);
 
@@ -105,9 +103,8 @@ const createFunctionNode = (func, LCanvas, path) => {
             }
             buffer = this.handleAParam(node, buffer, i);
         }
-        this.callbackCode = buffer + ')';
-
-        buffer = endBuffer(buffer);
+        buffer += ');';
+        this.callbackCode = `() {${buffer}}`;
         if (this.isAPureCallback() === false) {
             sharedBuffer.addCode(funcCall + buffer);
         }

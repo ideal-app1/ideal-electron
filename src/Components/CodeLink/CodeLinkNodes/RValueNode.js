@@ -18,17 +18,32 @@ const createRValueNode = (type, defaultValue) => {
 
     inheritNodeBase(RValueNode, this)
     this.addOutput("value", type);
-    this.addProperty("value", defaultValue);
-
     this.widget = this.addWidget(type, "value", defaultValue, (v) => {
-      console.log(`called ${v}`);
-      this.value = v;}, );
-
+      this.value = v;
+      this.mdr = v;
+      this.setProperty("value", v)
+    }, );
     this.widgets_up = true;
-    this.size = [180, 30];
     this.varName = this.makeId(15);
-    this.value = defaultValue;
     this.type = type;
+  }
+
+
+  RValueNode.prototype.onPropertyChanged = function(property, value, prevValue) {
+    this.setProperty(property, value)
+    this.widget.value = value
+
+
+  }
+
+
+  RValueNode.prototype.onAdded = function () {
+
+
+  }
+
+  RValueNode.prototype.createNewNode = function() {
+
   }
 
   RValueNode.title = `Custom ${type}`
@@ -46,7 +61,6 @@ const createRValueNode = (type, defaultValue) => {
 
     let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)};\n`
 
-    console.log(`Data ? `, this.value);
     this.setOutputData(0, this);
     sharedBuffer.addCode(buffer);
   }
@@ -58,13 +72,13 @@ const createRValueNode = (type, defaultValue) => {
     return this.title;
   };
 
+  
+
   RValueNode.prototype.setValue = function(v)
   {
-    console.log('value ? ');
     this.setProperty("value", v);
     this.value = v;
   }
-
   LiteGraph.registerNodeType(`RValues/${type}`, RValueNode);
 
 }

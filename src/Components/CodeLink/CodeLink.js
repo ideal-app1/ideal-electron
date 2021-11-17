@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
+import { LiteGraph, } from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, Typography} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
-import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
-import Phone from "../Main/Components/Phone/Phone";
 import Dialog from '../Main/Components/Dialog/Dialog';
 import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
@@ -16,13 +14,9 @@ import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
 import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
-const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
-
-import {PhoneAndroid, ArrowLeft} from "@material-ui/icons";
-import IdealLogo from "../../../assets/icon.png";
 
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
@@ -30,6 +24,7 @@ import createRValueNode from './CodeLinkNodes/RValueNode';
 import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
+import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
 
 function CodeLink(props) {
 
@@ -44,10 +39,22 @@ function CodeLink(props) {
 
     const dialog = Dialog.getInstance();
 
-    const loadOtherWidgets = (widgets) => {
+    const catchMountError = (func) => {
+      try {
+          func();
+      } catch (e) {
+          console.log(e)
+          props.history.push('/')
+      }
+    };
+
+    // Will be enabled when the reworking of the View system will works
+    const loadOtherWidgets = (widgets, parsed) => {
+        return;
         widgets.forEach((widget) => {
-            //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-            loadOtherWidgets(widget.list);
+            console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
+            CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name, widget.name, parsed, widget._id, `View0/`)
+            loadOtherWidgets(widget.list, parsed);
         });
 
     }
@@ -59,10 +66,11 @@ function CodeLink(props) {
 
         Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
             widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
-         );
+        );
 
         if (hasBeenCalled) return;
-        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
+        const parsed = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
+        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList(), parsed);
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -75,10 +83,11 @@ function CodeLink(props) {
 
     useEffect(() => {
         app.allowRendererProcessReuse = false;
-        init();
+        catchMountError(init);
     });
 
-    useConstructor();
+
+    catchMountError(useConstructor);
 
     const loadUserCode = () => {
       try {
@@ -108,7 +117,7 @@ function CodeLink(props) {
 
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
-        const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
+        const flutterJson = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
         const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
         if (dataJson) {
@@ -119,10 +128,11 @@ function CodeLink(props) {
         loadGenericViewAttributes();
         loadRValues();
         createCallbackWrapper(Lcanvas);
+        createForLoopNode(Lcanvas);
         afterLoad(className, flutterJson);
     };
 
-    const initNewFile =  (variableName, className, currentpath) => {
+    const initNewFile =  (variableName, className, _) => {
         loadEverything(variableName, className, (className, flutterJson) => {
             CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
         })
@@ -147,8 +157,10 @@ function CodeLink(props) {
         }, 1000);
     }
 
+
+
+
     const init = () => {
-        console.log(`Deserialize ? ${CodeLink.deserializationDone}`);
         const variableName = props.location.state.variableName.value;
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
@@ -166,18 +178,8 @@ function CodeLink(props) {
 
     const savegraph = (event) =>
     {
-        let currentpath = props.location.state.path;
-
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
-    };
-
-    const generate = (element) => {
-        return [0, 1, 2].map((value) =>
-          React.cloneElement(element, {
-              key: value,
-          }),
-        );
     };
 
     const writeCodeLinkData = () => {

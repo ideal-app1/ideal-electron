@@ -23,8 +23,6 @@ const createMethodNode = (method, className, LCanvas, path) => {
     MethodNode.title = method["name"];
 
     MethodNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
-        console.log("Je suis connecté ? " + isConnected + " du type ? " + type);
-        console.log(link)
 
     };
 
@@ -60,11 +58,9 @@ const createMethodNode = (method, className, LCanvas, path) => {
         let buffer = this.startBuffer(linkedClass);
         let node = undefined;
 
-        console.log(`For ${method['name']}, ${nbOfInputs} nb of inputs`);
         for (let i = 1; i <= nbOfInputs; i++) {
             node = this.getInputData(i);
             if (node === undefined) {
-                console.log("In func " + this.title + ", arg nb " + i + ", is undef");
                 continue;
             }
             buffer = handleAParam(node, buffer);

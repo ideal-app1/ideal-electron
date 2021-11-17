@@ -35,7 +35,6 @@ const createSetStateNode = () => {
     //sharedBuffer.addImport(NodeInfos['import']);
   };
 
-  /*console.log(`Je créé ${path + NodeInfos["name"]}`);*/
   LiteGraph.registerNodeType("Misc/setState", SetStateNode);
 };
 export default createSetStateNode

@@ -1,8 +1,6 @@
 import {LiteGraph} from "litegraph.js";
-import BufferSingleton from "../../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
-import CodeLink from '../../CodeLink';
 
 const createCallbackWrapper = (LCanvas) => {
 
@@ -14,6 +12,7 @@ const createCallbackWrapper = (LCanvas) => {
     inheritNodeBase(CallbackWrapperNode, this);
     this.addInput('Function 1');
     this.addOutput('Wrapped functions',);
+    this.varName = this.makeId(15);
 
   }
 
@@ -42,14 +41,13 @@ const createCallbackWrapper = (LCanvas) => {
 
   CallbackWrapperNode.prototype.addNewInput = function (newNode) {
     linkedNodes.push(newNode);
-    console.log(`Add input ${CodeLink.deserializationDone}`);
 
     // Prevent deserialization of the node from creating too much inputs
     if (this.inputs.length <= linkedNodes.length)
       this.addInput(`Function ${this.inputs.length + 1}`);
   }
 
-  CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
+  CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, _) {
     if (!link || type === LiteGraph.OUTPUT || connectionChangeInProgress === true)
       return;
 
@@ -67,10 +65,6 @@ const createCallbackWrapper = (LCanvas) => {
 
 
   CallbackWrapperNode.prototype.onAdded = function () {
-    if (this.varName === undefined) {
-      this.varName = name;
-    }
-    console.log(`Added ${this.inputs.length}`);
   };
 
   CallbackWrapperNode.prototype.onExecute = function () {
@@ -84,6 +78,7 @@ const createCallbackWrapper = (LCanvas) => {
       buffer += `${node.callbackCode};\n`;
     }
     buffer += '};\n'
+    this.callbackCode = this.varName;
     sharedBuffer.addCode(buffer);
     this.setOutputData(0, this);
   };

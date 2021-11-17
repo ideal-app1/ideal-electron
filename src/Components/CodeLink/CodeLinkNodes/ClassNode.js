@@ -1,8 +1,6 @@
 import {LiteGraph} from "litegraph.js";
-import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
-import createConstructorAttributeNode from './ConstructorAttributeNode';
 import CodeLinkNodeLoader from '../CodeLinkNodeLoader';
 import CodeLink from '../CodeLink';
 
@@ -11,6 +9,18 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
     ClassNode.title = `class ${NodeInfos["name"]}${getClassName()}`;
     ClassNode.description = NodeInfos["name"];
     let nodeHasBeenDeserialized = false;
+
+
+
+    function ClassNode() {
+        inheritNodeBase(ClassNode, this);
+        this.addOutput(`Linked class ${NodeInfos['name']}`);
+
+        this.properties = {precision: 1};
+        this.varName = varName;
+        this.name = NodeInfos['name'];
+
+    }
 
     function getMainConstructor() {
         let mainConstructor = undefined;
@@ -29,21 +39,12 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         return '';
     }
 
-    ClassNode.prototype.onConnectionsChange = function(type, slot, isConnected, link, ioSlot) {
+    ClassNode.prototype.onConnectionsChange = function(_, __, ___, ____, _____) {
         if (CodeLink.deserializationDone === false) {
             nodeHasBeenDeserialized = true;
         }
     }
 
-    function ClassNode() {
-        inheritNodeBase(ClassNode, this);
-        this.addOutput(`Linked class ${NodeInfos['name']}`);
-
-        this.properties = {precision: 1};
-        this.varName = varName;
-        this.name = NodeInfos['name'];
-
-    }
 
 
     ClassNode.prototype.onAdded = function () {
@@ -52,13 +53,13 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         if (this.varName === undefined) {
             this.varName = this.makeId(15);
         }
-        console.log(`Done? ${CodeLink.deserializationDone}`);
 
         nodeHasBeenDeserialized = CodeLink.deserializationDone;
         // Prevent deserialization from creating two new attributes each time
         // CodeLink is opened.
-        if (CodeLink.deserializationDone)
+        if (CodeLink.deserializationDone) {
             CodeLinkNodeLoader.createAttributes(this, mainConstructor);
+        }
     };
 
     ClassNode.prototype.onExecute = function () {
@@ -67,7 +68,6 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         sharedBuffer.addImport(NodeInfos['import']);
     };
 
-    console.log(`Je créé ${path + NodeInfos["name"]}`);
     LiteGraph.registerNodeType(path + NodeInfos["name"], ClassNode);
 };
 export default createClassNode

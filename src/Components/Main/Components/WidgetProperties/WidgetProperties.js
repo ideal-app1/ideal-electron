@@ -50,9 +50,6 @@ class WidgetProperties extends React.Component {
 
     handleSelect = id => {
         const widget = Phones.phoneList[Main.selection].current.findWidgetByID(id);
-        console.log(Phones.phoneList);
-        console.log(id);
-        console.log(Main.selection);
         if (!widget)
             return;
         this.setState({ widget: widget })
@@ -115,8 +112,6 @@ class WidgetProperties extends React.Component {
                             color="primary"
                             onClick={() => {
 
-                                console.log(`PUSH `);
-                                console.log(this.state.widget)
                                 history.push({
                                     pathname: '/codelink/' + this.state.widget._id,
                                     state: {
