@@ -259,6 +259,10 @@ class Phone extends React.Component {
         return (
             <Fragment>
                 <div className={"phone"}>
+                    <div className={"notch"}>
+                        <i>Speaker</i>
+                        <b>Camera</b>
+                    </div>
                     <Layout
                         disable={this.props.disable}
                         myId={this.props.myId}
