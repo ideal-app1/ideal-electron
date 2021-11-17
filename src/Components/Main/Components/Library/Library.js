@@ -223,6 +223,24 @@ export const Library = () => {
                 size: defaultProperties.size(200, 200)
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image
+        },
+        navbar: {
+            _id: uuid(),
+            name: "Navbar",
+            codePathFile: "Navbar.dart",
+            properties: {
+                width: {
+                    value: 80,
+                    type: PropType.NUMFIELD,
+                    variableName: "_width",
+                },
+                height: {
+                    value: 40,
+                    type: PropType.NUMFIELD,
+                    variableName: "_height",
+                }
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Navbar
         }
     }
 

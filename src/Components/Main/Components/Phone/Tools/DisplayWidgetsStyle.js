@@ -2,7 +2,7 @@ import React from "react";
 
 class DisplayWidgetsStyle extends React.Component {
 
-    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
+    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image', Navbar: 'Navbar'};
 
     static Display = {
         'Column': (widget) => {
@@ -114,6 +114,14 @@ class DisplayWidgetsStyle extends React.Component {
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'contain'
                 }
+            };
+        },
+        'Navbar': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            return {
+                display: widget.properties.placeholder.value
             };
         },
     };
