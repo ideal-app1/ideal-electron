@@ -49,7 +49,7 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        const widget = Phones.phoneList[Main.selection].current.findWidgetByID(id);
+        const widget = Phones.phoneList[Main.selection].findWidgetByID(id);
         if (!widget)
             return;
         this.setState({ widget: widget })
@@ -62,7 +62,7 @@ class WidgetProperties extends React.Component {
     updateState = (prop, value) => {
         prop.value = value
         this.forceUpdate()
-        Phones.phoneList[Main.selection].current.forceUpdate()
+        Phones.phoneList[Main.selection].forceUpdateRef()
     }
 
     widgetPropType = (widget, prop) => {
