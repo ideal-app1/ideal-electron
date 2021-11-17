@@ -41,6 +41,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import StopIcon from '@material-ui/icons/Stop';
 import moveFiles from './Tools/MoveFiles';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
 import Phones from "../Phones/Phones";
@@ -271,8 +272,8 @@ export default function Menu(props) {
     }
 
     const hotReloadButton = () => {
-        console.log("Test Hot Reload");
-        Process.runHotReload();
+        console.log("Hot Reload");
+        //Process.runHotReload();
     }
 
     return (
@@ -291,13 +292,11 @@ export default function Menu(props) {
                             {runProjectButton()}
                         </Badge>
                     }/>
-                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={hotReloadButton}>
-                        Hot Reload
-                    </Button>
+                    <NavItem icon={<FlashOnIcon onClick={hotReloadButton}/>}/>
+                    <NavItem icon={stopProjectButton()}/>
                     <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         Settings
                     </Button>
-                    <NavItem icon={stopProjectButton()}/>
                     <MoreVertIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}/>
                     <UiMenu
                         id="simple-menu"

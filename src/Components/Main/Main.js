@@ -35,6 +35,14 @@ class Main extends React.Component {
     static selection = 0;
     static platform = window.navigator.platform;
 
+    componentDidMount() {
+        try {
+            new VersionHandler().versionCheck();
+        } catch (e) {
+            console.log('Version handler error', e);
+        }
+    }
+
     constructor(props) {
         super(props);
 
@@ -54,7 +62,6 @@ class Main extends React.Component {
             Main.FlutterSDK = data.FlutterSDK;
             console.log(`MainProject ${Main.MainProjectPath}`);
             Main.IdealDir = path;
-            new VersionHandler().versionCheck();
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');
             Main.IdealDir = Path.build(app.getPath('documents'), 'Ideal');
