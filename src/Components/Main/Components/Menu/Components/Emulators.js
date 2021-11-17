@@ -12,7 +12,7 @@ function Emulators() {
 
     const [emulators, setEmulators] = React.useState([]);
     const [devices, setDevices] = React.useState([]);
-    const [selectedPlatform, setSelectedPlatform] = React.useState('');
+    const [selectedPlatform, setSelectedPlatform] = React.useState(Main.FlutterDevice);
 
     const listPlatforms = (platform, setState, setDefault) => {
         Process.runScript(Main.FlutterSDK + " " + platform, (stdout) => {
@@ -25,8 +25,10 @@ function Emulators() {
                 platformList.push({ name: platformInfo[0], id: platformInfo[1] })
             }
             setState(platformList);
-            if (setDefault)
+            if (setDefault) {
                 setSelectedPlatform(platformList[0].id);
+                Main.FlutterDevice = platformList[0].id;
+            }
         });
     }
 
@@ -59,6 +61,7 @@ function Emulators() {
                 MenuProps={{className: 'emulator-list-menu'}}
                 onChange={event => {
                     setSelectedPlatform(event.target.value);
+                    Main.FlutterDevice = event.target.value;
                 }}>
                 <ListSubheader>Devices</ListSubheader>
                 {devices.map((x) => {
@@ -82,6 +85,7 @@ function Emulators() {
                     setEmulators([]);
                     setDevices([]);
                     setSelectedPlatform('');
+                    Main.FlutterDevice = '';
                     listPlatforms();
                 }}>
                     Refresh

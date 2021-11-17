@@ -13,7 +13,7 @@ class Process {
 
         console.log('mdr');
         console.log(options);
-        Process.exec.exec(command,  options, (err, stdout, stderr) => {
+        return Process.exec.exec(command,  options, (err, stdout, stderr) => {
             if (err) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);

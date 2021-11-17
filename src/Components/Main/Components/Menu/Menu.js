@@ -36,8 +36,11 @@ import BoltIcon from "../../../../../assets/icon.svg";
 import CogIcon from "./Assets/Icons/cog.svg";
 import PlusIcon from "./Assets/Icons/plus.svg";
 import ChevronIcon from "./Assets/Icons/chevron.svg";
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import StopIcon from '@material-ui/icons/Stop';
 import moveFiles from './Tools/MoveFiles';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import BufferSingleton from '../../../CodeLink/CodeLinkParsing/BufferSingleton';
 import VersionHandler from '../../../../utils/VersionHandler';
 import Phones from "../Phones/Phones";
@@ -52,7 +55,7 @@ import TemporaryFile from '../../../../utils/TemporaryFile';
 //TODO renommer cette class
 export default function Menu(props) {
 
-    const [run, setRun] = React.useState('stopped');
+    const [run, setRun] = React.useState({state: 'stopped', process: null});
 
     const handleRunState = (state) => {
         setRun(state);
@@ -204,9 +207,9 @@ export default function Menu(props) {
         else
             Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {
                 if (jsonCode.view.length > 0) {
-                    handleRunState('running');
-                    // TODO run with -d for selected devices
-                    Process.runScript(Main.FlutterSDK + " run ", null, {cwd: Main.MainProjectPath});
+                    const runOnDevice = Main.FlutterDevice ? " -d " + Main.FlutterDevice : '';
+                    const process = Process.runScript(Main.FlutterSDK + " run" + runOnDevice, null, {cwd: Main.MainProjectPath});
+                    handleRunState({state: 'running', process: process});
                 }
             });
     };
@@ -215,7 +218,7 @@ export default function Menu(props) {
         if (!Main.fs.existsSync(Main.MainProjectPath))
             return;
 
-        handleRunState('building');
+        handleRunState({ ...run, state: 'building' });
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         const data = generateData(jsonCode);
 
@@ -246,11 +249,25 @@ export default function Menu(props) {
 
     const runProjectButton = () => {
         const states = {
-            stopped: <ChevronIcon onClick={runProject} />,
+            stopped: <PlayArrowIcon onClick={runProject} />,
             building: <RefreshIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
             running: <RefreshIcon onClick={runProject} />
         }
-        return states[run];
+        return states[run.state];
+    }
+
+    const stopProject = () => {
+        run.process.kill()
+        handleRunState({ state: 'stopped', process: null });
+    }
+
+    const stopProjectButton = () => {
+        const states = {
+            stopped: <StopIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            building: <StopIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            running: <StopIcon style={{fill: '#e35c4c'}} onClick={stopProject}/>
+        }
+        return states[run.state];
     }
 
     return (
@@ -265,13 +282,12 @@ export default function Menu(props) {
                     <NavItem icon={<PlusIcon onClick={newProject}/>}/>
                     <Emulators/>
                     <NavItem icon={
-                        <Badge color={'primary'} variant="dot" invisible={run === 'stopped'}>
+                        <Badge color={'primary'} variant="dot" invisible={run.state === 'stopped'}>
                             {runProjectButton()}
                         </Badge>
                     }/>
-                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                        Settings
-                    </Button>
+                    <NavItem icon={stopProjectButton()}/>
+                    <MoreVertIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}/>
                     <UiMenu
                         id="simple-menu"
                         anchorEl={anchorEl}
