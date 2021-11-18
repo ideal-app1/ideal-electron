@@ -60,6 +60,8 @@ function Emulators() {
                 variant={'outlined'}
                 MenuProps={{className: 'emulator-list-menu'}}
                 onChange={event => {
+                    if (!event.target.value || emulators.find(x => x.name === event.target.value))
+                        return;
                     setSelectedPlatform(event.target.value);
                     Main.FlutterDevice = event.target.value;
                 }}>

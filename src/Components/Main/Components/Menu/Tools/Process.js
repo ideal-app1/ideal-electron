@@ -27,6 +27,14 @@ class Process {
             }
         },);
     }
+
+    static runScriptBySpawn(command, args = [], options = {}) {
+        const process = Process.exec.spawn(command, args,  options);
+        process.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+        return process;
+    }
 }
 
 export default Process

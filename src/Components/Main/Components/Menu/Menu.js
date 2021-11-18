@@ -52,6 +52,7 @@ import DependenciesHandler from '../../../../utils/DependenciesHandler';
 import IdealLogo from "../../../../../assets/icon.png";
 import Emulators from './Components/Emulators';
 import TemporaryFile from '../../../../utils/TemporaryFile';
+import { keyCommands } from './Tools/FlutterCmd';
 
 //TODO renommer cette class
 export default function Menu(props) {
@@ -200,7 +201,7 @@ export default function Menu(props) {
         return data;
     }
 
-    const execCodeHandler = (jsonCode, data) => {
+    const execCodeHandler = (jsonCode, data, keyCommand) => {
         moveFiles(jsonCode.codeLinkUserPath, Path.build(Main.MainProjectPath, 'lib', 'codelink', 'user'), 'dart');
         moveFiles(Path.build(Main.IdealDir, 'codelink', 'FunctionBlocks'), Path.build(Main.MainProjectPath, 'lib', 'codelink', 'src'), 'dart')
         if (Main.debug)
@@ -208,14 +209,19 @@ export default function Menu(props) {
         else
             Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {
                 if (jsonCode.view.length > 0) {
-                    const runOnDevice = Main.FlutterDevice ? " -d " + Main.FlutterDevice : '';
-                    const process = Process.runScript(Main.FlutterSDK + " run" + runOnDevice, null, {cwd: Main.MainProjectPath});
+                    if (run.process) {
+                        run.process.stdin.write(keyCommand + '\n');
+                        handleRunState({...run, state: 'running'});
+                        return;
+                    }
+                    const runOnDevice = Main.FlutterDevice ? ["run", "-d", Main.FlutterDevice] : ['run'];
+                    const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath});
                     handleRunState({state: 'running', process: process});
                 }
             });
     };
 
-    const runProject = (_) => {
+    const runProject = (keyCommand) => {
         if (!Main.fs.existsSync(Main.MainProjectPath))
             return;
 
@@ -223,7 +229,7 @@ export default function Menu(props) {
         const jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
         const data = generateData(jsonCode);
 
-        execCodeHandler(jsonCode, data);
+        execCodeHandler(jsonCode, data, keyCommand);
     };
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -252,7 +258,7 @@ export default function Menu(props) {
         const states = {
             stopped: <PlayArrowIcon onClick={runProject} />,
             building: <RefreshIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
-            running: <RefreshIcon onClick={runProject} />
+            running: <RefreshIcon onClick={() => {runProject()}} />
         }
         return states[run.state];
     }
@@ -272,8 +278,13 @@ export default function Menu(props) {
     }
 
     const hotReloadButton = () => {
-        console.log("Hot Reload");
-        //Process.runHotReload();
+        const states = {
+            stopped: <FlashOnIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            building: <FlashOnIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            running: <FlashOnIcon style={{fill: '#fad010'}} onClick={() => {
+                runProject(keyCommands.HOT_RESTART)}}/>
+        }
+        return states[run.state];
     }
 
     return (
@@ -292,11 +303,8 @@ export default function Menu(props) {
                             {runProjectButton()}
                         </Badge>
                     }/>
-                    <NavItem icon={<FlashOnIcon onClick={hotReloadButton}/>}/>
+                    <NavItem icon={hotReloadButton()}/>
                     <NavItem icon={stopProjectButton()}/>
-                    <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                        Settings
-                    </Button>
                     <MoreVertIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}/>
                     <UiMenu
                         id="simple-menu"
