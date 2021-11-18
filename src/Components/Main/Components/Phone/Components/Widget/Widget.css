@@ -28,6 +28,9 @@
     border: #1A1A1A 1px solid;
 }
 
+.widget.checkbox {
+}
+
 .widget.empty {
     background: none;
 }

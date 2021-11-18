@@ -29,6 +29,10 @@
     background-image: linear-gradient(mediumpurple, mediumpurple) !important;
 }
 
+.library-card {
+    background-image: linear-gradient(red, red) !important;
+}
+
 .library-item.item-layout {
     box-sizing: border-box;
     background-size: 12px 100%;

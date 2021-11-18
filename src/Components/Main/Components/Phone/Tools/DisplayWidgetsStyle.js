@@ -1,8 +1,22 @@
 import React from "react";
+import * as Icons from '@material-ui/icons/';
 
 class DisplayWidgetsStyle extends React.Component {
 
-    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
+    static DisplayKeys = {
+        Column: 'Column',
+        Row: 'Row',
+        Center: 'Center',
+        Stack: 'Stack',
+        Padding: 'Padding',
+        Card: 'Card',
+        Button: 'Button',
+        Text: 'Text',
+        Textfield: 'Textfield',
+        Image: 'Image',
+        Checkbox: 'Checkbox',
+        Icon: 'Icon'
+    };
 
     static Display = {
         'Column': (widget) => {
@@ -69,6 +83,17 @@ class DisplayWidgetsStyle extends React.Component {
                 }
             };
         },
+        'Card': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            return {
+                style: {
+                    height: widget.properties.height.value,
+                    width: widget.properties.width.value,
+                }
+            };
+        },
         'Button': (widget) => {
             if (widget.properties === undefined) {
                 return {};
@@ -116,9 +141,42 @@ class DisplayWidgetsStyle extends React.Component {
                 }
             };
         },
+        'Checkbox': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            return {
+                display:
+                    <div>
+                        <input
+                            readOnly={true}
+                            id={widget._id}
+                            name={widget._id}
+                            type={'checkbox'}
+                            checked={widget.properties.checked.value}
+                        />
+                        <label for={widget._id}> {widget.properties.data.value}</label>
+                    </div>,
+                style: {
+                    fontSize: widget.properties.fontSize.value + "px",
+                },
+            };
+        },
+        'Icon': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            const icon = widget.properties.icon.items.find(p => p.value === widget.properties.icon.value);
+            const color = widget.properties.color.items.find(p => p.value === widget.properties.color.value);
+
+            return {
+                display: React.createElement(Icons[icon.web], {
+                    className: icon.web,
+                    style: {fontSize: widget.properties.size.value, color: color.web}
+                })
+            }
+        },
     };
-
-
 }
 
 export default DisplayWidgetsStyle

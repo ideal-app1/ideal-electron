@@ -13,7 +13,6 @@ import VersionHandler from '../../utils/VersionHandler';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { Grid } from '@material-ui/core';
-import DependenciesHandler from "../../utils/DependenciesHandler";
 
 const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');

@@ -121,6 +121,22 @@ export const Library = () => {
                 },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Padding
+        },
+        card: {
+            _id: uuid(),
+            name: "card",
+            codePathFile: "Card.dart",
+            properties: {
+                height: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+                width: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Card
         }
     }
 
@@ -223,6 +239,65 @@ export const Library = () => {
                 size: defaultProperties.size(200, 200)
             },
             display: DisplayWidgetsStyle.DisplayKeys.Image
+        },
+        checkbox: {
+            _id: uuid(),
+            name: "Checkbox",
+            codePathFile: "Checkbox.dart",
+            properties: {
+                checked: {
+                    value: false,
+                    type: PropType.CHECKBOX,
+                    variableName: "_checked",
+                },
+                data: {
+                    value: "text",
+                    type: PropType.TEXTFIELD,
+                    variableName: "_data",
+                },
+                fontSize: {
+                    value: 15,
+                    type: PropType.NUMFIELD,
+                    variableName: "_size",
+                }
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Checkbox
+        },
+        icon: {
+            _id: uuid(),
+            name: "Icon",
+            codePathFile: "Icon.dart",
+            properties: {
+                icon: {
+                    value: 'Icons.favorite',
+                    type: PropType.COMBOBOX,
+                    variableName: "_icon",
+                    items: [
+                        {name: 'favorite', value: 'Icons.favorite', web: 'Favorite'},
+                        {name: 'audiotrack', value: 'Icons.audiotrack', web: 'Audiotrack'},
+                        {name: 'beach_access', value: 'Icons.beach_access', web: 'BeachAccess'},
+                    ]
+                },
+                color: {
+                    value: "Colors.red",
+                    type: PropType.COMBOBOX,
+                    variableName: "_color",
+                    items: [
+                        {name: 'red', value: 'Colors.red', web: 'red'},
+                        {name: 'blue', value: 'Colors.blue', web: 'blue'},
+                        {name: 'green', value: 'Colors.green', web: 'green'},
+                        {name: 'pink', value: 'Colors.pink', web: 'pink'},
+                        {name: 'grey', value: 'Colors.grey', web: 'grey'},
+                        {name: 'yellow', value: 'Colors.yellow', web: 'yellow'},
+                    ]
+                },
+                size: {
+                    value: 25,
+                    type: PropType.NUMFIELD,
+                    variableName: "_size",
+                }
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Icon,
         }
     }
 

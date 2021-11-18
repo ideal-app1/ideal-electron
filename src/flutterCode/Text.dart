@@ -1,5 +1,3 @@
-
-
 var ideal_text;
 
 var _data;
