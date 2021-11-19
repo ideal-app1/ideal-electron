@@ -64,19 +64,19 @@ function CodeLink(props) {
 
         widgetList = []
 
-        Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
-            widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
-        );
+        Phones.phoneList[Main.selection]?.getWidgetIdList().forEach(widget =>
+            widgetList.push(Phones.phoneList[Main.selection].findWidgetByID(widget._id))
+         );
 
         if (hasBeenCalled) return;
         const parsed = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
-        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList(), parsed);
+        loadOtherWidgets(Phones.phoneList[Main.selection].getWidgetIdList(), parsed);
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
         }
 
-        widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
+        widget = Phones.phoneList[Main.selection].findWidgetByID(props.match.params.id);
 
         setHasBeenCalled(true);
     };

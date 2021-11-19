@@ -25,9 +25,9 @@ const Layout = props => {
             if (item.source === WidgetType.PHONE)
                 tmpItem._id = item._id
             else
-                tmpItem._id = Phones.phoneList[Main.selection].current.addToWidgetList(item)
+                tmpItem._id = Phones.phoneList[Main.selection].addToWidgetList(item)
             props.list.push(tmpItem)
-            Phones.phoneList[Main.selection].current.forceUpdate()
+            Phones.phoneList[Main.selection].forceUpdateRef()
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -57,7 +57,7 @@ const Layout = props => {
             {
                 props.list.map(id => {
 
-                    const widget = Phones.phoneList[props.myId].current.findWidgetByID(id._id)
+                    const widget = Phones.phoneList[props.myId].findWidgetByID(id._id)
 
                     if (widget && widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);

@@ -158,7 +158,7 @@ export default function Menu(props) {
     const getCodeHandlerFormat = (jsonCodeView, index) => {
         console.log(jsonCodeView)
         const path = Path.build(Main.MainProjectPath, 'lib', 'Main.dart')
-        const construct = Phones.phoneList[index].current.deepConstruct(jsonCodeView.idList.list[0]);
+        const construct = Phones.phoneList[index].deepConstruct(jsonCodeView.idList.list[0]);
 
         return FlutterManager.formatDragAndDropToCodeHandler(construct, path);
     }
@@ -251,7 +251,7 @@ export default function Menu(props) {
             ProjectPathAutoSaved: Main.MainProjectPath,
             FlutterSDK: Main.FlutterSDK
         }, Path.build(Main.IdealDir, "config.json"));
-        Phones.phoneList[Main.selection].current.load();
+        Phones.phoneList[Main.selection].load();
     }
 
     const runProjectButton = () => {
