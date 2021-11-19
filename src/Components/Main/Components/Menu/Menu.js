@@ -215,6 +215,7 @@ export default function Menu(props) {
                         return;
                     }
                     const runOnDevice = Main.FlutterDevice ? ["run", "-d", Main.FlutterDevice] : ['run'];
+                    console.log('run ? ', runOnDevice)
                     const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath});
                     handleRunState({state: 'running', process: process});
                 }

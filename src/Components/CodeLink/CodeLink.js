@@ -25,6 +25,7 @@ import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper'
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
 import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
+import TemporaryFile from '../../utils/TemporaryFile';
 
 function CodeLink(props) {
 
@@ -133,6 +134,7 @@ function CodeLink(props) {
     };
 
     const initNewFile =  (variableName, className, _) => {
+        CodeLink.deserializationDone = true;
         loadEverything(variableName, className, (className, flutterJson) => {
             CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
         })
@@ -210,7 +212,7 @@ function CodeLink(props) {
         if (!codeLinkBlocks)
             return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const indexerArguments = {
+        let indexerArguments = {
             'requestType': 'index',
             'parameters': {
                 'pathToIndex': codeLinkBlocks.dir,
@@ -219,8 +221,10 @@ function CodeLink(props) {
             }
         };
 
+        indexerArguments = TemporaryFile.createSync(JSON.stringify(indexerArguments));
+
         const command = Main.debug ? 'dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' :  'dart pub global run ideal_dart_code_handler ';
-        Process.runScript(command +  JSON.stringify(indexerArguments), () => {
+        Process.runScript(command +  indexerArguments, () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
