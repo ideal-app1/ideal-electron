@@ -44,6 +44,7 @@ class Phone extends React.Component {
     }
 
     render() {
+        console.log(Phones.phoneList[this.props.myId].getData());
         return (
             <Fragment>
                 <div className={"phone"}>

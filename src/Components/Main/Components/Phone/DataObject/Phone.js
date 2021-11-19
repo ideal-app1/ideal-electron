@@ -41,7 +41,9 @@ export default class Phone {
     }
 
     setData(data) {
-        this.data = data;
+        if (data) {
+            this.data = data;
+        }
         return this;
     }
 
@@ -120,7 +122,8 @@ export default class Phone {
             _id: id || uuid(),
             source: WidgetType.PHONE
         }
-        item.index = this.state.widgetList.filter(w => w.name === widget.name).lastItem?.index + 1 || 0;
+        console.log(this.data.widgetList);
+        item.index = this.data.widgetList.filter(w => w.name === widget.name).lastItem?.index + 1 || 0;
         item.properties.name.value += item.index;
         this.data.widgetList.push(item);
         return item._id;
