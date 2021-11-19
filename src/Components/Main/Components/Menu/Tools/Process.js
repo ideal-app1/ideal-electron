@@ -13,7 +13,7 @@ class Process {
 
         console.log('mdr');
         console.log(options);
-        Process.exec.exec(command,  options, (err, stdout, stderr) => {
+        return Process.exec.exec(command,  options, (err, stdout, stderr) => {
             if (err) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
@@ -26,6 +26,14 @@ class Process {
                 callback(stdout, stderr);
             }
         },);
+    }
+
+    static runScriptBySpawn(command, args = [], options = {}) {
+        const process = Process.exec.spawn(command, args,  options);
+        process.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+        return process;
     }
 }
 

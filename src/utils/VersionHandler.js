@@ -33,10 +33,10 @@ class VersionHandler {
 
   scriptThen = (command, toUpdateList) => {
     console.log('test');
-    this.dialog.current.createDialog(<Loading/>);
+    //this.dialog.current.createDialog(<Loading/>);
     Process.runScript(command, () => {
       this.update(toUpdateList);
-      this.dialog.current.unsetDialog();
+      //this.dialog.current.unsetDialog();
     });
   };
 
