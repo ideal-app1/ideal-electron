@@ -207,8 +207,6 @@ class FlutterManager {
 
         return code;
     }
-
-
 }
 
 export default FlutterManager
