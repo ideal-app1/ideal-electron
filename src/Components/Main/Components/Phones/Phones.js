@@ -31,9 +31,10 @@ class Phones extends React.Component {
             let jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
             console.log(jsonCode);
 
-            jsonCode.view.map((phone, key) => {
+            jsonCode.view.forEach((phone, key) => {
                 if (!Phones.phoneList[key]) {
                     Phones.phoneList.push(new PhoneDataObject());
+                    Phones.loadByIndex(key);
                     this.setState({phoneListLength: Phones.phoneList.length});
                 }
             });
