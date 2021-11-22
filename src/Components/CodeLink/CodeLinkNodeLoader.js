@@ -109,7 +109,7 @@ const CodeLinkNodeLoader = {
       return;
     }
     mainWidget = CodeLinkNodeLoader.createMainWidget(widget);
-    //CodeLinkNodeLoader.createAttributes(mainWidget, constructor, mainWidget.pos);
+    //CodeLinkNodeLoader.createAttributes(mainWidget, constructor,);
   }
 };
 

@@ -16,35 +16,35 @@ class MenuFunctions {
 
     copy = (props) => {
         const copy = clone(props.widget);
-        Phones.phoneList[Main.selection].current.setState({clipboard: {widget: copy}});
+        Phones.phoneList[Main.selection].getRef().current.setState({clipboard: {widget: copy}});
     }
 
     paste = (props) => {
-        let clipboard = Phones.phoneList[Main.selection].current.state.clipboard;
+        let clipboard = Phones.phoneList[Main.selection].getData().clipboard;
         if (!clipboard.widget)
             return;
         let id = clipboard.widget._id;
-        const copy = Phones.phoneList[Main.selection].current.findByID(id);
-        const dest = Phones.phoneList[Main.selection].current.findByID(props.widget._id);
-        const widget = Phones.phoneList[Main.selection].current.findWidgetByID(id);
+        const copy = Phones.phoneList[Main.selection].findByID(id);
+        const dest = Phones.phoneList[Main.selection].findByID(props.widget._id);
+        const widget = Phones.phoneList[Main.selection].findWidgetByID(id);
         if (!widget)
-            Phones.phoneList[Main.selection].current.addToWidgetList(clipboard.widget, id);
+            Phones.phoneList[Main.selection].addToWidgetList(clipboard.widget, id);
         if (copy)
-            id = Phones.phoneList[Main.selection].current.addToWidgetList(clipboard.widget);
+            id = Phones.phoneList[Main.selection].addToWidgetList(clipboard.widget);
         if (props.widget.group === 'layout')
             dest.child.list.push({_id: id, list: []})
         else
-            Phones.phoneList[Main.selection].current.moveByID(id, props.widget._id);
+            Phones.phoneList[Main.selection].moveByID(id, props.widget._id);
 
-        Phones.phoneList[Main.selection].current.forceUpdate();
+        Phones.phoneList[Main.selection].forceUpdateRef();
     }
 
     remove = (props) => {
-        const widgetList = Phones.phoneList[Main.selection].current.flattenByID(props.widget._id);
-        Phones.phoneList[Main.selection].current.removeWidgetByID(props.widget._id)
-        widgetList.forEach(widget => Phones.phoneList[Main.selection].current.removeWidgetByID(widget));
-        Phones.phoneList[Main.selection].current.removeByID(props.widget._id);
-        Phones.phoneList[Main.selection].current.forceUpdate();
+        const widgetList = Phones.phoneList[Main.selection].flattenByID(props.widget._id);
+        Phones.phoneList[Main.selection].removeWidgetByID(props.widget._id)
+        widgetList.forEach(widget => Phones.phoneList[Main.selection].removeWidgetByID(widget));
+        Phones.phoneList[Main.selection].removeByID(props.widget._id);
+        Phones.phoneList[Main.selection].forceUpdateRef();
         WidgetProperties.getInstance().current.unsetState();
     }
 }
