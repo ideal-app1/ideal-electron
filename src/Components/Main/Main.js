@@ -29,7 +29,7 @@ class Main extends React.Component {
     static CurrentView = 'Main';
     static FlutterSDK = "";
     static FlutterRoot = '';
-    static FlutterDevice = '';
+    static FlutterDevice = 'none';
     static fs = window.require('fs');
     static debug = false;
     static selection = 0;
