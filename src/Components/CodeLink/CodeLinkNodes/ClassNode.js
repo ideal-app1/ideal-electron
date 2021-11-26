@@ -58,16 +58,17 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         // Prevent deserialization from creating two new attributes each time
         // CodeLink is opened.
         if (CodeLink.deserializationDone) {
-            CodeLinkNodeLoader.createAttributes(this, mainConstructor);
+            CodeLinkNodeLoader.createAttributes(this, varName, mainConstructor);
         }
     };
-
+    //View0/TextButton1/TextButton constructor's attributes/onPressed
+    //View0/TextButton1/TextButton constructor's attributes/onPressed
     ClassNode.prototype.onExecute = function () {
 
         this.setOutputData(0, this);
         sharedBuffer.addImport(NodeInfos['import']);
     };
-
-    LiteGraph.registerNodeType(path + NodeInfos["name"], ClassNode);
+    console.log(`Creation of ${path + NodeInfos["name"]}`);
+    LiteGraph.registerNodeType(path, ClassNode);
 };
 export default createClassNode

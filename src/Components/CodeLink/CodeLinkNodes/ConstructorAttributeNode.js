@@ -63,6 +63,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
     };
+    console.log(`Creation of attribute - ${path}${currentClass} constructor's attributes/${param["name"]}`);
     LiteGraph.registerNodeType(`${path}${currentClass} constructor's attributes/${param["name"]}`, ConstructorAttributeNode);
 };
 export default createConstructorAttributeNode

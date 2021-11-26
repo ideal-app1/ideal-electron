@@ -49,14 +49,23 @@ function CodeLink(props) {
       }
     };
 
+   /* const loadOtherWidgets = (parsed) => {
+        const firstWidget = Phones.phoneList[Main.selection].getWidgetIdList()?.[0]?.id;
+
+        //Failed to load widgets
+        if (!firstWidget)
+            return;
+        loadAWidget(firstWidget, parsed)
+    }*/
+
     // Will be enabled when the reworking of the View system will works
-    const loadOtherWidgets = (widgets, parsed) => {
-        return;
-        widgets.forEach((widget) => {
-            console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-            CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name, widget.name, parsed, widget._id, `View0/`)
-            loadOtherWidgets(widget.list, parsed);
-        });
+    const loadOtherWidgets = (data, parsed) => {
+
+            data.widgetList.forEach((widget) => {
+                console.log(widget)
+                CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name.value, widget.name, parsed, widget._id, `View0/`)
+
+            })
 
     }
 
@@ -70,8 +79,7 @@ function CodeLink(props) {
          );
 
         if (hasBeenCalled) return;
-        const parsed = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
-        loadOtherWidgets(Phones.phoneList[Main.selection].getWidgetIdList(), parsed);
+
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -116,6 +124,7 @@ function CodeLink(props) {
         });
     }
 
+
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
         const flutterJson = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
@@ -124,7 +133,9 @@ function CodeLink(props) {
         if (dataJson) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
-        CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+        //CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+
+        loadOtherWidgets(Phones.phoneList[Main.selection].getData(), flutterJson);
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
@@ -136,7 +147,7 @@ function CodeLink(props) {
     const initNewFile =  (variableName, className, _) => {
         CodeLink.deserializationDone = true;
         loadEverything(variableName, className, (className, flutterJson) => {
-            CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
+            CodeLinkNodeLoader.addMainWidgetToView(className, variableName, flutterJson["classes"]);
         })
     };
 
