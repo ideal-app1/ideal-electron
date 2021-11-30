@@ -98,6 +98,7 @@ const createFunctionNode = (func, LCanvas, path) => {
 
         for (let i = 1; i <= nbOfInputs ; i++) {
             node = this.getInputData(i);
+            print(`Input ? ${node}`)
             if (node === undefined) {
                 continue;
             }

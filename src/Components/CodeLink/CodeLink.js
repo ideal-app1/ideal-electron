@@ -243,6 +243,9 @@ function CodeLink(props) {
                     <Grid container item className={"CodeLink-bar-item"}>
                         <Grid item className={"CodeLink-bar-item"}>
                             <Box>
+                                <Button variant="contained" color="primary" onClick={saveCodeLinkData}>
+                                    Salut
+                                </Button>
                                 <Button variant="contained" color="primary" onClick={() => {
                                     saveCodeLinkData();
                                 }}>
