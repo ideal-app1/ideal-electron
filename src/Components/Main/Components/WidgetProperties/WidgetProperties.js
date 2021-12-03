@@ -73,6 +73,7 @@ class WidgetProperties extends React.Component {
         }
         let propMap = {
             [PropType.TEXTFIELD]: <PropTextField {...props}/>,
+            [PropType.COLOR]: <PropTextField {...props}/>,
             [PropType.NUMFIELD]: <PropNumField {...props}/>,
             [PropType.CHECKBOX]: <PropCheckBox {...props}/>,
             [PropType.COMBOBOX]: <PropComboBox {...props}/>,

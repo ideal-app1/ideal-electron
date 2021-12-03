@@ -26,6 +26,7 @@ class Phone extends React.Component {
 
     componentDidMount() {
         Phones.loadByIndex(this.props.myId);
+        this.forceUpdate();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -44,7 +45,6 @@ class Phone extends React.Component {
     }
 
     render() {
-        console.log(Phones.phoneList[this.props.myId].getData());
         return (
             <Fragment>
                 <div className={"phone"}>

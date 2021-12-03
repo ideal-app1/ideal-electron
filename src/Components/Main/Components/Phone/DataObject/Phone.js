@@ -117,12 +117,12 @@ export default class Phone {
     }
 
     addToWidgetList = (widget, id) => {
+        console.log(widget);
         const item = {
             ...clone(widget),
             _id: id || uuid(),
             source: WidgetType.PHONE
         }
-        console.log(this.data.widgetList);
         item.index = this.data.widgetList.filter(w => w.name === widget.name).lastItem?.index + 1 || 0;
         item.properties.name.value += item.index;
         this.data.widgetList.push(item);

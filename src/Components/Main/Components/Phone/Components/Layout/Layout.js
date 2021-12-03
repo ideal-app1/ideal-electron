@@ -34,7 +34,6 @@ const Layout = props => {
             isOverCurrent: monitor.isOver({ shallow: true })
         }),
     });
-    console.log(props);
     return (
         <Grid
             container

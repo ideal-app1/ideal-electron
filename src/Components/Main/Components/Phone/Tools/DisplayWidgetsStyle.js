@@ -2,7 +2,7 @@ import React from "react";
 
 class DisplayWidgetsStyle extends React.Component {
 
-    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
+    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image', Container: 'Container', Positioned: 'Positioned'};
 
     static Display = {
         'Column': (widget) => {
@@ -55,7 +55,39 @@ class DisplayWidgetsStyle extends React.Component {
                 style: {
                     height: props.height.value,
                     width: props.width.value,
-                    alignItems: align.style
+                    alignItems: align.style,
+                    position: "relative",
+                }
+            };
+        },
+        'Positioned': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            const props = widget.properties;
+            return {
+                style: {
+                    height: "100%",
+                    zIndex:0,
+                    top: props.top.value,
+                    left: props.left.value,
+                    bottom: props.left.value,
+                    right: props.right.value,
+                }
+            };
+        },
+        'Container': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            const props = widget.properties;
+            return {
+                style: {
+                    zIndex: 1,
+                    height: typeof props.height.value === 'string' && props.height.value.slice(-1) === '%' ? props.height.value : props.height.value + "px",
+                    width: typeof props.width.value === 'string' && props.width.value && props.width.value.slice(-1) === '%' ? props.width.value: props.width.value + "px",
+                    backgroundColor: "#" + widget.properties.color.value,
+                    borderRadius: widget.properties.topLeft.value + "px " + widget.properties.topRight.value + "px " + widget.properties.bottomRight.value + "px " + widget.properties.bottomLeft.value + "px"
                 }
             };
         },
