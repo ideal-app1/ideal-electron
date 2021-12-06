@@ -1,7 +1,4 @@
 .phone {
-    position: relative;
-    margin: 40px auto;
-    box-shadow: 0px 0px 0px 11px #1f1f1f, 0px 0px 0px 13px #191919, 0px 0px 0px 20px #111;
     border: 5px solid #111111;
     background-color: white;
     border-radius: 50px;
@@ -9,8 +6,9 @@
     width: 375px !important;
     align-content: center;
     overflow: auto;
+}
 
-&:before,&:after {
+/*&:before,&:after {
               content: '';
               position: absolute;
               left: 50%;
@@ -60,7 +58,7 @@ b {
     background-color: #101010;
     border-radius: 12px;
     box-shadow: inset 0px -3px 2px 0px rgba(256, 256, 256, 0.2);
-}
+}*/
 
 .phone-h {
     height: 822px !important;

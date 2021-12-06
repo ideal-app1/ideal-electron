@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Process from '../Tools/Process';
 import Main from '../../../Main';
@@ -65,6 +65,9 @@ function Emulators() {
                     setSelectedPlatform(event.target.value);
                     Main.FlutterDevice = event.target.value;
                 }}>
+                <MenuItem value={'none'} style={{display: 'none'}} disabled>
+                    No devices
+                </MenuItem>
                 <ListSubheader>Devices</ListSubheader>
                 {devices.map((x) => {
                     return <MenuItem key={x.id} value={x.id}>{x.name}</MenuItem>
@@ -86,8 +89,8 @@ function Emulators() {
                 <Button onClick={() => {
                     setEmulators([]);
                     setDevices([]);
-                    setSelectedPlatform('');
-                    Main.FlutterDevice = '';
+                    setSelectedPlatform('none');
+                    Main.FlutterDevice = 'none';
                     listPlatforms();
                 }}>
                     Refresh
