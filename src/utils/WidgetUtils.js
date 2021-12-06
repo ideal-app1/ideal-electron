@@ -28,7 +28,9 @@ export const LayoutType = {
 }
 
 export const TypeToGetValue = {
-    'textfield': (value, variableName) => {return "\"" + value + "\"";},
+    'textfield': (value, variableName) => {
+        return "\"" + value + "\"";
+    },
     'numfield': (value, variableName) => {
         if (!value) {
             return null;
@@ -39,10 +41,20 @@ export const TypeToGetValue = {
             return "MediaQuery.of(context).size." + variableName.substring(1) + " * " + number / 100;
         }
         return value + ".0";
-        },
-    'check': (value, variableName) => {return (value);},
-    'combo': (value, variableName) => {return value;},
-    'file': (value, variableName) => {return value;},
-    'hidden' : (value, variableName) => {return value;},
-    'color' : (value, variableName) => {return "0xFF" + value;},
+    },
+    'check': (value, variableName) => {
+        return (value);
+    },
+    'combo': (value, variableName) => {
+        return value;
+    },
+    'file': (value, variableName) => {
+        return value;
+    },
+    'hidden': (value, variableName) => {
+        return value;
+    },
+    'color': (value, variableName) => {
+        return "0xFF" + value;
+    },
 }

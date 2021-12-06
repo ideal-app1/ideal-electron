@@ -140,7 +140,7 @@ export const Library = () => {
                 },
             },
             layoutType: LayoutType.CHILD,
-            display: DisplayWidgetsStyle.DisplayKeys.Center
+            display: DisplayWidgetsStyle.DisplayKeys.Positioned
         },
         container: {
             _id: uuid(),
