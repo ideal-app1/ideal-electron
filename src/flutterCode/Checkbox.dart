@@ -1,19 +1,19 @@
 var ideal_checkbox;
 
-var _checked;
 var _data;
 var _size;
+var _checked;
 
 /* IDEAL_INITIALISATION_START */
 ideal_checkbox = new Row(
   children: [
     Checkbox(
       checkColor: Colors.white,
-      fillColor: Colors.blue,
+      activeColor: Colors.blue,
       value: _checked,
-      onChanged: (value) {
+      onChanged: (bool? value) {
         setState(() {
-          _checked = !_checked;
+          _checked = value!;
         });
       },
     ),

@@ -122,10 +122,10 @@ export const Library = () => {
             },
             display: DisplayWidgetsStyle.DisplayKeys.Padding
         },
-        card: {
+        carouselslider: {
             _id: uuid(),
-            name: "card",
-            codePathFile: "Card.dart",
+            name: "CarouselSlider",
+            codePathFile: "CarouselSlider.dart",
             properties: {
                 height: {
                     value: 200,
@@ -136,7 +136,7 @@ export const Library = () => {
                     type: PropType.NUMFIELD
                 },
             },
-            display: DisplayWidgetsStyle.DisplayKeys.Card
+            display: DisplayWidgetsStyle.DisplayKeys.CarouselSlider
         }
     }
 
@@ -298,6 +298,22 @@ export const Library = () => {
                 }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Icon,
+        },
+        card: {
+            _id: uuid(),
+            name: "Card",
+            codePathFile: "Card.dart",
+            properties: {
+                height: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+                width: {
+                    value: 200,
+                    type: PropType.NUMFIELD
+                },
+            },
+            display: DisplayWidgetsStyle.DisplayKeys.Card
         }
     }
 
@@ -320,6 +336,7 @@ export const Library = () => {
         return (
             <Fragment key={group.name}>
                 <ListSubheader>{group.name}</ListSubheader>
+                <Grid className={"library-" + group.name}>
                 {
                     Object.values(group.widgets).map(widget =>
                     ( filterWidget(widget, searchQuery) ? (
@@ -343,6 +360,7 @@ export const Library = () => {
                     ) : null
                     ))
                 }
+                </Grid>
             </Fragment>
         )
     }

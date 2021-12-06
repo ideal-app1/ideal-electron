@@ -1,6 +1,4 @@
-
-
-var ideal_textField;
+var ideal_textfield;
 var _placeholder;
 
 /* IDEAL_INITIALISATION_START */

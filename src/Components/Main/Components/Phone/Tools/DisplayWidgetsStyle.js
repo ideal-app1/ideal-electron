@@ -9,13 +9,14 @@ class DisplayWidgetsStyle extends React.Component {
         Center: 'Center',
         Stack: 'Stack',
         Padding: 'Padding',
-        Card: 'Card',
+        CarouselSlider: 'CarouselSlider',
         Button: 'Button',
         Text: 'Text',
         Textfield: 'Textfield',
         Image: 'Image',
         Checkbox: 'Checkbox',
-        Icon: 'Icon'
+        Icon: 'Icon',
+        Card: 'Card',
     };
 
     static Display = {
@@ -83,7 +84,7 @@ class DisplayWidgetsStyle extends React.Component {
                 }
             };
         },
-        'Card': (widget) => {
+        'CarouselSlider': (widget) => {
             if (widget.properties === undefined) {
                 return {};
             }
@@ -167,14 +168,25 @@ class DisplayWidgetsStyle extends React.Component {
                 return {};
             }
             const icon = widget.properties.icon.items.find(p => p.value === widget.properties.icon.value);
-            const color = widget.properties.color.items.find(p => p.value === widget.properties.color.value);
+            const colore = widget.properties.color.items.find(p => p.value === widget.properties.color.value);
 
             return {
                 display: React.createElement(Icons[icon.web], {
                     className: icon.web,
-                    style: {fontSize: widget.properties.size.value, color: color.web}
+                    style: {fontSize: widget.properties.size.value, color: colore.web}
                 })
             }
+        },
+        'Card': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            return {
+                style: {
+                    height: widget.properties.height.value,
+                    width: widget.properties.width.value,
+                }
+            };
         },
     };
 }

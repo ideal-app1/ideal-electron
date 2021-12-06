@@ -20,3 +20,18 @@
     font-size: 15px;
     font-weight: 500;
 }
+
+.library-Materials {
+    overflow: auto;
+    max-height: 380px;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.library-Layouts {
+    overflow: auto;
+    max-height: 380px;
+    font-size: 15px;
+    font-weight: 500;
+}

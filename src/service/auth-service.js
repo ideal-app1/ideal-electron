@@ -1,6 +1,5 @@
-const {remote} = window.require("electron");
-const {session} = remote;
-const ses = session.fromPartition('persist:auth');
+const { session } = require('electron').remote
+const ses = session.fromPartition('persist:name')
 const axios = require("axios");
 
 let accessToken = null;

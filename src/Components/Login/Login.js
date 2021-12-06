@@ -104,14 +104,14 @@ export default function Login({setAuthenticated}) {
                         </Collapse>
                         <form onSubmit={handleSubmit} >
                             <label>
-                                <Grid container item justifyContent={"left"} direction={"row"}>
+                                <Grid container item direction={"row"}>
                                     <Email style={{fontSize: '1.5rem', marginRight: "1rem", marginTop: "18px"}} />
                                     <h4>Email</h4>
                                 </Grid>
                                 <input className={"login-input"} type="text" onChange={e => setEmail(e.target.value)} />
                             </label>
                             <label>
-                                <Grid container item justifyContent={"left"} direction={"row"}>
+                                <Grid container item direction={"row"}>
                                     <Lock style={{fontSize: '1.5rem', marginRight: "1rem", marginTop: "18px"}} />
                                     <h4>Password</h4>
                                 </Grid>
