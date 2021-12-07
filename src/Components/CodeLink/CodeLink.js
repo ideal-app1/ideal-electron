@@ -27,11 +27,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
 import TemporaryFile from '../../utils/TemporaryFile';
 
+
 function CodeLink(props) {
 
     let canvas = null;
     let graph = new LiteGraph.LGraph();
-    let Lcanvas = null;
+    let LCanvas = null;
     let widget = null;
     let widgetList = null;
 
@@ -128,8 +129,8 @@ function CodeLink(props) {
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
-        createCallbackWrapper(Lcanvas);
-        createForLoopNode(Lcanvas);
+        createCallbackWrapper(LCanvas);
+        createForLoopNode(LCanvas);
         afterLoad(className, flutterJson);
     };
 
@@ -167,8 +168,9 @@ function CodeLink(props) {
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
 
-        Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
-        CodeLinkNodeLoader.registerLCanvas(Lcanvas);
+        CodeLink.deserializationDone = false
+        LCanvas = new LiteGraph.LGraphCanvas(canvas, graph);
+        CodeLinkNodeLoader.registerLCanvas(LCanvas);
         LiteGraph.clearRegisteredTypes();
 
         if (fs.existsSync(currentPath)) {

@@ -2,6 +2,7 @@ import {LiteGraph} from "litegraph.js";
 import BufferSingleton from "../../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
+import NodeTransferData from '../NodeTransferData';
 
 const createInnerClassVariable = (name) => {
 
@@ -22,7 +23,7 @@ const createInnerClassVariable = (name) => {
   };
 
   InnerClassVariableNode.prototype.onExecute = function () {
-    this.setOutputData(0, this);
+    this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
   };
 
   LiteGraph.registerNodeType(`This/${name}`, InnerClassVariableNode);

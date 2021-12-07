@@ -3,6 +3,7 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import CodeLinkNodeLoader from '../CodeLinkNodeLoader';
 import CodeLink from '../CodeLink';
+import NodeTransferData from './NodeTransferData';
 
 const createClassNode = (varName, NodeInfos, LCanvas, path) => {
 
@@ -64,7 +65,7 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
 
     ClassNode.prototype.onExecute = function () {
 
-        this.setOutputData(0, this);
+        this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
         sharedBuffer.addImport(NodeInfos['import']);
     };
 

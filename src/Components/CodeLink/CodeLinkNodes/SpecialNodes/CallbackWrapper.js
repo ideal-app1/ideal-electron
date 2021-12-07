@@ -1,6 +1,7 @@
 import {LiteGraph} from "litegraph.js";
 import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
+import NodeTransferData from '../NodeTransferData';
 
 const createCallbackWrapper = (LCanvas) => {
 
@@ -80,9 +81,8 @@ const createCallbackWrapper = (LCanvas) => {
     buffer += '};\n'
     this.callbackCode = this.varName;
     sharedBuffer.addCode(buffer);
-    this.setOutputData(0, this);
+    this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
   };
-
   LiteGraph.registerNodeType(`Misc/${name}`, CallbackWrapperNode);
 };
 export default createCallbackWrapper
