@@ -10,7 +10,7 @@ class DisplayWidgetsStyle extends React.Component {
         Center: 'Center',
         Stack: 'Stack',
         Padding: 'Padding',
-        CarouselSlider: 'CarouselSlider',
+        CarrouselSlider: 'CarrouselSlider',
         Button: 'Button',
         Text: 'Text',
         Textfield: 'Textfield',
@@ -85,7 +85,7 @@ class DisplayWidgetsStyle extends React.Component {
                 }
             };
         },
-        'CarouselSlider': (widget) => {
+        'CarrouselSlider': (widget) => {
             if (widget.properties === undefined) {
                 return {};
             }

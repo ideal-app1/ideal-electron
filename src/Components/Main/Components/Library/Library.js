@@ -135,17 +135,18 @@ export const Library = () => {
             },
             display: DisplayWidgetsStyle.DisplayKeys.Padding
         },
-        carouselslider: {
+        carrouselslider: {
             _id: uuid(),
-            name: "CarouselSlider",
-            codePathFile: "CarouselSlider.dart",
+            name: "CarrouselSlider",
+            codePathFile: "CarrouselSlider.dart",
             properties: {
                 height: {
                     value: 200,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    variableName: "_height",
                 },
             },
-            display: DisplayWidgetsStyle.DisplayKeys.CarouselSlider
+            display: DisplayWidgetsStyle.DisplayKeys.CarrouselSlider
         }
     }
 

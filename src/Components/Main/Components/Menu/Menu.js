@@ -169,6 +169,7 @@ export default function Menu(props) {
             getEveryCodeLinkData(viewData, CodeLinkPath);
         }
         createCodeLinkInitFunc(viewData['functions']);
+        viewData.imports.add('package:flutter_image_slideshow/flutter_image_slideshow.dart');
         data.parameters.views.push(`View${index}`);
         data.parameters.viewsCode.push(viewData);
 
