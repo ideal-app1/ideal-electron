@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Process from '../Tools/Process';
 import Main from '../../../Main';
@@ -51,6 +51,15 @@ function Emulators() {
         )
     }
 
+    const refreshPlatforms = () => {
+        setEmulators([]);
+        setDevices([]);
+        setSelectedPlatform('none');
+        Main.FlutterDevice = 'none';
+        listPlatforms('devices', setDevices, true);
+        listPlatforms('emulators', setEmulators);
+    }
+
     return (
         <FormControl>
             <Select
@@ -65,6 +74,9 @@ function Emulators() {
                     setSelectedPlatform(event.target.value);
                     Main.FlutterDevice = event.target.value;
                 }}>
+                <MenuItem value={'none'} style={{display: 'none'}} disabled>
+                    No devices
+                </MenuItem>
                 <ListSubheader>Devices</ListSubheader>
                 {devices.map((x) => {
                     return <MenuItem key={x.id} value={x.id}>{x.name}</MenuItem>
@@ -74,7 +86,7 @@ function Emulators() {
                     return (
                         <Button key={x.name} value={x.name}
                             onClick={() => {
-                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name);
+                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name, () => refreshPlatforms());
                             }}>
                             {x.id}
                         </Button>
@@ -83,13 +95,7 @@ function Emulators() {
 
                 { Main.platform !== 'Win32' ? openXcode() : null }
                 <Divider/>
-                <Button onClick={() => {
-                    setEmulators([]);
-                    setDevices([]);
-                    setSelectedPlatform('');
-                    Main.FlutterDevice = '';
-                    listPlatforms();
-                }}>
+                <Button onClick={() => refreshPlatforms()}>
                     Refresh
                 </Button>
             </Select>

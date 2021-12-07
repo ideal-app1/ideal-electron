@@ -4,6 +4,7 @@ import JsonManager from "../../../Tools/JsonManager";
 import Path from "../../../../../utils/Path";
 import Main from "../../../Main";
 import {WidgetType} from "../../../../../utils/WidgetUtils";
+import Phones from '../../Phones/Phones';
 
 const clone = require("rfdc/default");
 
@@ -70,7 +71,7 @@ export default class Phone {
     }
 
     alreadyExist = (self, name) => {
-        const searchWidgetList = this.state.widgetList.filter(x => x._id !== self._id);
+        const searchWidgetList = this.data.widgetList.filter(x => x._id !== self._id);
         for (let i = 0; i < searchWidgetList.length; i++) {
             if (searchWidgetList[i].properties.name.value === name)
                 return true;
@@ -181,6 +182,10 @@ export default class Phone {
         return flattenList;
     }
 
+    treeTransform = () => {
+        return this.deepConstruct(this.data.idList)
+    }
+
     flattenByID = id => {
         const widget = this.deepFind(id, this.data.idList);
         return this.deepFlatten(widget.child);
@@ -212,6 +217,35 @@ export default class Phone {
         }
     }
 
+    moveInListByID = (node, newNode) => {
+        if (newNode.applied) {
+            const tmpNode = this.addToWidgetList(newNode);
+            this.moveByID(tmpNode, node._id);
+            const nodeApplied = this.findByID(tmpNode);
+            const nodeToApply = this.findByID(node._id);
+            nodeApplied.child.list.push(nodeToApply.child);
+            nodeApplied.parent.list = nodeApplied.parent.list.filter(x => x._id !== node._id);
+            this.forceUpdateRef();
+        } else if (newNode.source === WidgetType.PHONE) {
+            this.moveByID(newNode._id, node._id)
+        } else {
+            const itemID = this.addToWidgetList(newNode)
+            this.moveByID(itemID, node._id)
+        }
+        this.getRef().current.componentDidUpdate();
+        this.forceUpdateRef();
+    }
+
+    addToListByID = (node, newNode) => {
+        const tmpNode = { list: [] };
+        if (newNode.source === WidgetType.PHONE)
+            tmpNode._id = newNode._id;
+        else
+            tmpNode._id = this.addToWidgetList(newNode);
+        this.findByID(node._id).child.list.push(tmpNode);
+        this.forceUpdateRef();
+    }
+
     setClipboard(clipboard) {
         this.data.clipboard = clipboard;
     }
@@ -228,5 +262,31 @@ export default class Phone {
         if (this.phoneRef.current) {
             this.phoneRef.current.forceUpdate();
         }
+    }
+
+    hoverWidget(id, stopHover) {
+        const widget = this.findWidgetByID(id);
+        if (!widget)
+            return;
+        for (let i = 0; i < this.data.widgetList.length; i++) {
+            this.data.widgetList[i].hover = false;
+        }
+        widget.hover = stopHover;
+        this.forceUpdateRef();
+    }
+
+    selectWidget(widget) {
+        for (let i = 0; i < this.data.widgetList.length; i++) {
+            this.data.widgetList[i].selected = false;
+        }
+        widget.selected = true;
+        this.forceUpdateRef();
+    }
+
+    setVisualiser() {
+        for (let i = 0; i < this.data.widgetList.length; i++) {
+            this.data.widgetList[i].visualiser = !this.data.widgetList[i].visualiser;
+        }
+        this.forceUpdateRef();
     }
 }

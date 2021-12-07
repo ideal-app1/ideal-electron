@@ -20,6 +20,10 @@ const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
 
 import DependenciesHandler from "../../utils/DependenciesHandler";
+import WidgetTabs from './Components/WidgetTabs/WidgetTabs';
+
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 class Main extends React.Component {
 
@@ -29,7 +33,7 @@ class Main extends React.Component {
     static CurrentView = 'Main';
     static FlutterSDK = "";
     static FlutterRoot = '';
-    static FlutterDevice = '';
+    static FlutterDevice = 'none';
     static fs = window.require('fs');
     static debug = false;
     static selection = 0;
@@ -94,7 +98,7 @@ class Main extends React.Component {
 
                         {Main.selection >= 0 ?
                             <Fragment>
-                                <Library/>
+                                <WidgetTabs ref={WidgetTabs.getInstance()}/>
                                 <Grid
                                     container
                                     className={'phone-toolbar phone-w'}
@@ -105,7 +109,8 @@ class Main extends React.Component {
                                             this.setState({selection:-1});
                                         }}/>
                                     {'View ' + Main.selection}
-                                    <MoreHorizIcon/>
+                                    {/*<MoreHorizIcon/>*/}
+                                    <VisibilityIcon onClick={() => Phones.phoneList[Main.selection].setVisualiser()}/>
                                 </Grid>
                                 <WidgetProperties ref={WidgetProperties.getInstance()}/>
                             </Fragment>

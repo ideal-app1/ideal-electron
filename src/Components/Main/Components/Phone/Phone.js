@@ -48,10 +48,10 @@ class Phone extends React.Component {
         return (
             <Fragment>
                 <div className={"phone"}>
-                    <div className={"notch"}>
+                    {/*<div className={"notch"}>
                         <i>Speaker</i>
                         <b>Camera</b>
-                    </div>
+                    </div>*/}
                     <Layout
                         disable={this.props.disable}
                         myId={this.props.myId}

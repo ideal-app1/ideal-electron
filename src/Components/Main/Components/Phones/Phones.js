@@ -95,7 +95,7 @@ class Phones extends React.Component {
                                         container
                                         className={'phone-toolbar'}
                                         alignItems={'center'}
-                                        justify={'space-between'}>
+                                        justifyContent={'space-between'}>
                                         <DeleteIcon onClick={() => {
                                             Phones.phoneList[key].deleteView();
                                             Phones.phoneList.splice(key, 1);
