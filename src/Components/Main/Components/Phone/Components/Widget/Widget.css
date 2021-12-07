@@ -10,6 +10,22 @@
     align-items: center;
     font-size: 15px;
     color: black;
+    border: transparent 3px solid;
+}
+
+.widget:hover {
+    border: deepskyblue 3px solid;
+    border-radius: 2px;
+}
+
+.hover {
+    border: deepskyblue 3px solid !important;
+    border-radius: 2px;
+}
+
+.selected {
+    border: springgreen 3px solid !important;
+    border-radius: 2px;
 }
 
 .widget.textbutton {
@@ -32,7 +48,7 @@
     background: none;
 }
 
-.widget.selected {
-    outline: #2190d9 1px solid !important;
-    outline-offset: 10px;
-}
+/*.widget.selected {*/
+/*    outline: #2190d9 1px solid !important;*/
+/*    outline-offset: 10px;*/
+/*}*/

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Process from '../Tools/Process';
 import Main from '../../../Main';
@@ -51,6 +51,15 @@ function Emulators() {
         )
     }
 
+    const refreshPlatforms = () => {
+        setEmulators([]);
+        setDevices([]);
+        setSelectedPlatform('none');
+        Main.FlutterDevice = 'none';
+        listPlatforms('devices', setDevices, true);
+        listPlatforms('emulators', setEmulators);
+    }
+
     return (
         <FormControl>
             <Select
@@ -77,7 +86,7 @@ function Emulators() {
                     return (
                         <Button key={x.name} value={x.name}
                             onClick={() => {
-                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name);
+                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name, () => refreshPlatforms());
                             }}>
                             {x.id}
                         </Button>
@@ -86,13 +95,7 @@ function Emulators() {
 
                 { Main.platform !== 'Win32' ? openXcode() : null }
                 <Divider/>
-                <Button onClick={() => {
-                    setEmulators([]);
-                    setDevices([]);
-                    setSelectedPlatform('none');
-                    Main.FlutterDevice = 'none';
-                    listPlatforms();
-                }}>
+                <Button onClick={() => refreshPlatforms()}>
                     Refresh
                 </Button>
             </Select>

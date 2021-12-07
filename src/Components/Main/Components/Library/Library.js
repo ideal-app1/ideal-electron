@@ -13,7 +13,7 @@ import { Grid, InputAdornment } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
 
-export const Library = () => {
+export const Library = (props) => {
 
     const defaultProperties = {
         mainAxisAlignment: {
@@ -344,6 +344,8 @@ export const Library = () => {
                                         ...widget.properties
                                     }}
                                     type={WidgetType.LIBRARY}
+                                    selected={false}
+                                    hover={false}
                                     codelink={'/'}
                                 />
                             </ListItem>
@@ -356,7 +358,7 @@ export const Library = () => {
     }
 
     return (
-        <List id={"library"}>
+        <List id={"library"} style={props.style}>
             <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
                 <TextField
                     id="widgets-search"

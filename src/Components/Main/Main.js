@@ -20,6 +20,7 @@ const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
 
 import DependenciesHandler from "../../utils/DependenciesHandler";
+import WidgetTabs from './Components/WidgetTabs/WidgetTabs';
 
 class Main extends React.Component {
 
@@ -94,7 +95,7 @@ class Main extends React.Component {
 
                         {Main.selection >= 0 ?
                             <Fragment>
-                                <Library/>
+                                <WidgetTabs ref={WidgetTabs.getInstance()}/>
                                 <Grid
                                     container
                                     className={'phone-toolbar phone-w'}

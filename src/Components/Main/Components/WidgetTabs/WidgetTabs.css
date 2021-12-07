@@ -1,0 +1,9 @@
+#widget-tabs {
+    background-color: #292929;
+    height: 100%;
+    padding: 1vh !important;
+    left: 0;
+    position: fixed !important;
+    top: 35px;
+    width: 24vh;
+}
