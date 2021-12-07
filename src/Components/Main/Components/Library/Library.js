@@ -144,10 +144,6 @@ export const Library = () => {
                     value: 200,
                     type: PropType.NUMFIELD
                 },
-                width: {
-                    value: 200,
-                    type: PropType.NUMFIELD
-                },
             },
             display: DisplayWidgetsStyle.DisplayKeys.CarouselSlider
         }

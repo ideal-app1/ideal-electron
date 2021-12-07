@@ -41,7 +41,7 @@ function PropSize(props) {
                 item
                 direction={'column'}
                 justifyContent={'space-between'}>
-                <Grid container item direction={'row'} alignItems={'center'} justify={'space-evenly'}>
+                <Grid container item direction={'row'} alignItems={'center'} justifyContent={'space-evenly'}>
                     W
                     {sizeNumfield('w', 'h')}
                 </Grid>

@@ -90,9 +90,11 @@ class DisplayWidgetsStyle extends React.Component {
                 return {};
             }
             return {
+                display:
+                    <div style={"overflow-x: auto, white-space: nowrap"}>
+                    </div>,
                 style: {
                     height: widget.properties.height.value,
-                    width: widget.properties.width.value,
                 }
             };
         },

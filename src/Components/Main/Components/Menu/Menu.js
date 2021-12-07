@@ -70,7 +70,7 @@ export default function Menu(props) {
     };
 
     const addDependencies = () => {
-        const dependencies = ['http', 'url_launcher'];
+        const dependencies = ['http', 'url_launcher', 'flutter_image_slideshow'];
 
         dependencies.forEach((dependency) => {
             DependenciesHandler.addDependencyToProject(Main.FlutterSDK, Main.MainProjectPath, dependency);
