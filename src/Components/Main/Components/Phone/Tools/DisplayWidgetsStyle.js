@@ -1,5 +1,6 @@
 import React from "react";
 import * as Icons from '@material-ui/icons/';
+import {Button, Card, CardActions, CardContent, CardMedia, Typography} from "@material-ui/core";
 
 class DisplayWidgetsStyle extends React.Component {
 
@@ -168,12 +169,12 @@ class DisplayWidgetsStyle extends React.Component {
                 return {};
             }
             const icon = widget.properties.icon.items.find(p => p.value === widget.properties.icon.value);
-            const colore = widget.properties.color.items.find(p => p.value === widget.properties.color.value);
+            const color = widget.properties.color.items.find(p => p.value === widget.properties.color.value);
 
             return {
                 display: React.createElement(Icons[icon.web], {
                     className: icon.web,
-                    style: {fontSize: widget.properties.size.value, color: colore.web}
+                    style: {fontSize: widget.properties.size.value, color: color.web}
                 })
             }
         },
@@ -181,10 +182,30 @@ class DisplayWidgetsStyle extends React.Component {
             if (widget.properties === undefined) {
                 return {};
             }
+            const color = widget.properties.buttonColor.items.find(p => p.value === widget.properties.buttonColor.value);
+
             return {
+                display:
+                    <Card style={{width: widget.properties.width.value, height: widget.properties.height.value}}>
+                        <CardMedia
+                            component="img"
+                            image={widget.properties.imgUrl.value}
+                        />
+                        <CardContent>
+                            <Typography component="div" style={{fontSize: widget.properties.titleSize.value + "px"}}>
+                                {widget.properties.titleData.value}
+                            </Typography>
+                            <Typography style={{fontSize: widget.properties.textSize.value + "px"}}>
+                                {widget.properties.textData.value}
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button style={{height: widget.properties.buttonHeight.value, width: widget.properties.buttonWidth.value, backgroundColor: color.web}}>
+                                {widget.properties.buttonText.value}
+                            </Button>
+                        </CardActions>
+                    </Card>,
                 style: {
-                    height: widget.properties.height.value,
-                    width: widget.properties.width.value,
                 }
             };
         },

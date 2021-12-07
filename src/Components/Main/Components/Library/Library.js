@@ -8,7 +8,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
 import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
-import {Search} from "@material-ui/icons";
+import * as Icons from '@material-ui/icons/';
 import { Grid, InputAdornment } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
@@ -42,6 +42,19 @@ export const Library = () => {
         size: (w, h) => {
             return { value: {w: w || 0, h: h || 0, lockRatio: false}, type: PropType.SIZE }
         }
+    }
+
+    // TODO: find another way to get the list of icons (list is to big)
+    const getIconsList = () => {
+        const result = [];
+
+        Object.keys(Icons).map((iconName) => {
+            const icon_tmp = iconName.replace(/([A-Z])/g, letter => `_${letter.toLowerCase()}`);
+            const icon = icon_tmp.slice(1);
+            result.push({name: icon, value: 'Icons.' + icon, web: iconName});
+        });
+
+        return result;
     }
 
     const layouts = {
@@ -274,9 +287,12 @@ export const Library = () => {
                     variableName: "_icon",
                     items: [
                         {name: 'favorite', value: 'Icons.favorite', web: 'Favorite'},
-                        {name: 'audiotrack', value: 'Icons.audiotrack', web: 'Audiotrack'},
+                        {name: 'search', value: 'Icons.search', web: 'Search'},
+                        {name: 'facebook', value: 'Icons.facebook', web: 'Facebook'},
                         {name: 'beach_access', value: 'Icons.beach_access', web: 'BeachAccess'},
-                    ]
+                        {name: 'keyboard_voice', value: 'Icons.keyboard_voice', web: 'KeyboardVoice'},
+                        {name: 'local_florist', value: 'Icons.local_florist', web: 'LocalFlorist'},
+                    ],
                 },
                 color: {
                     value: "Colors.red",
@@ -284,6 +300,8 @@ export const Library = () => {
                     variableName: "_color",
                     items: [
                         {name: 'red', value: 'Colors.red', web: 'red'},
+                        {name: 'white', value: 'Colors.white', web: 'white'},
+                        {name: 'black', value: 'Colors.black', web: 'black'},
                         {name: 'blue', value: 'Colors.blue', web: 'blue'},
                         {name: 'green', value: 'Colors.green', web: 'green'},
                         {name: 'pink', value: 'Colors.pink', web: 'pink'},
@@ -305,13 +323,78 @@ export const Library = () => {
             codePathFile: "Card.dart",
             properties: {
                 height: {
-                    value: 200,
-                    type: PropType.NUMFIELD
+                    value: 300,
+                    type: PropType.NUMFIELD,
+                    variableName: "_height",
                 },
                 width: {
                     value: 200,
-                    type: PropType.NUMFIELD
+                    type: PropType.NUMFIELD,
+                    variableName: "_width",
                 },
+                imgUrl: {
+                    value: null,
+                    type: PropType.TEXTFIELD,
+                    variableName: "_imgUrl",
+                },
+                imgHeight: {
+                    value: 100,
+                    type: PropType.NUMFIELD,
+                    variableName: "_imgHeight",
+                },
+                imgWidth: {
+                    value: 100,
+                    type: PropType.NUMFIELD,
+                    variableName: "_imgWidth",
+                },
+                titleData: {
+                    value: "Title",
+                    type: PropType.TEXTFIELD,
+                    variableName: "_titleData",
+                },
+                titleSize: {
+                    value: 24,
+                    type: PropType.NUMFIELD,
+                    variableName: "_titleSize",
+                },
+                textData: {
+                    value: "Body content",
+                    type: PropType.TEXTFIELD,
+                    variableName: "_textData",
+                },
+                textSize: {
+                    value: 12,
+                    type: PropType.NUMFIELD,
+                    variableName: "_textSize",
+                },
+                buttonText: {
+                    value: "button",
+                    type: PropType.TEXTFIELD,
+                    variableName: "_buttonText",
+                },
+                buttonColor: {
+                    value: "Colors.blue",
+                    type: PropType.COMBOBOX,
+                    variableName: "_buttonColor",
+                    items: [
+                        {name: 'red', value: 'Colors.red', web: 'red'},
+                        {name: 'blue', value: 'Colors.blue', web: 'blue'},
+                        {name: 'green', value: 'Colors.green', web: 'green'},
+                        {name: 'pink', value: 'Colors.pink', web: 'pink'},
+                        {name: 'grey', value: 'Colors.grey', web: 'grey'},
+                        {name: 'yellow', value: 'Colors.yellow', web: 'yellow'},
+                    ],
+                },
+                buttonWidth: {
+                    value: 80,
+                    type: PropType.NUMFIELD,
+                    variableName: "_buttonWidth",
+                },
+                buttonHeight: {
+                    value: 40,
+                    type: PropType.NUMFIELD,
+                    variableName: "_buttonHeight",
+                }
             },
             display: DisplayWidgetsStyle.DisplayKeys.Card
         }
@@ -380,7 +463,7 @@ export const Library = () => {
                     }}
                     InputProps={{ startAdornment:
                             <InputAdornment position="end">
-                                <Search style={{fontSize: '1.5rem', paddingRight: 10}}/>
+                                <Icons.Search style={{fontSize: '1.5rem', paddingRight: 10}}/>
                             </InputAdornment>,
                     }}
                 />
