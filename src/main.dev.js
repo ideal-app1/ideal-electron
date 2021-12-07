@@ -136,7 +136,7 @@ SocketIPC();
 ipcMain.on('select-file', (event, arg) => {
   event.returnValue = dialog.showOpenDialogSync({
     properties: ['openFile', 'multiSelections'],
-    filtres: [
+    filters: [
       {name: 'Images', extensions: ['jpg', 'png', 'gif']}
     ]
   })
@@ -144,7 +144,8 @@ ipcMain.on('select-file', (event, arg) => {
 
 ipcMain.on('select-directory', async (event, arg) => {
   event.returnValue = await dialog.showOpenDialog({
-    properties: ['openDirectory']
+    defaultPath: arg,
+    properties: ['openDirectory', 'createDirectory']
   });
 });
 
