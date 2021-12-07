@@ -333,34 +333,35 @@ export const Library = () => {
                     variableName: "_width",
                 },
                 imgUrl: {
-                    value: null,
+                    // value: null,
+                    value: "https://img-19.ccm2.net/WNCe54PoGxObY8PCXUxMGQ0Gwss=/480x270/smart/d8c10e7fd21a485c909a5b4c5d99e611/ccmcms-commentcamarche/20456790.jpg",
                     type: PropType.TEXTFIELD,
                     variableName: "_imgUrl",
                 },
                 imgHeight: {
-                    value: 100,
+                    value: 150,
                     type: PropType.NUMFIELD,
                     variableName: "_imgHeight",
                 },
                 imgWidth: {
-                    value: 100,
+                    value: 200,
                     type: PropType.NUMFIELD,
                     variableName: "_imgWidth",
                 },
-                titleData: {
+                titleContent: {
                     value: "Title",
                     type: PropType.TEXTFIELD,
-                    variableName: "_titleData",
+                    variableName: "_titleContent",
                 },
                 titleSize: {
                     value: 24,
                     type: PropType.NUMFIELD,
                     variableName: "_titleSize",
                 },
-                textData: {
+                textContent: {
                     value: "Body content",
                     type: PropType.TEXTFIELD,
-                    variableName: "_textData",
+                    variableName: "_textContent",
                 },
                 textSize: {
                     value: 12,
@@ -373,11 +374,12 @@ export const Library = () => {
                     variableName: "_buttonText",
                 },
                 buttonColor: {
-                    value: "Colors.blue",
+                    value: "Colors.black",
                     type: PropType.COMBOBOX,
                     variableName: "_buttonColor",
                     items: [
                         {name: 'red', value: 'Colors.red', web: 'red'},
+                        {name: 'black', value: 'Colors.black', web: 'black'},
                         {name: 'blue', value: 'Colors.blue', web: 'blue'},
                         {name: 'green', value: 'Colors.green', web: 'green'},
                         {name: 'pink', value: 'Colors.pink', web: 'pink'},
@@ -394,7 +396,12 @@ export const Library = () => {
                     value: 40,
                     type: PropType.NUMFIELD,
                     variableName: "_buttonHeight",
-                }
+                },
+                enable: {
+                    value: true,
+                    type: PropType.CHECKBOX,
+                    variableName: "_enable",
+                },
             },
             display: DisplayWidgetsStyle.DisplayKeys.Card
         }

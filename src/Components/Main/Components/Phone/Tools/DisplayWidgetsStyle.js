@@ -193,10 +193,10 @@ class DisplayWidgetsStyle extends React.Component {
                         />
                         <CardContent>
                             <Typography component="div" style={{fontSize: widget.properties.titleSize.value + "px"}}>
-                                {widget.properties.titleData.value}
+                                {widget.properties.titleContent.value}
                             </Typography>
                             <Typography style={{fontSize: widget.properties.textSize.value + "px"}}>
-                                {widget.properties.textData.value}
+                                {widget.properties.textContent.value}
                             </Typography>
                         </CardContent>
                         <CardActions>
