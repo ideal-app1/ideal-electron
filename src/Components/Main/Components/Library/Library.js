@@ -346,6 +346,7 @@ export const Library = (props) => {
                                     type={WidgetType.LIBRARY}
                                     selected={false}
                                     hover={false}
+                                    visualiser={false}
                                     codelink={'/'}
                                 />
                             </ListItem>

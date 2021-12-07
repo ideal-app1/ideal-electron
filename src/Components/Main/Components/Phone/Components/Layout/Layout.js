@@ -31,7 +31,7 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "")}
+            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "") + (props.visualiser ? " visualiser" : "")}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {

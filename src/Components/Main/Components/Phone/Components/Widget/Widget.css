@@ -28,6 +28,10 @@
     border-radius: 2px;
 }
 
+.visualiser {
+    border: transparent !important;
+}
+
 .widget.textbutton {
     background-color: #2190d9;
 }

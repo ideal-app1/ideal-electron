@@ -283,4 +283,11 @@ export default class Phone {
         widget.selected = true;
         this.forceUpdateRef();
     }
+
+    setVisualiser() {
+        for (let i = 0; i < this.data.widgetList.length; i++) {
+            this.data.widgetList[i].visualiser = !this.data.widgetList[i].visualiser;
+        }
+        this.forceUpdateRef();
+    }
 }

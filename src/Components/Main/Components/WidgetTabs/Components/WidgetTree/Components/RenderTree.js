@@ -42,6 +42,14 @@ export const RenderTree = (props) => {
             nodeId={props._id}
             label={props.name || 'Undefined'}
             style={isOverCurrent ? {backgroundColor: 'rgba(255, 255, 255, 0.08)'} : {}}
+            onMouseEnter={(event) => {
+                event.preventDefault();
+                Phones.phoneList[Main.selection].hoverWidget(props._id, true);
+            }}
+            onMouseOut={(event) => {
+                event.preventDefault();
+                Phones.phoneList[Main.selection].hoverWidget(props._id, false);
+            }}
             onLabelClick={(event) => {
                 event.preventDefault();
                 WidgetProperties.getInstance().current.handleSelect(props._id);

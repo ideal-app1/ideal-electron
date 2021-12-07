@@ -22,6 +22,9 @@ const { ipcRenderer } = window.require('electron');
 import DependenciesHandler from "../../utils/DependenciesHandler";
 import WidgetTabs from './Components/WidgetTabs/WidgetTabs';
 
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+
 class Main extends React.Component {
 
     static IdealDir = "";
@@ -106,7 +109,8 @@ class Main extends React.Component {
                                             this.setState({selection:-1});
                                         }}/>
                                     {'View ' + Main.selection}
-                                    <MoreHorizIcon/>
+                                    {/*<MoreHorizIcon/>*/}
+                                    <VisibilityIcon onClick={() => Phones.phoneList[Main.selection].setVisualiser()}/>
                                 </Grid>
                                 <WidgetProperties ref={WidgetProperties.getInstance()}/>
                             </Fragment>
