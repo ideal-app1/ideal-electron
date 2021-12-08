@@ -18,16 +18,9 @@ const Layout = props => {
     const [{isOver, isOverCurrent}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
-            if (monitor.didDrop()) {
+            if (monitor.didDrop())
                 return;
-            }
-            const tmpItem = { list: [] }
-            if (item.source === WidgetType.PHONE)
-                tmpItem._id = item._id
-            else
-                tmpItem._id = Phones.phoneList[Main.selection].addToWidgetList(item)
-            props.list.push(tmpItem)
-            Phones.phoneList[Main.selection].forceUpdateRef()
+            Phones.phoneList[Main.selection].addToListByID(props, item);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -38,7 +31,7 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            className={"layout base " + props.name.toLowerCase() + (props.visualizer ? " visualizer" : "")}
+            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "") + (props.visualiser ? " visualiser" : "")}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
