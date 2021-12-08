@@ -101,7 +101,6 @@ export default class Phone {
     }
 
     findWidgetByID = id => {
-
         for (let i = 0; i < this.data.widgetList.length; i++) {
             if (this.data.widgetList[i]._id === id)
                 return this.data.widgetList[i]
@@ -224,10 +223,6 @@ export default class Phone {
 
     getRef() {
         return this.phoneRef;
-    }
-
-    getWidgetList() {
-        return this.data.widgetList;
     }
 
     forceUpdateRef() {

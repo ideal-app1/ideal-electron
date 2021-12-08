@@ -35,7 +35,7 @@ const CodeLinkNodeLoader = {
   createMainWidget: (variableName) => {
 
 
-    const path = `View${Main.selection}/${variableName}/`;
+    const path = `View${Main.selection}/${variableName}`;
     console.log(`Try of ${path}`);
     const mainWidget = LiteGraph.createNode(path);
 
@@ -49,16 +49,15 @@ const CodeLinkNodeLoader = {
     let previousAttribute = undefined;
 
     constructor.parameters.forEach((constructorParameter) => {
-      return
       let attribute = undefined;
       let offset = previousAttribute ? 50 : 0;
-      const path = `View${Main.selection}/${parentName}/${widget.name} constructor's attributes/${constructorParameter['name']}`;
+      const path = `Classes attributes/${widget.name} attributes/${constructorParameter.name}`;//`View${Main.selection}/${parentName}/${widget.name} constructor's attributes/${constructorParameter['name']}`;
 
       if (requiredOnly === true && constructorParameter.isRequired !== 'true') {
         return;
       }
       console.log(`try to load ${path}`);
-      attribute = LiteGraph.createNode(widget.name + ' constructor\'s attributes/' + constructorParameter['name']);
+      attribute = LiteGraph.createNode(path);
       tmpPos[1] += offset + (previousAttribute ? previousAttribute.size[1] : 0);
       LCanvas.graph.add(attribute);
       attribute.pos = [tmpPos[0], tmpPos[1]];
@@ -80,12 +79,13 @@ const CodeLinkNodeLoader = {
     const constructor = getConstructor(className, parsed['classes']);
     const specificClass = getClass(className, parsed['classes']);
 
-    path = `${path}${variableName}/`;
+    path = `${path}${variableName}`;
     console.log(`Path ? ${path}`)
     createClassNode(variableName, specificClass, LCanvas, `${path}`);
     if (constructor) {
+      path = `Classes attributes/${className} attributes`
       constructor['parameters'].forEach((constructorParameter) => {
-        createConstructorAttributeNode(className, constructorParameter, LCanvas, path);
+        createConstructorAttributeNode(className, constructorParameter, LCanvas, `${path}/${constructorParameter.name}`);
       });
     }
   },
