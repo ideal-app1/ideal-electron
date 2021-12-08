@@ -4,6 +4,7 @@ import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import { useDrag } from 'react-dnd';
 import Path from '../../../utils/Path';
+import NodeTransferData from './NodeTransferData'
 
 const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
@@ -51,17 +52,17 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
 
     ConstructorAttributeNode.prototype.onExecute = function () {
-        const linkedClass = this.getInputData(0);
-        const linkedData = this.getInputData(1);
-        const codeToAdd = this.getCallbackData(linkedData, param['type']);
+        const linkedClass = this.getInputData(0).parent;
+        const codeToAdd = this.getInputData(1).data.code;
         let buffer = "";
 
 
-        if (linkedClass === undefined || linkedData === undefined)
+        if (linkedClass === undefined || codeToAdd === undefined)
             return;
         this.varName = `${linkedClass["varName"]}_${param["name"]}`;
         buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
+        this.setOutputData(0, new NodeTransferData(this, {code: this.varName}))
     };
     console.log(`Creation of attribute - ${path}${currentClass} constructor's attributes/${param["name"]}`);
     LiteGraph.registerNodeType(`${path}${currentClass} constructor's attributes/${param["name"]}`, ConstructorAttributeNode);

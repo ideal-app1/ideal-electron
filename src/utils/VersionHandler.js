@@ -32,11 +32,8 @@ class VersionHandler {
   }
 
   scriptThen = (command, toUpdateList) => {
-    console.log('test');
-    //this.dialog.current.createDialog(<Loading/>);
     Process.runScript(command, () => {
       this.update(toUpdateList);
-      //this.dialog.current.unsetDialog();
     });
   };
 
@@ -147,6 +144,7 @@ class VersionHandler {
     VersionHandler.hasBeenRun = true;
     VersionHandler.FlutterVersion = fs.readFileSync(Path.build(Main.FlutterRoot, 'version'), 'utf8');
     console.log(`Found version ${VersionHandler.FlutterVersion}`);
+    //this.dialog.current.createDialog(<Loading/>);
     this.update(toUpdateList);
     return true;
   };

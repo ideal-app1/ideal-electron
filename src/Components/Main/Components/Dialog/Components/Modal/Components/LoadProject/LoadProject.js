@@ -12,14 +12,17 @@ import FolderIcon from '@material-ui/icons/Folder';
 
 import Modal from '../../Modal';
 import List from '@material-ui/core/List';
+import Path from '../../../../../../../../utils/Path';
+import Main from "../../../../../../Main";
 
 const app = window.require("electron")
 
 const LoadProject = props => {
 
+    const actualProjectPath = Path.splice(Main.MainProjectPath, -1);
+
     const [values, setValues] = React.useState({
-        dir: '',
-        name: 'idealproject'
+        dir: actualProjectPath
     });
 
     return (
@@ -38,7 +41,7 @@ const LoadProject = props => {
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">
                                     <FolderIcon onClick={() => {
-                                        const res = app.ipcRenderer.sendSync('select-directory');
+                                        const res = app.ipcRenderer.sendSync('select-directory', values.dir);
                                         if (res.canceled)
                                             return;
                                         setValues({...values, dir: res.filePaths[0]});
