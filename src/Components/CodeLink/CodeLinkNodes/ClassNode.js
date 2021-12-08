@@ -9,7 +9,6 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
 
     ClassNode.title = `class ${NodeInfos["name"]}${getClassName()}`;
     ClassNode.description = NodeInfos["name"];
-    let nodeHasBeenDeserialized = false;
 
 
 
@@ -40,9 +39,6 @@ const createClassNode = (varName, NodeInfos, LCanvas, path) => {
         return '';
     }
 
-    ClassNode.prototype.onConnectionsChange = function(_, __, ___, ____, _____) {
-
-    }
 
 
 
