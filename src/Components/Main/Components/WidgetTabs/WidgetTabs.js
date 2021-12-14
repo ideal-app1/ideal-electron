@@ -12,8 +12,9 @@ class WidgetTabs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 0
-        };
+            selectedTab: 0,
+            data: {list: []}
+        }
     }
 
     static instance = null;
@@ -30,6 +31,13 @@ class WidgetTabs extends React.Component {
         this.setState({selectedTab: tab});
     }
 
+    updateTree = (newTree) => {
+        const listComp = Phones.actualPhone().deepCompare(newTree, this.state.data);
+        if (listComp)
+            return;
+        this.setState({data: newTree});
+    }
+
     render () {
         return (
             <div id={"widget-tabs"}>
@@ -40,8 +48,7 @@ class WidgetTabs extends React.Component {
                 <Library style={{display: this.state.selectedTab === 1 ? 'none' : 'inherit'}}/>
                 <WidgetTree
                     style={{display: this.state.selectedTab === 0 ? 'none' : 'inherit'}}
-                    data={Phones.phoneList[Main.selection].treeTransform()}/>
-
+                    data={this.state.data}/>
             </div>
 
         )

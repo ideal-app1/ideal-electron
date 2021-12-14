@@ -79,6 +79,10 @@ class Phones extends React.Component {
         });
     }
 
+    static actualPhone(index) {
+        return Phones.phoneList[index || Main.selection];
+    }
+
     render() {
         let data = "";
 

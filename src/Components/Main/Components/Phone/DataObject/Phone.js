@@ -4,8 +4,6 @@ import JsonManager from "../../../Tools/JsonManager";
 import Path from "../../../../../utils/Path";
 import Main from "../../../Main";
 import {WidgetType} from "../../../../../utils/WidgetUtils";
-import Phones from '../../Phones/Phones';
-
 const clone = require("rfdc/default");
 
 export default class Phone {
@@ -17,7 +15,8 @@ export default class Phone {
                 list: []
             },
             history: {pos: 0, list: []},
-            clipboard: {}
+            clipboard: {},
+            visualiser: false
         };
         this.phoneRef = React.createRef();
     }
@@ -30,7 +29,8 @@ export default class Phone {
                 list: []
             },
             history: {pos: 0, list: []},
-            clipboard: {}
+            clipboard: {},
+            visualiser: false
         };
         this.historyChange = false;
     }
@@ -183,6 +183,16 @@ export default class Phone {
         return flattenList;
     }
 
+    deepCompare = (nodeA, nodeB) => {
+        for (let i = 0; i < nodeA.list.length || i < nodeB.list.length; i++) {
+            if (nodeA.list[i]?._id !== nodeB.list[i]?._id)
+                return false;
+            if (!this.deepCompare(nodeA.list[i], nodeB.list[i]))
+                return false;
+        }
+        return true;
+    }
+
     treeTransform = () => {
         return this.deepConstruct(this.data.idList)
     }
@@ -285,9 +295,11 @@ export default class Phone {
     }
 
     setVisualiser() {
-        for (let i = 0; i < this.data.widgetList.length; i++) {
-            this.data.widgetList[i].visualiser = !this.data.widgetList[i].visualiser;
-        }
+        this.data.visualiser = !this.data.visualiser;
         this.forceUpdateRef();
+    }
+
+    getVisualiser() {
+        return this.data.visualiser;
     }
 }

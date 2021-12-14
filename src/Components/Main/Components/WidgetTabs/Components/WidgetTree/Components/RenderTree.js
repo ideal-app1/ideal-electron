@@ -36,7 +36,6 @@ export const RenderTree = (props) => {
 
     return (
         <TreeItem
-            key={props._id.toString()}
             className={props._id.toString()}
             ref={drop}
             nodeId={props._id}
@@ -55,7 +54,7 @@ export const RenderTree = (props) => {
                 WidgetProperties.getInstance().current.handleSelect(props._id);
             }}
         >
-            {Array.isArray(props.list) ? props.list.map((node) => <RenderTree {...node} />) : null}
+            {Array.isArray(props.list) ? props.list.map((node) => <RenderTree key={node._id.toString()} {...node} />) : null}
         </TreeItem>
     );
 };
