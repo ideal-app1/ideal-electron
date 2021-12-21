@@ -25,7 +25,7 @@ const Widget = props => {
         drop: (item, monitor) => {
             if (monitor.didDrop())
                 return;
-            Phones.phoneList[Main.selection].moveInListByID(props, item);
+            Phones.actualPhone().moveInListByID(props, item);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
