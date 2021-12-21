@@ -13,7 +13,8 @@ class WidgetTabs extends React.Component {
         super(props);
         this.state = {
             selectedTab: 0,
-            data: {list: []}
+            data: {list: []},
+            expanded: []
         }
     }
 
@@ -35,7 +36,8 @@ class WidgetTabs extends React.Component {
         const listComp = Phones.actualPhone().deepCompare(newTree, this.state.data);
         if (listComp)
             return;
-        this.setState({data: newTree});
+        const expandedList = Phones.actualPhone().deepFlatten(newTree);
+        this.setState({data: newTree, expanded: expandedList});
     }
 
     render () {
@@ -48,7 +50,8 @@ class WidgetTabs extends React.Component {
                 <Library style={{display: this.state.selectedTab === 1 ? 'none' : 'inherit'}}/>
                 <WidgetTree
                     style={{display: this.state.selectedTab === 0 ? 'none' : 'inherit'}}
-                    data={this.state.data}/>
+                    data={this.state.data} expanded={this.state.expanded}
+                />
             </div>
 
         )

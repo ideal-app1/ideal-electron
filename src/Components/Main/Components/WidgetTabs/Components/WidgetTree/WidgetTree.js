@@ -6,6 +6,21 @@ import { RenderTree } from './Components/RenderTree';
 
 const WidgetTree = (props) => {
 
+    const [expanded, setExpanded] = React.useState([]);
+    const [selected, setSelected] = React.useState([]);
+
+    React.useEffect(() => {
+        setExpanded(['root', ...props.expanded]);
+    }, [props.expanded]);
+
+    const handleToggle = (event, nodeIds) => {
+        setExpanded(nodeIds);
+    };
+
+    const handleSelect = (event, nodeIds) => {
+        setSelected(nodeIds);
+    };
+
     const data = {
         _id: 'root',
         key: 'root',
@@ -22,8 +37,11 @@ const WidgetTree = (props) => {
                 maxWidth: 400,
             }}
             defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpanded={['root']}
             defaultExpandIcon={<ChevronRightIcon />}
+            expanded={expanded}
+            selected={selected}
+            onNodeToggle={handleToggle}
+            onNodeSelect={handleSelect}
         >
             <RenderTree {...data}/>
         </TreeView>
