@@ -118,7 +118,6 @@ export default class Phone {
     }
 
     addToWidgetList = (widget, id) => {
-        console.log(widget);
         const item = {
             ...clone(widget),
             _id: id || uuid(),
