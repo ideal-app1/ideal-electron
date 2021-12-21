@@ -29,7 +29,6 @@ class Phones extends React.Component {
 
         if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
             let jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-            console.log(jsonCode);
 
             jsonCode.view.forEach((phone, key) => {
                 if (!Phones.phoneList[key]) {
@@ -78,6 +77,10 @@ class Phones extends React.Component {
         Phones.phoneList.map((elem) => {
             elem.resetState();
         });
+    }
+
+    static actualPhone(index) {
+        return Phones.phoneList[index || Main.selection];
     }
 
     render() {

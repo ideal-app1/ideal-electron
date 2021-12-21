@@ -1,8 +1,23 @@
 import React from "react";
+import Phones from "../../Phones/Phones";
 
 class DisplayWidgetsStyle extends React.Component {
 
-    static DisplayKeys = {Column: 'Column', Row: 'Row', Center: 'Center', Stack: 'Stack', Padding: 'Padding', Button: 'Button', Text: 'Text', Textfield: 'Textfield', Image: 'Image'};
+    static DisplayKeys = {
+        Column: 'Column',
+        Row: 'Row',
+        Center: 'Center',
+        Stack: 'Stack',
+        Padding: 'Padding',
+        Button: 'Button',
+        Text: 'Text',
+        Textfield: 'Textfield',
+        Image: 'Image',
+        Container: 'Container',
+        Positioned: 'Positioned'
+    };
+
+    static ChildStyle = [];
 
     static Display = {
         'Column': (widget) => {
@@ -12,6 +27,8 @@ class DisplayWidgetsStyle extends React.Component {
             const props = widget.properties;
             const main = props.mainAxisAlignment.items.find(p => p.value === props.mainAxisAlignment.value);
             const cross = props.crossAxisAlignment.items.find(p => p.value === props.crossAxisAlignment.value);
+
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
             return {
                 style: {
                     justifyContent: main.style,
@@ -26,6 +43,8 @@ class DisplayWidgetsStyle extends React.Component {
             const props = widget.properties;
             const main = props.mainAxisAlignment.items.find(p => p.value === props.mainAxisAlignment.value);
             const cross = props.crossAxisAlignment.items.find(p => p.value === props.crossAxisAlignment.value);
+
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
             return {
                 style: {
                     justifyContent: main.style,
@@ -38,6 +57,7 @@ class DisplayWidgetsStyle extends React.Component {
             if (widget.properties === undefined) {
                 return {};
             }
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
             return {
                 style: {
                     justifyContent: widget.properties.mainAxisAlignment,
@@ -51,11 +71,62 @@ class DisplayWidgetsStyle extends React.Component {
             }
             const props = widget.properties;
             const align = props.alignment.items.find(p => p.value === props.alignment.value);
+
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
+            let i = 1;
+            for (const child in widget.list) {
+                DisplayWidgetsStyle.ChildStyle.push({id: widget.list[child]._id, style: {zIndex: i}});
+                i++;
+            }
             return {
                 style: {
                     height: props.height.value,
                     width: props.width.value,
-                    alignItems: align.style
+                    alignItems: align.style,
+                    position: "relative",
+                }
+            };
+        },
+        'Positioned': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+
+            const props = widget.properties;
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
+            for (const child in widget.list) {
+                DisplayWidgetsStyle.ChildStyle.push({
+                    id: widget.list[child]._id, style: {
+                        top: props.top.value + "px" ?? "",
+                        left: props.left.value + "px" ?? "",
+                        bottom: props.bottom.value + "px" ?? "",
+                        right: props.right.value + "px" ?? "",
+                        position: "absolute",
+                    }
+                });
+            }
+            return {
+                style: {
+                    height: "100%",
+
+                    backgroundColor: "transparent",
+                    ...style,
+                }
+            };
+        },
+        'Container': (widget) => {
+            if (widget.properties === undefined) {
+                return {};
+            }
+            const props = widget.properties;
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
+            return {
+                style: {
+                    height: typeof props.height.value === 'string' && props.height.value.slice(-1) === '%' ? props.height.value : props.height.value + "px",
+                    width: typeof props.width.value === 'string' && props.width.value && props.width.value.slice(-1) === '%' ? props.width.value : props.width.value + "px",
+                    backgroundColor: "#" + widget.properties.color.value,
+                    borderRadius: widget.properties.topLeft.value + "px " + widget.properties.topRight.value + "px " + widget.properties.bottomRight.value + "px " + widget.properties.bottomLeft.value + "px",
+                    ...style
                 }
             };
         },
@@ -63,6 +134,7 @@ class DisplayWidgetsStyle extends React.Component {
             if (widget.properties === undefined) {
                 return {};
             }
+            const style = DisplayWidgetsStyle.getMyStyle(widget._id);
             return {
                 style: {
                     padding: widget.properties.padding.value + "px"
@@ -118,6 +190,15 @@ class DisplayWidgetsStyle extends React.Component {
         },
     };
 
+    static getMyStyle(id) {
+        for (const index in DisplayWidgetsStyle.ChildStyle) {
+            if (DisplayWidgetsStyle.ChildStyle[index].id === id) {
+                return DisplayWidgetsStyle.ChildStyle[index].style;
+            }
+        }
+        DisplayWidgetsStyle.ChildStyle = [];
+        return {};
+    }
 
 }
 

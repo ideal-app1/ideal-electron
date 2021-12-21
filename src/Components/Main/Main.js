@@ -20,6 +20,8 @@ const app = window.require('electron').remote.app;
 const { ipcRenderer } = window.require('electron');
 
 import DependenciesHandler from "../../utils/DependenciesHandler";
+import WidgetTabs from './Components/WidgetTabs/WidgetTabs';
+import Visualiser from './Tools/Visualiser';
 
 class Main extends React.Component {
 
@@ -52,15 +54,12 @@ class Main extends React.Component {
 
         try {
             const path = Path.build(app.getPath('documents'), 'Ideal');
-            console.log(path);
             const data = JsonManager.get(Path.build(path, 'config.json'));
-            console.log(data);
             Main.MainProjectPath = data.ProjectPathAutoSaved;
             const projectName = Main.MainProjectPath.split(Path.Sep).lastItem;
             ipcRenderer.send('update-window-title', projectName);
             Main.FlutterRoot = data.FlutterRoot;
             Main.FlutterSDK = data.FlutterSDK;
-            console.log(`MainProject ${Main.MainProjectPath}`);
             Main.IdealDir = path;
         } catch (e) {
             console.log('Config does not exist, trying to create Ideal folder');
@@ -97,7 +96,7 @@ class Main extends React.Component {
 
                         {Main.selection >= 0 ?
                             <Fragment>
-                                <Library/>
+                                <WidgetTabs ref={WidgetTabs.getInstance()}/>
                                 <Grid
                                     container
                                     className={'phone-toolbar phone-w'}
@@ -108,7 +107,7 @@ class Main extends React.Component {
                                             this.setState({selection:-1});
                                         }}/>
                                     {'View ' + Main.selection}
-                                    <MoreHorizIcon/>
+                                    <Visualiser />
                                 </Grid>
                                 <WidgetProperties ref={WidgetProperties.getInstance()}/>
                             </Fragment>
