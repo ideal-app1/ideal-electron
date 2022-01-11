@@ -1,6 +1,7 @@
 export const WidgetType = {
     LIBRARY: 'library',
     PHONE: 'phone',
+    ROOT: 'root'
 }
 
 export const WidgetGroup = {

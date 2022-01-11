@@ -32,11 +32,10 @@ function Emulators() {
         });
     }
 
-    if (devices.length === 0)
+    useEffect(() => {
         listPlatforms('devices', setDevices, true);
-
-    if (emulators.length === 0)
         listPlatforms('emulators', setEmulators);
+    }, [])
 
     const openXcode = () => {
         return (

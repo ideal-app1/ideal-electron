@@ -1,8 +1,8 @@
-import React from "react";
-import {v4 as uuid} from "uuid";
-import JsonManager from "../../../Tools/JsonManager";
-import Path from "../../../../../utils/Path";
-import Main from "../../../Main";
+import React from 'react';
+import { v4 as uuid } from 'uuid';
+import JsonManager from '../../../Tools/JsonManager';
+import Path from '../../../../../utils/Path';
+import Main from '../../../Main';
 import { WidgetGroup, WidgetType } from '../../../../../utils/WidgetUtils';
 const clone = require("rfdc/default");
 
@@ -158,6 +158,12 @@ export default class Phone {
     deepFind = (id, idItem) => {
         if (!idItem)
             return null
+        if (id === WidgetType.ROOT) {
+            return {
+                parent: {},
+                child: this.data.idList
+            };
+        }
         for (let i = 0; i < idItem.list.length; i++) {
             if (idItem.list[i]._id === id) {
                 return {
@@ -227,13 +233,17 @@ export default class Phone {
     }
 
     moveByID = (nodeId, destNodeId) => {
-        const dest = this.deepFind(destNodeId, this.data.idList)
+        const dest = this.deepFind(destNodeId, this.data.idList);
+        const nodeToMove = {
+            _id: nodeId,
+            list: []
+        };
+        if (destNodeId === WidgetType.ROOT) {
+            dest.child.list.push(nodeToMove);
+            return;
+        }
         for (let i = 0; i < dest.parent.list.length; i++) {
             if (dest.parent.list[i]._id === dest.child._id) {
-                const nodeToMove = {
-                    _id: nodeId,
-                    list: []
-                }
                 dest.parent.list.splice(i, 0, nodeToMove);
                 return;
             }
@@ -241,15 +251,19 @@ export default class Phone {
     }
 
     moveInByID = (node, destNodeId) => {
-        const dest = this.deepFind(destNodeId, this.data.idList)
+        const dest = this.deepFind(destNodeId, this.data.idList);
+        const nodeList = this.deepDeconstruct(node);
+        const nodeToMove = {
+            _id: node._id,
+            list: nodeList.list || []
+        };
+        if (destNodeId === WidgetType.ROOT) {
+            dest.child.list.push(nodeToMove);
+            return;
+        }
         for (let i = 0; i < dest.parent.list.length; i++) {
             if (dest.parent.list[i]._id === dest.child._id) {
-                const nodeList = this.deepDeconstruct(node);
-                const nodeToMove = {
-                    _id: node._id,
-                    list: nodeList.list || []
-                }
-                dest.child.list.push(nodeToMove)
+                dest.child.list.push(nodeToMove);
                 return;
             }
         }
@@ -309,9 +323,6 @@ export default class Phone {
         const widget = this.findWidgetByID(id);
         if (!widget)
             return;
-        for (let i = 0; i < this.data.widgetList.length; i++) {
-            this.data.widgetList[i].hover = false;
-        }
         widget.hover = stopHover;
         this.forceUpdateRef();
     }
