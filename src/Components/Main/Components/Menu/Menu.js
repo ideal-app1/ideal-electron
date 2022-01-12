@@ -118,10 +118,7 @@ export default function Menu(props) {
     const getACodeLinkData = (fullData, file) => {
         const data = JSON.parse(fs.readFileSync(file).toString());
 
-        console.log('codelink data');
-
         data.imports.forEach((elem) => {
-            console.log(elem);
             fullData.imports.add(elem);
         });
         fullData.functions.push(data.function);
@@ -157,7 +154,6 @@ export default function Menu(props) {
     }
 
     const getCodeHandlerFormat = (jsonCodeView, index) => {
-        console.log(jsonCodeView)
         const path = Path.build(Main.MainProjectPath, 'lib', 'Main.dart')
         const construct = Phones.phoneList[index].deepConstruct(jsonCodeView.idList.list[0]);
 
@@ -198,7 +194,6 @@ export default function Menu(props) {
             getAViewData(jsonCode, data, i);
             data['parameters']['viewsCode'][i]['imports'] = Array.from(data['parameters']['viewsCode'][i]['imports']);
         }
-        console.log(data);
         return data;
     }
 

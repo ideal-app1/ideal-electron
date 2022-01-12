@@ -2,7 +2,7 @@ import React, {Fragment, useState} from "react";
 import "./Library.css"
 import {v4 as uuid} from 'uuid';
 import LibraryItem from './Components/LibraryItem/LibraryItem';
-import {PropType, WidgetGroup, WidgetType} from "../../../../utils/WidgetUtils";
+import {LayoutType, PropType, WidgetGroup, WidgetType} from "../../../../utils/WidgetUtils";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -13,7 +13,7 @@ import { Grid, InputAdornment } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 
 
-export const Library = () => {
+export const Library = (props) => {
 
     const defaultProperties = {
         mainAxisAlignment: {
@@ -59,6 +59,7 @@ export const Library = () => {
                 mainAxisAlignment: defaultProperties.mainAxisAlignment,
                 crossAxisAlignment: defaultProperties.crossAxisAlignment
             },
+            layoutType: LayoutType.CHILDREN,
             display: DisplayWidgetsStyle.DisplayKeys.Column,
         },
         row: {
@@ -71,6 +72,7 @@ export const Library = () => {
                 crossAxisAlignment: defaultProperties.crossAxisAlignment,
                 size: defaultProperties.size(100),
             },
+            layoutType: LayoutType.CHILDREN,
             display: DisplayWidgetsStyle.DisplayKeys.Row,
         },
         center: {
@@ -82,6 +84,7 @@ export const Library = () => {
                 mainAxisAlignment: "center",
                 crossAxisAlignment: "center"
             },
+            layoutType: LayoutType.CHILD,
             display: DisplayWidgetsStyle.DisplayKeys.Center
         },
         stack: {
@@ -107,7 +110,87 @@ export const Library = () => {
                     ]
                 }
             },
+            layoutType: LayoutType.CHILDREN,
             display: DisplayWidgetsStyle.DisplayKeys.Stack
+        },
+        positioned: {
+            _id: uuid(),
+            name: "Positioned",
+            codePathFile: "Positioned.dart",
+            properties: {
+                left: {
+                    value: null,
+                    type: PropType.NUMFIELD,
+                    variableName: "_left",
+                },
+                right: {
+                    value: null,
+                    type: PropType.NUMFIELD,
+                    variableName: "_right",
+                },
+                bottom: {
+                    value: null,
+                    type: PropType.NUMFIELD,
+                    variableName: "_bottom",
+                },
+                top: {
+                    value: 0,
+                    type: PropType.NUMFIELD,
+                    variableName: "_top",
+                },
+            },
+            layoutType: LayoutType.CHILD,
+            display: DisplayWidgetsStyle.DisplayKeys.Positioned
+        },
+        container: {
+            _id: uuid(),
+            name: "Container",
+            codePathFile: "Container.dart",
+            properties: {
+                height: {
+                    value: 250,
+                    type: PropType.NUMFIELD,
+                    variableName: "_height",
+                },
+                width: {
+                    value: 300,
+                    type: PropType.NUMFIELD,
+                    variableName: "_width",
+                },
+                color: {
+                    value: "",
+                    type: PropType.COLOR,
+                    variableName: "_color",
+                },
+                marginHorizontal: {
+                    value: "0",
+                    type: PropType.NUMFIELD,
+                    variableName: "_marginHorizontal",
+                },
+
+                bottomLeft: {
+                    value: 10,
+                    type: PropType.NUMFIELD,
+                    variableName: "_bottomLeft",
+                },
+                bottomRight: {
+                    value: 10,
+                    type: PropType.NUMFIELD,
+                    variableName: "_bottomRight",
+                },
+                topLeft: {
+                    value: 10,
+                    type: PropType.NUMFIELD,
+                    variableName: "_topLeft",
+                },
+                topRight: {
+                    value: 10,
+                    type: PropType.NUMFIELD,
+                    variableName: "_topRight",
+                },
+            },
+            layoutType: LayoutType.CHILD,
+            display: DisplayWidgetsStyle.DisplayKeys.Container
         },
         padding: {
             _id: uuid(),
@@ -261,6 +344,8 @@ export const Library = () => {
                                         ...widget.properties
                                     }}
                                     type={WidgetType.LIBRARY}
+                                    selected={false}
+                                    hover={false}
                                     codelink={'/'}
                                 />
                             </ListItem>
@@ -273,7 +358,7 @@ export const Library = () => {
     }
 
     return (
-        <List id={"library"}>
+        <List id={"library"} style={props.style}>
             <Grid container alignItems={'center'} justifyContent={'center'} direction={'row'} style={{marginBottom: "10px"}}>
                 <TextField
                     id="widgets-search"

@@ -18,6 +18,7 @@ import PropFile from './Components/PropFile';
 import PropAlignment from './Components/PropAlignment';
 import PropSize from './Components/PropSize'
 import PropVarName from './Components/PropVarName';
+import WidgetTabs from '../WidgetTabs/WidgetTabs';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -52,6 +53,7 @@ class WidgetProperties extends React.Component {
         const widget = Phones.phoneList[Main.selection].findWidgetByID(id);
         if (!widget)
             return;
+        Phones.phoneList[Main.selection].selectWidget(widget);
         this.setState({ widget: widget })
     }
 
@@ -73,6 +75,7 @@ class WidgetProperties extends React.Component {
         }
         let propMap = {
             [PropType.TEXTFIELD]: <PropTextField {...props}/>,
+            [PropType.COLOR]: <PropTextField {...props}/>,
             [PropType.NUMFIELD]: <PropNumField {...props}/>,
             [PropType.CHECKBOX]: <PropCheckBox {...props}/>,
             [PropType.COMBOBOX]: <PropComboBox {...props}/>,
