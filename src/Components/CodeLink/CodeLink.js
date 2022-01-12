@@ -21,12 +21,11 @@ const path = require('path');
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
 import createRValueNode from './CodeLinkNodes/RValueNode';
-import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
+import createMakeListNode from './CodeLinkNodes/SpecialNodes/CreateList';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
 import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
 import TemporaryFile from '../../utils/TemporaryFile';
-
 
 function CodeLink(props) {
 
@@ -106,7 +105,6 @@ function CodeLink(props) {
           return undefined;
       }
     };
-
     const loadGenericViewAttributes = () => {
         const attribtues = ['this', 'context'];
 
@@ -140,7 +138,7 @@ function CodeLink(props) {
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
-        createCallbackWrapper(LCanvas);
+        createMakeListNode(LCanvas);
         createForLoopNode(LCanvas);
         afterLoad(className, flutterJson);
     };
@@ -181,6 +179,9 @@ function CodeLink(props) {
 
         CodeLink.deserializationDone = false
         LCanvas = new LiteGraph.LGraphCanvas(canvas, graph);
+        //LCanvas.background_image = black
+        LiteGraph.CANVAS_GRID_SIZE = -1
+        console.log(LiteGraph.CANVAS_GRID_SIZE)
         CodeLinkNodeLoader.registerLCanvas(LCanvas);
         LiteGraph.clearRegisteredTypes();
 
@@ -241,7 +242,7 @@ function CodeLink(props) {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
-        });
+        }, {}, true);
     };
 
     return (

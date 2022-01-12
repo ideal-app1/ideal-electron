@@ -34,7 +34,7 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         if (isConnected && type === LiteGraph.INPUT &&
           index === 0 && node.nodeType === 'ClassNode') {
             this.title = `${node.varName}->${param['name']}`
-        } else {
+        } else if (index === 0) {
             this.title = param['name']
         }
 

@@ -3,21 +3,21 @@ import sharedBuffer from "../../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "../NodeBase";
 import NodeTransferData from '../NodeTransferData';
 
-const createCallbackWrapper = (LCanvas) => {
+const createMakeListNode = (LCanvas) => {
 
-  CallbackWrapperNode.title = 'Callback Wrapper';
+  MakeListNode.title = 'Make List';
   const linkedNodes = [];
   let connectionChangeInProgress = false;
 
-  function CallbackWrapperNode() {
-    inheritNodeBase(CallbackWrapperNode, this);
+  function MakeListNode() {
+    inheritNodeBase(MakeListNode, this);
     this.addInput('Function 1');
     this.addOutput('Wrapped functions',);
     this.varName = this.makeId(15);
 
   }
 
-  CallbackWrapperNode.prototype.removeANode = function(link)  {
+  MakeListNode.prototype.removeANode = function(link)  {
     let nbOfNodes = 0;
     let inputsLen = this.inputs.length;
 
@@ -40,7 +40,7 @@ const createCallbackWrapper = (LCanvas) => {
     connectionChangeInProgress = false;
   }
 
-  CallbackWrapperNode.prototype.addNewInput = function (newNode) {
+  MakeListNode.prototype.addNewInput = function (newNode) {
     linkedNodes.push(newNode);
 
     // Prevent deserialization of the node from creating too much inputs
@@ -48,7 +48,7 @@ const createCallbackWrapper = (LCanvas) => {
       this.addInput(`Function ${this.inputs.length + 1}`);
   }
 
-  CallbackWrapperNode.prototype.onConnectionsChange = function (type, index, isConnected, link, _) {
+  MakeListNode.prototype.onConnectionsChange = function (type, index, isConnected, link, _) {
     if (!link || type === LiteGraph.OUTPUT || connectionChangeInProgress === true)
       return;
 
@@ -65,10 +65,10 @@ const createCallbackWrapper = (LCanvas) => {
   }
 
 
-  CallbackWrapperNode.prototype.onAdded = function () {
+  MakeListNode.prototype.onAdded = function () {
   };
 
-  CallbackWrapperNode.prototype.onExecute = function () {
+  MakeListNode.prototype.onExecute = function () {
     let buffer = `final ${this.varName} = () {\n`;
 
     for (let i = 0; i < this.inputs.length; i++) {
@@ -83,6 +83,6 @@ const createCallbackWrapper = (LCanvas) => {
     sharedBuffer.addCode(buffer);
     this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
   };
-  LiteGraph.registerNodeType(`Misc/${name}`, CallbackWrapperNode);
+  LiteGraph.registerNodeType(`Misc/${name}`, MakeListNode);
 };
-export default createCallbackWrapper
+export default createMakeListNode
