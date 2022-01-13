@@ -9,7 +9,6 @@ import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 import Dialog from '../../../Dialog/Dialog';
 import Phones from "../../../Phones/Phones";
-import Main from "../../../../Main";
 
 const Layout = props => {
 
@@ -20,7 +19,7 @@ const Layout = props => {
         drop: (item, monitor) => {
             if (monitor.didDrop())
                 return;
-            Phones.phoneList[Main.selection].addToListByID(props, item);
+            Phones.actualPhone().addToListByID(props, item);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -31,7 +30,7 @@ const Layout = props => {
         <Grid
             container
             direction={props.properties.direction}
-            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "") + (props.visualiser ? " visualiser" : "")}
+            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "") + (Phones.actualPhone(props.myId)?.getVisualiser() ? " visualiser" : "")}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {

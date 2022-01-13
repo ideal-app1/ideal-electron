@@ -5,6 +5,7 @@ import Main from "../../Main";
 import Path from '../../../../utils/Path';
 import JsonManager from "../../Tools/JsonManager";
 import Phones from "../Phones/Phones";
+import WidgetTabs from '../WidgetTabs/WidgetTabs';
 
 const clone = require("rfdc/default");
 const {ipcRenderer} = window.require('electron');
@@ -42,6 +43,7 @@ class Phone extends React.Component {
         }
         data.view[this.props.myId] = finalWidgetList;
         JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
+        WidgetTabs.getInstance().current?.updateTree(clone(Phones.actualPhone().treeTransform()));
     }
 
     render() {

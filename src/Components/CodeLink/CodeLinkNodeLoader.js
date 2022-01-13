@@ -5,6 +5,7 @@ import createValue from './CodeLinkNodes/ConstValueNode';
 import createClassNode from './CodeLinkNodes/ClassNode';
 import createConstructorAttributeNode from './CodeLinkNodes/ConstructorAttributeNode';
 import Path from '../../utils/Path';
+import Main from '../Main/Main';
 
 let LCanvas = null;
 
@@ -31,26 +32,32 @@ const getConstructor = (widget, data) => {
 
 const CodeLinkNodeLoader = {
 
-  createMainWidget: (className) => {
-    const mainWidget = LiteGraph.createNode('Classes/' + className);
+  createMainWidget: (variableName) => {
+
+
+    const path = `View${Main.selection}/${variableName}`;
+    console.log(`Try of ${path}`);
+    const mainWidget = LiteGraph.createNode(path);
 
     mainWidget.pos = [250, 250];
     LCanvas.graph.add(mainWidget);
     return mainWidget;
   },
 
-  createAttributes: (widget, constructor, requiredOnly = true) => {
+  createAttributes: (widget, parentName, constructor, requiredOnly = true) => {
     const tmpPos = [widget.pos[0] + widget.size[0] + 50, widget.pos[1]];
     let previousAttribute = undefined;
 
     constructor.parameters.forEach((constructorParameter) => {
       let attribute = undefined;
       let offset = previousAttribute ? 50 : 0;
+      const path = `Classes attributes/${widget.name} attributes/${constructorParameter.name}`;//`View${Main.selection}/${parentName}/${widget.name} constructor's attributes/${constructorParameter['name']}`;
 
       if (requiredOnly === true && constructorParameter.isRequired !== 'true') {
         return;
       }
-      attribute = LiteGraph.createNode(widget.name + ' constructor\'s attributes/' + constructorParameter['name']);
+      console.log(`try to load ${path}`);
+      attribute = LiteGraph.createNode(path);
       tmpPos[1] += offset + (previousAttribute ? previousAttribute.size[1] : 0);
       LCanvas.graph.add(attribute);
       attribute.pos = [tmpPos[0], tmpPos[1]];
@@ -72,10 +79,13 @@ const CodeLinkNodeLoader = {
     const constructor = getConstructor(className, parsed['classes']);
     const specificClass = getClass(className, parsed['classes']);
 
-    createClassNode(variableName, specificClass, LCanvas, `${path}Classes/`);
+    path = `${path}${variableName}`;
+    console.log(`Path ? ${path}`)
+    createClassNode(variableName, specificClass, LCanvas, `${path}`);
     if (constructor) {
+      path = `Classes attributes/${className} attributes`
       constructor['parameters'].forEach((constructorParameter) => {
-        createConstructorAttributeNode(className, constructorParameter, LCanvas, path);
+        createConstructorAttributeNode(className, constructorParameter, LCanvas, `${path}/${constructorParameter.name}`);
       });
     }
   },
@@ -99,7 +109,7 @@ const CodeLinkNodeLoader = {
     });
   },
 
-  addMainWidgetToView: (widget, data) => {
+  addMainWidgetToView: (widget, variableName, data) => {
     const constructor = getConstructor(widget, data);
     let mainWidget = undefined;
 
@@ -108,7 +118,7 @@ const CodeLinkNodeLoader = {
       //TODO implement an error when the main constructor is not found.
       return;
     }
-    mainWidget = CodeLinkNodeLoader.createMainWidget(widget);
+    mainWidget = CodeLinkNodeLoader.createMainWidget(variableName);
     //CodeLinkNodeLoader.createAttributes(mainWidget, constructor,);
   }
 };

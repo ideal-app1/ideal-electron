@@ -1,6 +1,7 @@
 import {LiteGraph} from "litegraph.js";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
+import NodeTransferData from './NodeTransferData'
 
 const convertDartTypeToLiteral = (type) => {
   const knownType = ['int', 'double', 'long', 'long long', 'long long int', 'double', 'float'];
@@ -32,6 +33,7 @@ const createRValueNode = (type, defaultValue) => {
   RValueNode.prototype.onPropertyChanged = function(property, value, prevValue) {
     this.setProperty(property, value)
     this.widget.value = value
+    this.value = value
 
 
   }
@@ -61,7 +63,7 @@ const createRValueNode = (type, defaultValue) => {
 
     let buffer = `final ${this.varName} = ${handleCaseString(type, this.value)};\n`
 
-    this.setOutputData(0, this);
+    this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
     sharedBuffer.addCode(buffer);
   }
 

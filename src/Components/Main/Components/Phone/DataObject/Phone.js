@@ -3,9 +3,7 @@ import {v4 as uuid} from "uuid";
 import JsonManager from "../../../Tools/JsonManager";
 import Path from "../../../../../utils/Path";
 import Main from "../../../Main";
-import {WidgetType} from "../../../../../utils/WidgetUtils";
-import Phones from '../../Phones/Phones';
-
+import { WidgetGroup, WidgetType } from '../../../../../utils/WidgetUtils';
 const clone = require("rfdc/default");
 
 export default class Phone {
@@ -17,7 +15,8 @@ export default class Phone {
                 list: []
             },
             history: {pos: 0, list: []},
-            clipboard: {}
+            clipboard: {},
+            visualiser: false
         };
         this.phoneRef = React.createRef();
     }
@@ -30,7 +29,8 @@ export default class Phone {
                 list: []
             },
             history: {pos: 0, list: []},
-            clipboard: {}
+            clipboard: {},
+            visualiser: false
         };
         this.historyChange = false;
     }
@@ -142,6 +142,19 @@ export default class Phone {
         return finalListItem
     }
 
+    deepDeconstruct = idItem => {
+        if (!idItem)
+            return null
+        let finalListItem = {
+            _id: idItem?._id,
+            list: []
+        }
+        for (let i = 0; i < idItem.list.length; i++) {
+            finalListItem.list.push(this.deepDeconstruct(idItem.list[i]))
+        }
+        return finalListItem
+    }
+
     deepFind = (id, idItem) => {
         if (!idItem)
             return null
@@ -182,6 +195,16 @@ export default class Phone {
         return flattenList;
     }
 
+    deepCompare = (nodeA, nodeB) => {
+        for (let i = 0; i < nodeA.list.length || i < nodeB.list.length; i++) {
+            if (nodeA.list[i]?._id !== nodeB.list[i]?._id)
+                return false;
+            if (!this.deepCompare(nodeA.list[i], nodeB.list[i]))
+                return false;
+        }
+        return true;
+    }
+
     treeTransform = () => {
         return this.deepConstruct(this.data.idList)
     }
@@ -203,15 +226,30 @@ export default class Phone {
         this.deepRemove(id, this.data.idList);
     }
 
-    moveByID = (id, idDest, list) => {
-        const dest = this.deepFind(idDest, this.data.idList)
+    moveByID = (nodeId, destNodeId) => {
+        const dest = this.deepFind(destNodeId, this.data.idList)
         for (let i = 0; i < dest.parent.list.length; i++) {
             if (dest.parent.list[i]._id === dest.child._id) {
-                const idItem = {
-                    _id: id,
-                    list: list || []
+                const nodeToMove = {
+                    _id: nodeId,
+                    list: []
                 }
-                dest.parent.list.splice(i, 0, idItem);
+                dest.parent.list.splice(i, 0, nodeToMove);
+                return;
+            }
+        }
+    }
+
+    moveInByID = (node, destNodeId) => {
+        const dest = this.deepFind(destNodeId, this.data.idList)
+        for (let i = 0; i < dest.parent.list.length; i++) {
+            if (dest.parent.list[i]._id === dest.child._id) {
+                const nodeList = this.deepDeconstruct(node);
+                const nodeToMove = {
+                    _id: node._id,
+                    list: nodeList.list || []
+                }
+                dest.child.list.push(nodeToMove)
                 return;
             }
         }
@@ -227,10 +265,13 @@ export default class Phone {
             nodeApplied.parent.list = nodeApplied.parent.list.filter(x => x._id !== node._id);
             this.forceUpdateRef();
         } else if (newNode.source === WidgetType.PHONE) {
-            this.moveByID(newNode._id, node._id)
+            if (newNode.group === WidgetGroup.MATERIAL)
+                this.moveByID(newNode._id, node._id);
+            else if (newNode.group === WidgetGroup.LAYOUT)
+                this.moveInByID(newNode, node._id);
         } else {
-            const itemID = this.addToWidgetList(newNode)
-            this.moveByID(itemID, node._id)
+            const itemID = this.addToWidgetList(newNode);
+            this.moveByID(itemID, node._id);
         }
         this.getRef().current.componentDidUpdate();
         this.forceUpdateRef();
@@ -284,9 +325,11 @@ export default class Phone {
     }
 
     setVisualiser() {
-        for (let i = 0; i < this.data.widgetList.length; i++) {
-            this.data.widgetList[i].visualiser = !this.data.widgetList[i].visualiser;
-        }
+        this.data.visualiser = !this.data.visualiser;
         this.forceUpdateRef();
+    }
+
+    getVisualiser() {
+        return this.data.visualiser;
     }
 }

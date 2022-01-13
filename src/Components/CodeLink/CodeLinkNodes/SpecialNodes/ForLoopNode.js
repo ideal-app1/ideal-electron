@@ -2,6 +2,7 @@ import inheritNodeBase from '../NodeBase';
 import { LiteGraph } from 'litegraph.js';
 import sharedBuffer from '../../CodeLinkParsing/BufferSingleton';
 import CodeLink from '../../CodeLink';
+import NodeTransferData from '../NodeTransferData';
 
 const createForLoopNode = (LCanvas) => {
 
@@ -65,7 +66,7 @@ const createForLoopNode = (LCanvas) => {
     buffer = `for (var ${iteratorName} = ${args[0].varName}; ${iteratorName} < ${args[1].varName}; ${iteratorName}++) {\n${args[2].callbackCode}();\n}`;
 
     sharedBuffer.addCode(buffer);
-    this.setOutputData(0, this);
+    this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
   };
 
   LiteGraph.registerNodeType(`Misc/ForLoop`, ForLoopNode);

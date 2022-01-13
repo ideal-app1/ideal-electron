@@ -1,6 +1,7 @@
 import {LGraph, LGraphCanvas, LiteGraph, ContextMenu, IContextMenuItem} from "litegraph.js"
 import inheritNodeBase from "./NodeBase";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
+import NodeTransferData from './NodeTransferData'
 
 const createMethodNode = (method, className, LCanvas, path) => {
 //your node constructor class
@@ -67,7 +68,7 @@ const createMethodNode = (method, className, LCanvas, path) => {
         }
         buffer = endBuffer(buffer);
         sharedBuffer.addCode(buffer);
-        this.setOutputData(0, this);
+        this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
     };
     LiteGraph.registerNodeType(path + className +" methods/" + method["name"], MethodNode);
 

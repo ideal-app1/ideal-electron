@@ -53,6 +53,7 @@ import IdealLogo from "../../../../../assets/icon.png";
 import Emulators from './Components/Emulators';
 import TemporaryFile from '../../../../utils/TemporaryFile';
 import { keyCommands } from './Tools/FlutterCmd';
+import { verbose } from 'electron-log';
 
 //TODO renommer cette class
 export default function Menu(props) {
@@ -210,7 +211,7 @@ export default function Menu(props) {
                         return;
                     }
                     const runOnDevice = Main.FlutterDevice !== "none" ? ["run", "-d", Main.FlutterDevice] : ['run'];
-                    const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath});
+                    const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath}, true);
                     handleRunState({state: 'running', process: process});
                 }
             });
