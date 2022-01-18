@@ -1,6 +1,6 @@
 import React from "react";
 import {v4 as uuid} from 'uuid';
-import {TypeToGetValue} from "../../../../../utils/WidgetUtils";
+import {LayoutType, TypeToGetValue} from "../../../../../utils/WidgetUtils";
 
 class FlutterManager {
 
@@ -13,6 +13,7 @@ class FlutterManager {
 
 
     static initialization = [];
+    static variableDescription = [];
 
     static getCode(codePathFile) {
         let result = null;
@@ -25,16 +26,14 @@ class FlutterManager {
         return result;
     }
 
-    static getInitialisation(code)
-    {
+    static getInitialisation(code) {
         const initRegex = new RegExp(/(\/\* IDEAL_INITIALISATION_START \*\/)((.|\s)+?)(\/\* IDEAL_INITIALISATION_END \*\/)/gm);
         const found = code.match(initRegex);
 
         return found[0];
     }
 
-    static findProperties(properties, toFind)
-    {
+    static findProperties(properties, toFind) {
         let result = undefined;
 
         Object.keys(properties).map((key) => {
@@ -55,7 +54,7 @@ class FlutterManager {
             const find = FlutterManager.findProperties(properties, match[2]);
 
             if (find !== undefined) {
-                declaration = TypeToGetValue[find.type](find.value);
+                declaration = TypeToGetValue[find.type](find.value, find.variableName);
             }
 
             let varName = name + match[2];
@@ -63,10 +62,13 @@ class FlutterManager {
                 varName = name;
             }
 
+            if (declaration) {
+                FlutterManager.variableDescription.push(varName + " = " + declaration + ";\n");
+            }
             result.push({
                 before: match[2],
                 name: varName,
-                code:"var " + varName + (declaration !== null ? " = " + declaration : "") + ";"
+                code: "var " + varName + ";"
             });
             code = code.replace(match[0], "");
         }
@@ -91,8 +93,7 @@ class FlutterManager {
         return result;
     }
 
-    static getDeclarationAndSetInitialisation(code, name, properties)
-    {
+    static getDeclarationAndSetInitialisation(code, name, properties) {
         let result = code;
         let initialisation = FlutterManager.getInitialisation(result);
 
@@ -105,8 +106,7 @@ class FlutterManager {
         return declarationsInfo;
     }
 
-    static getName(widget)
-    {
+    static getName(widget) {
         if (!widget.properties.name) {
             return uuid();
         }
@@ -114,14 +114,12 @@ class FlutterManager {
         return widget.properties.name.value;
     }
 
-    static getChildren(declaration)
-    {
+    static getChildren(declaration) {
         declaration.shift();
         return (declaration);
     }
 
-    static widgetToCodeHandlerFormat(widget)
-    {
+    static widgetToCodeHandlerFormat(widget) {
         let code = "";
         let declaration = [];
         let name = "";
@@ -135,11 +133,14 @@ class FlutterManager {
         name = FlutterManager.getName(widget);
         declaration = FlutterManager.getDeclarationAndSetInitialisation(code, name, widget.properties);
 
-        return {code: declaration[0].code, name:declaration[0].name, children:FlutterManager.getChildren(declaration)};
+        return {
+            code: declaration[0].code,
+            name: declaration[0].name,
+            children: FlutterManager.getChildren(declaration)
+        };
     }
 
-    static getAllCode(widgetArray)
-    {
+    static getAllCode(widgetArray) {
         let declarations = [];
         let childDeclarations;
         let MyChild = [];
@@ -158,7 +159,11 @@ class FlutterManager {
                         let variablesString = "";
 
                         childDeclarations.MyChild.map((variable) => {
-                            variablesString += variable.name + ',';
+                            if (widget.layoutType === LayoutType.CHILD) {
+                                variablesString += variable.name;
+                            } else {
+                                variablesString += variable.name + ',';
+                            }
                         });
 
                         // si le IDEAL_CHILD est dans l'initialisation
@@ -171,13 +176,21 @@ class FlutterManager {
 
                         declarations = [...declarations, ...childDeclarations.declarations];
                     }
+                } else if (widget.layoutType === LayoutType.CHILD) {
+                    // si le IDEAL_CHILD est dans l'initialisation
+                    FlutterManager.initialization[index] = FlutterManager.initChild(FlutterManager.initialization[index], "null");
+
+                    // si le IDEAL_CHILD est dans les declarations
+                    declaration.children.map((child) => {
+                        child.code = FlutterManager.initChild(child.code, "null");
+                    });
                 }
                 declarations.push(declaration);
             }
         });
 
 
-        return {declarations: declarations, initialization:FlutterManager.initialization, MyChild: MyChild};
+        return {declarations: declarations, initialization: FlutterManager.initialization, MyChild: MyChild};
     }
 
     static writeCodeLink(code, path) {
@@ -200,15 +213,14 @@ class FlutterManager {
 
         code.initialization.reverse();
 
-        code.declarations.push({code:"var placeholder;", name: "placeholder"});
+        code.declarations.push({code: "var placeholder;", name: "placeholder"});
         code.initialization.push("placeholder = " + jsonData.properties.name.value + ";");
-
-        code.initialization = code.initialization.reduce((prev, next) => {return prev + "\n" + next})
-
+        code.initialization = [...FlutterManager.variableDescription, ...code.initialization];
+        code.initialization = code.initialization.reduce((prev, next) => {
+            return prev + "\n" + next
+        })
         return code;
     }
-
-
 }
 
 export default FlutterManager

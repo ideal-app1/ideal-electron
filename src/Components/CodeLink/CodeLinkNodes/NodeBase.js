@@ -1,7 +1,7 @@
 
 function makeid(length) {
     var result           = [];
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var characters       = 'abcdefghijklmnopqrstuvwxyz';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
         result.push(characters.charAt(Math.floor(Math.random() *
@@ -29,33 +29,37 @@ function getCallbackData(node, inputName) {
     }
 }
 
+
+
 const inheritNodeBase = (func, node) => {
     func.prototype.makeId = makeid;
     func.prototype.callbackTracker = [];
     func.prototype.isOutputACallback = isOutputACallback;
     func.prototype.notACallbackCounter = 0;
     func.prototype.getCallbackData = getCallbackData;
-
+    func.prototype.hasAnnotation = hasAnnotation;
     node.nodeType = func.name;
 
-    function addNewEntry(value) {
-        func.prototype.callbackTracker.push(value);
+
+    function formatPath(node, originalPath) {
+        return originalPath;
+        return path.replaceAll('#BEGINING_PATH', originalPath)
+                   .replaceAll('#VARIABLE_NAME', node['name'])
+
     }
 
-    function removeAnEntry(valueToRemove) {
-        let index = 0;
+    function hasAnnotation(annotations, annotationName) {
+        let found = false;
 
-        for (const value in func.prototype.callbackTracker) {
-            if (value === valueToRemove) {
-                func.prototype.callbackTracker.splice(index, 1);
-                return;
-            }
-            index++;
-        }
+        annotations?.forEach((annotation) => {
+            console.log(annotation.name, annotationName)
+            if (annotation.name === annotationName)
+                found = true;
+        });
+        return found;
     }
 
-    func.prototype.addNewEntry = addNewEntry;
-    func.prototype.removeAnEntry = removeAnEntry;
+    func.prototype.formatPath = formatPath;
 }
 
 

@@ -1,8 +1,8 @@
-var ideal_textfield;
+var ideal_textField;
 var _placeholder;
 
 /* IDEAL_INITIALISATION_START */
-ideal_textfield = new TextField(
+ideal_textField = new TextField(
   decoration: InputDecoration(
     border: InputBorder.none,
     filled: true,

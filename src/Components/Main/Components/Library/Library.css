@@ -1,18 +1,7 @@
-#library {
-    background-color: #292929;
-    height: 100%;
-    padding: 1vh !important;
-    left: 0;
-}
 
 #library .MuiListSubheader-root {
     color: ghostwhite !important;
     font-size: 20px !important;
-}
-
-#library.MuiList-root {
-    position: fixed !important;
-    top: 35px;
 }
 
 #library > li > div {

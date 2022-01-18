@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { LiteGraph, ContextMenu, IContextMenuItem, serializedLGraph} from "litegraph.js"
+import { LiteGraph, } from "litegraph.js"
 import './CodeLink.css';
 import "./litegraph.css"
 import CodeLinkNodeLoader from "./CodeLinkNodeLoader";
 import {Box, Grid, Button, Typography} from "@material-ui/core";
 import BufferSingleton from "./CodeLinkParsing/BufferSingleton";
-import FlutterManager from "../Main/Components/Phone/Tools/FlutterManager";
 import Main from "../Main/Main";
-import Phone from "../Main/Components/Phone/Phone";
 import Dialog from '../Main/Components/Dialog/Dialog';
 import Modal from '../Main/Components/Dialog/Components/Modal/Modal';
 import LoadCodeLinkBlocks from '../Main/Components/Dialog/Components/Modal/Components/LoadCodeLinkBlocks/LoadCodeLinkBlocks';
@@ -16,8 +14,6 @@ import JsonManager from '../Main/Tools/JsonManager';
 import Path from '../../utils/Path';
 import Phones from "../Main/Components/Phones/Phones";
 import Process from '../Main/Components/Menu/Tools/Process';
-
-const { ipcRenderer } = window.require('electron');
 const fs = window.require("fs");
 const app = window.require('electron').remote.app;
 const path = require('path');
@@ -25,15 +21,17 @@ const path = require('path');
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
 import createRValueNode from './CodeLinkNodes/RValueNode';
-import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
+import createMakeListNode from './CodeLinkNodes/SpecialNodes/CreateList';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
+import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
+import TemporaryFile from '../../utils/TemporaryFile';
 
 function CodeLink(props) {
 
     let canvas = null;
     let graph = new LiteGraph.LGraph();
-    let Lcanvas = null;
+    let LCanvas = null;
     let widget = null;
     let widgetList = null;
 
@@ -42,11 +40,32 @@ function CodeLink(props) {
 
     const dialog = Dialog.getInstance();
 
-    const loadOtherWidgets = (widgets) => {
-        widgets.forEach((widget) => {
-            //console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-            loadOtherWidgets(widget.list);
-        });
+    const catchMountError = (func) => {
+      try {
+          func();
+      } catch (e) {
+          console.log(e)
+          props.history.push('/')
+      }
+    };
+
+   /* const loadOtherWidgets = (parsed) => {
+        const firstWidget = Phones.phoneList[Main.selection].getWidgetIdList()?.[0]?.id;
+
+        //Failed to load widgets
+        if (!firstWidget)
+            return;
+        loadAWidget(firstWidget, parsed)
+    }*/
+
+    // Will be enabled when the reworking of the View system will works
+    const loadOtherWidgets = (data, parsed) => {
+
+            data.widgetList.forEach((widget) => {
+                console.log(widget)
+                CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name.value, widget.name, parsed, widget._id, `View0/`)
+
+            })
 
     }
 
@@ -55,28 +74,29 @@ function CodeLink(props) {
 
         widgetList = []
 
-        Phones.phoneList[Main.selection]?.current?.getWidgetIdList().forEach(widget =>
-            widgetList.push(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id))
+        Phones.phoneList[Main.selection]?.getWidgetIdList().forEach(widget =>
+            widgetList.push(Phones.phoneList[Main.selection].findWidgetByID(widget._id))
          );
 
         if (hasBeenCalled) return;
-        loadOtherWidgets(Phones.phoneList[Main.selection].current.getWidgetIdList());
+
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
         }
 
-        widget = Phones.phoneList[Main.selection].current.findWidgetByID(props.match.params.id);
+        widget = Phones.phoneList[Main.selection].findWidgetByID(props.match.params.id);
 
         setHasBeenCalled(true);
     };
 
     useEffect(() => {
         app.allowRendererProcessReuse = false;
-        init();
+        catchMountError(init);
     });
 
-    useConstructor();
+
+    catchMountError(useConstructor);
 
     const loadUserCode = () => {
       try {
@@ -85,7 +105,6 @@ function CodeLink(props) {
           return undefined;
       }
     };
-
     const loadGenericViewAttributes = () => {
         const attribtues = ['this', 'context'];
 
@@ -104,25 +123,30 @@ function CodeLink(props) {
         });
     }
 
+
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
-        const flutterJson = JSON.parse(fs.readFileSync('flutter.json', 'utf-8'));
+        const flutterJson = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
         const safeID = props.match.params.id.replace(/[^a-z]+/g, "");
 
         if (dataJson) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
-        CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+        //CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+
+        loadOtherWidgets(Phones.phoneList[Main.selection].getData(), flutterJson);
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
-        createCallbackWrapper(Lcanvas);
+        createMakeListNode(LCanvas);
+        createForLoopNode(LCanvas);
         afterLoad(className, flutterJson);
     };
 
-    const initNewFile =  (variableName, className, currentpath) => {
+    const initNewFile =  (variableName, className, _) => {
+        CodeLink.deserializationDone = true;
         loadEverything(variableName, className, (className, flutterJson) => {
-            CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
+            CodeLinkNodeLoader.addMainWidgetToView(className, variableName, flutterJson["classes"]);
         })
     };
 
@@ -145,14 +169,20 @@ function CodeLink(props) {
         }, 1000);
     }
 
+
+
+
     const init = () => {
-        console.log(`Deserialize ? ${CodeLink.deserializationDone}`);
         const variableName = props.location.state.variableName.value;
         const className = props.location.state.name;
         const currentPath = path.join(props.location.state.path, props.match.params.id + ".json");
 
-        Lcanvas = new LiteGraph.LGraphCanvas(canvas, graph);
-        CodeLinkNodeLoader.registerLCanvas(Lcanvas);
+        CodeLink.deserializationDone = false
+        LCanvas = new LiteGraph.LGraphCanvas(canvas, graph);
+        //LCanvas.background_image = black
+        LiteGraph.CANVAS_GRID_SIZE = -1
+        console.log(LiteGraph.CANVAS_GRID_SIZE)
+        CodeLinkNodeLoader.registerLCanvas(LCanvas);
         LiteGraph.clearRegisteredTypes();
 
         if (fs.existsSync(currentPath)) {
@@ -164,18 +194,8 @@ function CodeLink(props) {
 
     const savegraph = (event) =>
     {
-        let currentpath = props.location.state.path;
-
         let output = JSON.stringify(event, null, 4);
         fs.writeFileSync(path.join(props.location.state.path, props.match.params.id + '.json'), output);
-    };
-
-    const generate = (element) => {
-        return [0, 1, 2].map((value) =>
-          React.cloneElement(element, {
-              key: value,
-          }),
-        );
     };
 
     const writeCodeLinkData = () => {
@@ -206,7 +226,7 @@ function CodeLink(props) {
         if (!codeLinkBlocks)
             return;
         JsonManager.saveThis({codeLinkUserPath: codeLinkBlocks.dir}, Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-        const indexerArguments = {
+        let indexerArguments = {
             'requestType': 'index',
             'parameters': {
                 'pathToIndex': codeLinkBlocks.dir,
@@ -215,12 +235,14 @@ function CodeLink(props) {
             }
         };
 
+        indexerArguments = TemporaryFile.createSync(JSON.stringify(indexerArguments));
+
         const command = Main.debug ? 'dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' :  'dart pub global run ideal_dart_code_handler ';
-        Process.runScript(command +  JSON.stringify(indexerArguments), () => {
+        Process.runScript(command +  indexerArguments, () => {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
-        });
+        }, {}, true);
     };
 
     return (

@@ -2,7 +2,6 @@ import React from "react";
 import {MapInteractionCSS} from 'react-map-interaction';
 import "./Phones.css"
 import Phone from "../Phone/Phone";
-import Button from "@material-ui/core/Button";
 import Main from "../../Main";
 import JsonManager from "../../Tools/JsonManager";
 import Path from "../../../../utils/Path";
@@ -11,11 +10,12 @@ import { Grid } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
+import PhoneDataObject from "../Phone/DataObject/Phone"
 
 class Phones extends React.Component {
 
     static phoneList = [
-        Phone.createRef(),
+        new PhoneDataObject(),
     ];
 
     constructor(props) {
@@ -29,11 +29,11 @@ class Phones extends React.Component {
 
         if (Main.MainProjectPath !== "" && JsonManager.exist(Path.build(Main.MainProjectPath, 'Ideal_config.json'))) {
             let jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
-            console.log(jsonCode);
 
-            jsonCode.view.map((phone, key) => {
+            jsonCode.view.forEach((phone, key) => {
                 if (!Phones.phoneList[key]) {
-                    Phones.phoneList.push(Phone.createRef());
+                    Phones.phoneList.push(new PhoneDataObject());
+                    Phones.loadByIndex(key);
                     this.setState({phoneListLength: Phones.phoneList.length});
                 }
             });
@@ -66,27 +66,28 @@ class Phones extends React.Component {
             let jsonCode = JsonManager.get(Path.build(Main.MainProjectPath, 'Ideal_config.json'));
 
             if (!Phones.phoneList[index]) {
-                Phones.phoneList.push(Phone.createRef());
+                Phones.phoneList.push(new PhoneDataObject());
             } else {
-                return (jsonCode.view[index]);
+                Phones.phoneList[index].setData(jsonCode.view[index]);
             }
         }
-        return null;
     }
 
     static resetState() {
         Phones.phoneList.map((elem) => {
-            elem.current?.resetState();
+            elem.resetState();
         });
     }
 
+    static actualPhone(index) {
+        return Phones.phoneList[index || Main.selection];
+    }
+
     render() {
-        console.log(Phones.phoneList);
-        console.log(Main.selection);
         let data = "";
 
         if (this.props.phoneId !== null) {
-            data = <Phone disable={false} myId={this.props.phoneId} ref={Phones.phoneList[this.props.phoneId]}/>;
+            data = <Phone disable={false} myId={this.props.phoneId} ref={Phones.phoneList[this.props.phoneId].getRef()}/>;
         } else {
             data = <div style={{textAlign: 'center'}}>
                 <MapInteractionCSS>
@@ -98,9 +99,9 @@ class Phones extends React.Component {
                                         container
                                         className={'phone-toolbar'}
                                         alignItems={'center'}
-                                        justify={'space-between'}>
+                                        justifyContent={'space-between'}>
                                         <DeleteIcon onClick={() => {
-                                            Phones.phoneList[key].current.deleteView();
+                                            Phones.phoneList[key].deleteView();
                                             Phones.phoneList.splice(key, 1);
                                             this.setState({ phoneListLength: Phones.phoneList.length });
                                         }}/>
@@ -108,13 +109,13 @@ class Phones extends React.Component {
                                         <MoreHorizIcon/>
                                     </Grid>
                                     <div onClick={() => {this.props.select(key);}}>
-                                        <Phone disable={true} myId={key} ref={elem}/>
+                                        <Phone disable={true} myId={key} ref={Phones.phoneList[key].getRef()}/>
                                     </div>
                                 </div>
                             );
                         })}
                         <AddIcon style={{fontSize: '6rem', marginTop: '90px'}} onClick={() => {
-                            Phones.phoneList.push(Phone.createRef());
+                            Phones.phoneList.push(new PhoneDataObject());
                             this.setState({phoneListLength: Phones.phoneList.length});
                         }}/>
                     </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import Process from '../Tools/Process';
 import Main from '../../../Main';
@@ -12,7 +12,7 @@ function Emulators() {
 
     const [emulators, setEmulators] = React.useState([]);
     const [devices, setDevices] = React.useState([]);
-    const [selectedPlatform, setSelectedPlatform] = React.useState('');
+    const [selectedPlatform, setSelectedPlatform] = React.useState(Main.FlutterDevice);
 
     const listPlatforms = (platform, setState, setDefault) => {
         Process.runScript(Main.FlutterSDK + " " + platform, (stdout) => {
@@ -25,8 +25,10 @@ function Emulators() {
                 platformList.push({ name: platformInfo[0], id: platformInfo[1] })
             }
             setState(platformList);
-            if (setDefault)
+            if (setDefault) {
                 setSelectedPlatform(platformList[0].id);
+                Main.FlutterDevice = platformList[0].id;
+            }
         });
     }
 
@@ -49,6 +51,15 @@ function Emulators() {
         )
     }
 
+    const refreshPlatforms = () => {
+        setEmulators([]);
+        setDevices([]);
+        setSelectedPlatform('none');
+        Main.FlutterDevice = 'none';
+        listPlatforms('devices', setDevices, true);
+        listPlatforms('emulators', setEmulators);
+    }
+
     return (
         <FormControl>
             <Select
@@ -58,8 +69,14 @@ function Emulators() {
                 variant={'outlined'}
                 MenuProps={{className: 'emulator-list-menu'}}
                 onChange={event => {
+                    if (!event.target.value || emulators.find(x => x.name === event.target.value))
+                        return;
                     setSelectedPlatform(event.target.value);
+                    Main.FlutterDevice = event.target.value;
                 }}>
+                <MenuItem value={'none'} style={{display: 'none'}} disabled>
+                    No devices
+                </MenuItem>
                 <ListSubheader>Devices</ListSubheader>
                 {devices.map((x) => {
                     return <MenuItem key={x.id} value={x.id}>{x.name}</MenuItem>
@@ -69,7 +86,7 @@ function Emulators() {
                     return (
                         <Button key={x.name} value={x.name}
                             onClick={() => {
-                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name);
+                                Process.runScript(Main.FlutterSDK + ' emulator --launch ' + x.name, () => refreshPlatforms());
                             }}>
                             {x.id}
                         </Button>
@@ -78,12 +95,7 @@ function Emulators() {
 
                 { Main.platform !== 'Win32' ? openXcode() : null }
                 <Divider/>
-                <Button onClick={() => {
-                    setEmulators([]);
-                    setDevices([]);
-                    setSelectedPlatform('');
-                    listPlatforms();
-                }}>
+                <Button onClick={() => refreshPlatforms()}>
                     Refresh
                 </Button>
             </Select>

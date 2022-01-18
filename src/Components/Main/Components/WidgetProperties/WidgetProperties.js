@@ -18,6 +18,7 @@ import PropFile from './Components/PropFile';
 import PropAlignment from './Components/PropAlignment';
 import PropSize from './Components/PropSize'
 import PropVarName from './Components/PropVarName';
+import WidgetTabs from '../WidgetTabs/WidgetTabs';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -49,12 +50,10 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        const widget = Phones.phoneList[Main.selection].current.findWidgetByID(id);
-        console.log(Phones.phoneList);
-        console.log(id);
-        console.log(Main.selection);
+        const widget = Phones.phoneList[Main.selection].findWidgetByID(id);
         if (!widget)
             return;
+        Phones.phoneList[Main.selection].selectWidget(widget);
         this.setState({ widget: widget })
     }
 
@@ -65,7 +64,7 @@ class WidgetProperties extends React.Component {
     updateState = (prop, value) => {
         prop.value = value
         this.forceUpdate()
-        Phones.phoneList[Main.selection].current.forceUpdate()
+        Phones.phoneList[Main.selection].forceUpdateRef()
     }
 
     widgetPropType = (widget, prop) => {
@@ -76,6 +75,7 @@ class WidgetProperties extends React.Component {
         }
         let propMap = {
             [PropType.TEXTFIELD]: <PropTextField {...props}/>,
+            [PropType.COLOR]: <PropTextField {...props}/>,
             [PropType.NUMFIELD]: <PropNumField {...props}/>,
             [PropType.CHECKBOX]: <PropCheckBox {...props}/>,
             [PropType.COMBOBOX]: <PropComboBox {...props}/>,
@@ -115,8 +115,6 @@ class WidgetProperties extends React.Component {
                             color="primary"
                             onClick={() => {
 
-                                console.log(`PUSH `);
-                                console.log(this.state.widget)
                                 history.push({
                                     pathname: '/codelink/' + this.state.widget._id,
                                     state: {

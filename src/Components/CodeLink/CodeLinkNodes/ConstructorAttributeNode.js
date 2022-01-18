@@ -3,14 +3,14 @@ import BufferSingleton from "../CodeLinkParsing/BufferSingleton";
 import sharedBuffer from "../CodeLinkParsing/BufferSingleton";
 import inheritNodeBase from "./NodeBase";
 import { useDrag } from 'react-dnd';
+import Path from '../../../utils/Path';
+import NodeTransferData from './NodeTransferData'
 
 const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
     ConstructorAttributeNode.title = param["name"];
     ConstructorAttributeNode.description = param["name"];
 
-    console.log(currentClass);
-    console.log(param);
     function ConstructorAttributeNode() {
         inheritNodeBase(ConstructorAttributeNode, this);
         this.addInput("Linked Class");
@@ -23,28 +23,20 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
     }
 
 
-    function parameterIsFunction(node, index, isConnect) {
-        if (param["type"].toUpperCase().search("FUNC") == -1) {
-            if (isConnect) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        } else {
-            if (isConnect) {
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        }
-    }
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         if (!link)
             return;
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
-        parameterIsFunction(node, index, isConnected);
+        // If it is the first input and that it is connected to the widget
+        // Also check if it is a ClassNode
+        if (isConnected && type === LiteGraph.INPUT &&
+          index === 0 && node.nodeType === 'ClassNode') {
+            this.title = `${node.varName}->${param['name']}`
+        } else if (index === 0) {
+            this.title = param['name']
+        }
 
     };
 
@@ -52,24 +44,20 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
 
 
     ConstructorAttributeNode.prototype.onExecute = function () {
-        const linkedClass = this.getInputData(0);
-        const linkedData = this.getInputData(1);
-        console.log(this.getCallbackData);
-        const codeToAdd = this.getCallbackData(linkedData, param['type']);
+        const linkedClass = this.getInputData(0).parent;
+        const codeToAdd = this.getInputData(1).data.code;
         let buffer = "";
 
 
-        console.log(this.getInputData(0));
-        console.log(this.getInputData(1));
-
-        if (linkedClass === undefined || linkedData === undefined)
+        if (linkedClass === undefined || codeToAdd === undefined)
             return;
         this.varName = `${linkedClass["varName"]}_${param["name"]}`;
         buffer = linkedClass["varName"] + '_' + param["name"] + " = " + codeToAdd + ';\n';
         sharedBuffer.addCode(buffer);
+        this.setOutputData(0, new NodeTransferData(this, {code: this.varName}))
     };
-    console.log("Je crée " + currentClass + " constructor's attributes/" + param["name"]);
-    LiteGraph.registerNodeType(currentClass + " constructor's attributes/" + param["name"], ConstructorAttributeNode);
+    console.log(`Creation of attribute - ${path}`);
+    LiteGraph.registerNodeType(`${path}`, ConstructorAttributeNode);
 };
 export default createConstructorAttributeNode
 

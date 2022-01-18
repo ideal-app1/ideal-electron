@@ -9,7 +9,6 @@ import DisplayWidgetsStyle from "../../Tools/DisplayWidgetsStyle";
 import ContextMenu from '../../../Dialog/Components/ContextMenu/ContextMenu';
 import Dialog from '../../../Dialog/Dialog';
 import Phones from "../../../Phones/Phones";
-import Main from "../../../../Main";
 
 const Layout = props => {
 
@@ -18,28 +17,20 @@ const Layout = props => {
     const [{isOver, isOverCurrent}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
-            if (monitor.didDrop()) {
+            if (monitor.didDrop())
                 return;
-            }
-            const tmpItem = { list: [] }
-            if (item.source === WidgetType.PHONE)
-                tmpItem._id = item._id
-            else
-                tmpItem._id = Phones.phoneList[Main.selection].current.addToWidgetList(item)
-            props.list.push(tmpItem)
-            Phones.phoneList[Main.selection].current.forceUpdate()
+            Phones.actualPhone().addToListByID(props, item);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             isOverCurrent: monitor.isOver({ shallow: true })
         }),
     });
-    console.log(props);
     return (
         <Grid
             container
             direction={props.properties.direction}
-            className={"layout base " + props.name.toLowerCase() + (props.visualizer ? " visualizer" : "")}
+            className={"layout base " + props.name.toLowerCase() + (props.selected ? " selected" : " ") + (props.hover ? " hover" : "") + (Phones.actualPhone(props.myId)?.getVisualiser() ? " visualiser" : "")}
             wrap={"nowrap"}
             style={isOverCurrent ? {...DisplayWidgetsStyle.Display[props.display](props).style, filter: "brightness(85%)"} : {...DisplayWidgetsStyle.Display[props.display](props).style}}
             onClick={(event) => {
@@ -57,7 +48,7 @@ const Layout = props => {
             {
                 props.list.map(id => {
 
-                    const widget = Phones.phoneList[props.myId].current.findWidgetByID(id._id)
+                    const widget = Phones.phoneList[props.myId].findWidgetByID(id._id)
 
                     if (widget && widget.group === WidgetGroup.MATERIAL) {
                         return (<Widget key={widget._id.toString()} {...widget}/>);

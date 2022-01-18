@@ -15,6 +15,10 @@
     border-color: mediumpurple;
 }
 
+.carrouselSlider {
+    border-color: red;
+}
+
 .layout.stack > div {
     position: absolute;
 }
@@ -24,14 +28,6 @@
     min-height: 40px;
     width: auto;
     min-width: 40px;
-}
-
-.layout.carrouselslider {
-    border-color: red;
-}
-
-.layout.base {
-    background-color: white;
 }
 
 .layout.root {

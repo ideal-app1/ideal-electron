@@ -23,25 +23,9 @@ const Widget = props => {
     const [{isOver}, drop] = useDrop({
         accept: WidgetType.LIBRARY,
         drop: (item, monitor) => {
-            if (monitor.didDrop()) {
+            if (monitor.didDrop())
                 return;
-            }
-
-            if (item.applied) {
-                const itemID = Phones.phoneList[Main.selection].current.addToWidgetList(item);
-                Phones.phoneList[Main.selection].current.moveByID(itemID, props._id);
-                const itemApplied = Phones.phoneList[Main.selection].current.findByID(itemID);
-                const itemProps = Phones.phoneList[Main.selection].current.findByID(props._id);
-                itemApplied.child.list.push(itemProps.child);
-                itemApplied.parent.list = itemApplied.parent.list.filter(x => x._id !== props._id);
-                Phones.phoneList[Main.selection].current.forceUpdate();
-            } else if (item.source === WidgetType.PHONE) {
-                Phones.phoneList[Main.selection].current.moveByID(item._id, props._id)
-            } else {
-                const itemID = Phones.phoneList[Main.selection].current.addToWidgetList(item)
-                Phones.phoneList[Main.selection].current.moveByID(itemID, props._id)
-            }
-            Phones.phoneList[Main.selection].current.componentDidUpdate()
+            Phones.actualPhone().moveInListByID(props, item);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -52,7 +36,7 @@ const Widget = props => {
         item: {...props},
         isDragging: monitor => {
             if (state.dragging && monitor.getItem().source === WidgetType.PHONE) {
-                Phones.phoneList[Main.selection].current.removeByID(monitor.getItem()._id)
+                Phones.phoneList[Main.selection].removeByID(monitor.getItem()._id)
                 setState({dragging: false})
             }
         },
@@ -62,7 +46,7 @@ const Widget = props => {
         end: (draggedItem, monitor) => {
             const didDrop = monitor.didDrop();
             if (!didDrop) {
-                Phones.phoneList[Main.selection].current.componentDidUpdate()
+                Phones.phoneList[Main.selection].getRef().current.componentDidUpdate()
                 console.log("Connaître le widget ? " + widget.current)
                 //widget.current.deleteCodelinkFile()
                 console.log('dropped outside');
@@ -77,15 +61,11 @@ const Widget = props => {
 
     return (
         <div
-            className={"widget " + props.name.toLowerCase() + (props.selected ? " selected" : "")}
+            className={"widget " + props.name.toLowerCase() + (props.selected ? " selected" : "") + (props.hover ? " hover" : "")}
             style={isOver ? {...DisplayWidgetsStyle.Display[props.display](props).style, backgroundColor: "#323232"} : DisplayWidgetsStyle.Display[props.display](props).style}
             onClick={(event) => {
                 if (Main.selection !== null && Main.selection >= 0) {
                     event.stopPropagation();
-                    /*console.log('select');
-                    let widget = phone.current.findWidgetByID(props._id);
-                    widget.selected = !widget.selected;
-                    phone.current.forceUpdate();*/
                     WidgetProperties.getInstance().current.handleSelect(props._id);
                 }
             }}
