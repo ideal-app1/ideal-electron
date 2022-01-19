@@ -100,8 +100,11 @@ async function loadLicence() {
             licence = null;
         } else {
             licence = response.data;
-            expiration.setFullYear(licence[0]["expired_at"].split('/')[2]);
-            expiration.setMonth(licence[0]["expired_at"].split('/')[1] - 1);
+            // expiration.setFullYear(licence[0]["expired_at"].split('/')[2]);
+            // expiration.setMonth(licence[0]["expired_at"].split('/')[1] - 1);
+            expiration.setFullYear(licence[0]["created_at"].split('/')[2] + 1);
+            expiration.setMonth(licence[0]["created_at"].split('/')[1] - 1);
+            console.log(licence, expiration);
             await setCookie(JSON.stringify(response.data), "licence", expiration);
         }
     } catch (error) {

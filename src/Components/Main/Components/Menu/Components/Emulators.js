@@ -25,18 +25,21 @@ function Emulators() {
                 platformList.push({ name: platformInfo[0], id: platformInfo[1] })
             }
             setState(platformList);
-            if (setDefault) {
+
+            if (setDefault && platformList.length > 0) {
                 setSelectedPlatform(platformList[0].id);
                 Main.FlutterDevice = platformList[0].id;
             }
         });
     }
 
-    if (devices.length === 0)
-        listPlatforms('devices', setDevices, true);
+    if (Main.FlutterSDK != "") {
+        if (devices.length === 0)
+            listPlatforms('devices', setDevices, true);
 
-    if (emulators.length === 0)
-        listPlatforms('emulators', setEmulators);
+        if (emulators.length === 0)
+            listPlatforms('emulators', setEmulators);
+    }
 
     const openXcode = () => {
         return (
