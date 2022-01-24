@@ -31,11 +31,12 @@ class Main extends React.Component {
     static CurrentView = 'Main';
     static FlutterSDK = "";
     static FlutterRoot = '';
-    static FlutterDevice = 'none';
     static fs = window.require('fs');
     static debug = false;
     static selection = 0;
     static platform = window.navigator.platform;
+    static FlutterDevice = {selected: 'none', emulators: [], devices: []};
+    static FlutterProcess = {state: 'stopped', process: null};
 
     componentDidMount() {
         try {

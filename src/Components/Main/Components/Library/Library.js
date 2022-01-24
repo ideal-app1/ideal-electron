@@ -6,7 +6,6 @@ import {LayoutType, PropType, WidgetGroup, WidgetType} from "../../../../utils/W
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import Divider from "@material-ui/core/Divider";
 import DisplayWidgetsStyle from "../Phone/Tools/DisplayWidgetsStyle";
 import {Search} from "@material-ui/icons";
 import { Grid, InputAdornment } from '@material-ui/core';
@@ -39,8 +38,22 @@ export const Library = (props) => {
                 // {name: 'stretch', value: 'CrossAxisAlignment.stretch', style: 'stretch'}
             ]
         },
-        size: (w, h) => {
+        ratioSize: (w, h) => {
             return { value: {w: w || 0, h: h || 0, lockRatio: false}, type: PropType.SIZE }
+        },
+        size: (w, h) => {
+            return {
+                width: {
+                    value: w,
+                    type: PropType.NUMFIELD,
+                    variableName: "_width",
+                },
+                height: {
+                    value: h,
+                    type: PropType.NUMFIELD,
+                    variableName: "_height",
+                }
+            }
         }
     }
 
@@ -60,6 +73,13 @@ export const Library = (props) => {
                 crossAxisAlignment: defaultProperties.crossAxisAlignment
             },
             layoutType: LayoutType.CHILDREN,
+            propsLayout: [
+                {
+                    groupName: 'Alignment',
+                    items: ['mainAxisAlignment', 'crossAxisAlignment'],
+                    layout: 'group'
+                }
+            ],
             display: DisplayWidgetsStyle.DisplayKeys.Column,
         },
         row: {
@@ -245,6 +265,13 @@ export const Library = (props) => {
                     variableName: "_height",
                 }
             },
+            propsLayout: [
+                {
+                    groupName: 'Size',
+                    items: ['width', 'height'],
+                    layout: 'group'
+                }
+            ],
             display: DisplayWidgetsStyle.DisplayKeys.Button
         },
         //IconButton
@@ -303,8 +330,15 @@ export const Library = (props) => {
                     value: true,
                     type: PropType.CHECKBOX
                 },
-                size: defaultProperties.size(200, 200)
+                ...defaultProperties.size(200, 150)
             },
+            propsLayout: [
+                {
+                    groupName: 'Size',
+                    items: ['width', 'height'],
+                    layout: 'group'
+                }
+            ],
             display: DisplayWidgetsStyle.DisplayKeys.Image
         }
     }
@@ -327,7 +361,7 @@ export const Library = (props) => {
     const groupSection = (group) => {
         return (
             <Fragment key={group.name}>
-                <ListSubheader>{group.name}</ListSubheader>
+                <ListSubheader disableSticky >{group.name}</ListSubheader>
                 {
                     Object.values(group.widgets).map(widget =>
                     ( filterWidget(widget, searchQuery) ? (
@@ -377,7 +411,9 @@ export const Library = (props) => {
                     }}
                 />
             </Grid>
-            {groups.map(groupSection)}
+            <div className={"library-items"}>
+                {groups.map(groupSection)}
+            </div>
         </List>
     )
 }
