@@ -18,7 +18,8 @@ import PropFile from './Components/PropFile';
 import PropAlignment from './Components/PropAlignment';
 import PropSize from './Components/PropSize'
 import PropVarName from './Components/PropVarName';
-import WidgetTabs from '../WidgetTabs/WidgetTabs';
+import PropsGroupItem from './Tools/PropsGroupItem';
+import PropsGridItem from './Tools/PropsGridItem';
 
 const fs = window.require('fs');
 const { ipcRenderer } = window.require('electron');
@@ -50,10 +51,10 @@ class WidgetProperties extends React.Component {
     }
 
     handleSelect = id => {
-        const widget = Phones.phoneList[Main.selection].findWidgetByID(id);
+        const widget = Phones.actualPhone().findWidgetByID(id);
         if (!widget)
             return;
-        Phones.phoneList[Main.selection].selectWidget(widget);
+        Phones.actualPhone().selectWidget(widget);
         this.setState({ widget: widget })
     }
 
@@ -64,12 +65,13 @@ class WidgetProperties extends React.Component {
     updateState = (prop, value) => {
         prop.value = value
         this.forceUpdate()
-        Phones.phoneList[Main.selection].forceUpdateRef()
+        Phones.actualPhone().forceUpdateRef()
     }
 
-    widgetPropType = (widget, prop) => {
+    widgetPropType = (prop, name) => {
         const props = {
-            widget: widget,
+            widget: this.state.widget,
+            name: name,
             prop: prop,
             updateState: this.updateState
         }
@@ -99,11 +101,9 @@ class WidgetProperties extends React.Component {
     onCodelink = () => {
 
         this.state.widget.codelink = Path.build(Main.MainProjectPath, ".ideal_project", "codelink", `View${Main.selection}`, this.state.widget._id, );
-        let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
-        return;
-
-        fs.mkdirSync(this.state.widget.codelink, {recursive: true});
-        this.createFile(fullPath)
+        //let fullPath = Path.build(this.state.widget.codelink, this.state.widget._id + '.json');
+        //fs.mkdirSync(this.state.widget.codelink, {recursive: true});
+        //this.createFile(fullPath)
     }
 
     codeLinkButton = () => {
@@ -132,42 +132,55 @@ class WidgetProperties extends React.Component {
         );
     }
 
+    isInPropsList = (key) => {
+        let tmpPropList = [];
+        this.state.widget.propsLayout?.map(propGroup => {
+            tmpPropList = tmpPropList.concat(propGroup.items);
+        });
+        return tmpPropList.find(x => x === key)
+    }
+
+    propsDisplay = () => {
+        return (
+            <Fragment>
+                {
+                    Object.entries(this.state.widget.properties)
+                        .filter(([_, value]) => value.type !== PropType.HIDDEN)
+                        .filter(([key, _]) => !this.isInPropsList(key))
+                        .filter(([key, _]) => key !== 'name')
+                        .map(([key, value]) => <PropsGridItem
+                                key={this.state.widget._id + key}
+                                prop={value}
+                                name={key}
+                                widgetPropType={this.widgetPropType}
+                            />
+                        )
+                }
+                {
+                    this.state.widget.propsLayout?.map(propGroup =>
+                        <PropsGroupItem
+                            key={this.state.widget._id + propGroup.groupName}
+                            group={propGroup}
+                            widget={this.state.widget}
+                            widgetPropType={this.widgetPropType}
+                        />
+                    )
+                }
+            </Fragment>
+        )
+    }
+
     onSelection = () => {
         if (this.state.widget) {
             this.onCodelink()
             return (
               <Fragment>
                   <Grid item className={'GridSubheader-root'}>{this.state.widget.name}</Grid>
-                  <Grid
-                      container
-                      item
-                      direction={'row'}
-                      alignItems={'center'}
-                      justifyContent={'space-between'}>
-                      <div className={"property-name-" + this.state.widget.group}>group</div>
-                      {this.state.widget.group}
+                  <Grid item className={'property-item-name'} key={this.state.widget._id + 'name'}>
+                      {this.widgetPropType(this.state.widget.properties['name'])}
                   </Grid>
                   <Divider/>
-                  {
-                      Object.entries(this.state.widget.properties).map(([key, value]) => {
-                          if (value.type !== PropType.HIDDEN) {
-                              return (
-                                  <Fragment key={this.state.widget._id + key}>
-                                      <Grid
-                                          container
-                                          item
-                                          direction={'row'}
-                                          alignItems={'center'}
-                                          justifyContent={'space-between'}>
-                                          <div className={"property-name-" + this.state.widget.group}>{key}</div>
-                                          {this.widgetPropType(this.state.widget, value)}
-                                      </Grid>
-                                      <Divider/>
-                                  </Fragment>
-                              );
-                          }
-                      })
-                  }
+                  {this.propsDisplay()}
                   {this.codeLinkButton()}
               </Fragment>
             );

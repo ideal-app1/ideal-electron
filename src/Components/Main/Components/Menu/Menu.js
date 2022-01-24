@@ -58,10 +58,11 @@ import { verbose } from 'electron-log';
 //TODO renommer cette class
 export default function Menu(props) {
 
-    const [run, setRun] = React.useState({state: 'stopped', process: null});
+    const [run, setRun] = React.useState(Main.FlutterProcess);
 
     const handleRunState = (state) => {
         setRun(state);
+        Main.FlutterProcess = state;
     };
 
     const dialog = Dialog.getInstance();
@@ -210,7 +211,7 @@ export default function Menu(props) {
                         handleRunState({...run, state: 'running'});
                         return;
                     }
-                    const runOnDevice = Main.FlutterDevice !== "none" ? ["run", "-d", Main.FlutterDevice] : ['run'];
+                    const runOnDevice = Main.FlutterDevice.selected !== "none" ? ["run", "-d", Main.FlutterDevice.selected] : ['run'];
                     const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath}, true);
                     handleRunState({state: 'running', process: process});
                 }

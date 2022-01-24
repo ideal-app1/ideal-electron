@@ -59,7 +59,6 @@ const CreateProject = props => {
                         <TextField
                             label={"Name"}
                             variant={"outlined"}
-                            defaultValue={values.name}
                             value={values.name}
                             onChange={event => {
                                 setValues({...values, name: event.target.value.toLowerCase()});

@@ -12,8 +12,12 @@
     top: 35px;
 }
 
-.widget-properties .MuiGrid-item {
-    min-height: 45px;
+.widget-properties .MuiFormControl-root.MuiTextField-root {
+    width: 100% !important;
+}
+
+.widget-properties .MuiFormControl-root {
+    width: 100% !important;
 }
 
 .widget-properties .MuiInputBase-input {
@@ -21,7 +25,7 @@
 }
 
 .widget-properties .MuiOutlinedInput-input {
-    padding: 6px 7px !important;
+    padding: 10px 8px !important;
 }
 
 .widget-properties .GridSubheader-root {
@@ -30,18 +34,32 @@
     font-weight: 600 !important;
 }
 
+.widget-properties .GridSubheader-group {
+    color: ghostwhite !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+}
+
 .property-name-material {
     text-transform: capitalize;
     color: #8b8b8b !important;
+    margin-bottom: 5px;
 }
 
 .property-name-layout {
     text-transform: capitalize;
     color: #8b8b8b !important;
+    margin-bottom: 5px;
 }
 
-.widget-properties .MuiDivider-root {
-    margin: 2px 0 !important;
+.widget-properties .property-item {
+    margin: 10px 0 !important;
+    min-height: 45px;
+}
+
+.widget-properties .property-item-name {
+    margin: 15px 0 !important;
 }
 
 #no-selection {

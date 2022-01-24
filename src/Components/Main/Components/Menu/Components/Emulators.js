@@ -10,9 +10,9 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 function Emulators() {
 
-    const [emulators, setEmulators] = React.useState([]);
-    const [devices, setDevices] = React.useState([]);
-    const [selectedPlatform, setSelectedPlatform] = React.useState(Main.FlutterDevice);
+    const [emulators, setEmulators] = React.useState(Main.FlutterDevice.emulators);
+    const [devices, setDevices] = React.useState(Main.FlutterDevice.devices);
+    const [selectedPlatform, setSelectedPlatform] = React.useState(Main.FlutterDevice.selected);
 
     const listPlatforms = (platform, setState, setDefault) => {
         Process.runScript(Main.FlutterSDK + " " + platform, (stdout) => {
@@ -25,9 +25,10 @@ function Emulators() {
                 platformList.push({ name: platformInfo[0], id: platformInfo[1] })
             }
             setState(platformList);
+            Main.FlutterDevice[platform] = platformList;
             if (setDefault) {
                 setSelectedPlatform(platformList[0].id);
-                Main.FlutterDevice = platformList[0].id;
+                Main.FlutterDevice.selected = platformList[0].id;
             }
         });
     }
@@ -54,7 +55,7 @@ function Emulators() {
         setEmulators([]);
         setDevices([]);
         setSelectedPlatform('none');
-        Main.FlutterDevice = 'none';
+        Main.FlutterDevice = {selected: 'none', emulators: [], devices: []};
         listPlatforms('devices', setDevices, true);
         listPlatforms('emulators', setEmulators);
     }
@@ -71,7 +72,7 @@ function Emulators() {
                     if (!event.target.value || emulators.find(x => x.name === event.target.value))
                         return;
                     setSelectedPlatform(event.target.value);
-                    Main.FlutterDevice = event.target.value;
+                    Main.FlutterDevice.selected = event.target.value;
                 }}>
                 <MenuItem value={'none'} style={{display: 'none'}} disabled>
                     No devices
