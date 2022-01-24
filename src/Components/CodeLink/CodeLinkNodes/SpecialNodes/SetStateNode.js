@@ -12,8 +12,10 @@ const createSetStateNode = () => {
 
   function SetStateNode() {
     inheritNodeBase(SetStateNode, this);
+    this.addInput(' do', '', {'shape': LiteGraph.ARROW_SHAPE});
     this.addInput("Function");
-    this.addOutput("", LiteGraph.ACTION, {'color_on': '#FF7F7F'});
+    this.addOutput('next', '', {'shape': LiteGraph.ARROW_SHAPE});
+
 
 
 
@@ -32,6 +34,7 @@ const createSetStateNode = () => {
     const code = `() => ${data.callbackCode}()`;
 
     sharedBuffer.addCode(code);
+
     this.setOutputData(0, new NodeTransferData(this, {code: this.varName}));
     //sharedBuffer.addImport(NodeInfos['import']);
   };

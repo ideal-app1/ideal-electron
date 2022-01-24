@@ -21,12 +21,11 @@ const path = require('path');
 import createSetStateNode from './CodeLinkNodes/SpecialNodes/SetStateNode';
 import createInnerClassVariable from './CodeLinkNodes/SpecialNodes/InnerClassVariablesNode';
 import createRValueNode from './CodeLinkNodes/RValueNode';
-import createCallbackWrapper from './CodeLinkNodes/SpecialNodes/CallbackWrapper';
+import createMakeListNode from './CodeLinkNodes/SpecialNodes/CreateList';
 import Loading from '../Main/Components/Dialog/Components/Loading/Loading';
 import CloseIcon from '@material-ui/icons/Close';
 import createForLoopNode from './CodeLinkNodes/SpecialNodes/ForLoopNode';
 import TemporaryFile from '../../utils/TemporaryFile';
-
 
 function CodeLink(props) {
 
@@ -50,14 +49,23 @@ function CodeLink(props) {
       }
     };
 
+   /* const loadOtherWidgets = (parsed) => {
+        const firstWidget = Phones.phoneList[Main.selection].getWidgetIdList()?.[0]?.id;
+
+        //Failed to load widgets
+        if (!firstWidget)
+            return;
+        loadAWidget(firstWidget, parsed)
+    }*/
+
     // Will be enabled when the reworking of the View system will works
-    const loadOtherWidgets = (widgets, parsed) => {
-        return;
-        widgets.forEach((widget) => {
-            console.log(Phones.phoneList[Main.selection].current.findWidgetByID(widget._id));
-            CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name, widget.name, parsed, widget._id, `View0/`)
-            loadOtherWidgets(widget.list, parsed);
-        });
+    const loadOtherWidgets = (data, parsed) => {
+
+            data.widgetList.forEach((widget) => {
+                console.log(widget)
+                CodeLinkNodeLoader.loadClassAndAttributes(widget.properties.name.value, widget.name, parsed, widget._id, `View0/`)
+
+            })
 
     }
 
@@ -71,8 +79,7 @@ function CodeLink(props) {
          );
 
         if (hasBeenCalled) return;
-        const parsed = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
-        loadOtherWidgets(Phones.phoneList[Main.selection].getWidgetIdList(), parsed);
+
 
         if (fs.existsSync(props.location.state.path) === false) {
             fs.mkdirSync(props.location.state.path, {recursive: true});
@@ -98,7 +105,6 @@ function CodeLink(props) {
           return undefined;
       }
     };
-
     const loadGenericViewAttributes = () => {
         const attribtues = ['this', 'context'];
 
@@ -117,6 +123,7 @@ function CodeLink(props) {
         });
     }
 
+
     const loadEverything =  (variableName, className,  afterLoad) => {
         const dataJson = loadUserCode();
         const flutterJson = JSON.parse(fs.readFileSync(Path.build(Main.IdealDir, 'codelink', 'indexer', 'FlutterSDKIndex', 'data.json'), 'utf-8'));
@@ -125,11 +132,13 @@ function CodeLink(props) {
         if (dataJson) {
             CodeLinkNodeLoader.loadEveryKnownNodes(dataJson, className, safeID);
         }
-        CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+        //CodeLinkNodeLoader.loadClassAndAttributes(variableName, className, flutterJson, safeID);
+
+        loadOtherWidgets(Phones.phoneList[Main.selection].getData(), flutterJson);
         createSetStateNode();
         loadGenericViewAttributes();
         loadRValues();
-        createCallbackWrapper(LCanvas);
+        createMakeListNode(LCanvas);
         createForLoopNode(LCanvas);
         afterLoad(className, flutterJson);
     };
@@ -137,7 +146,7 @@ function CodeLink(props) {
     const initNewFile =  (variableName, className, _) => {
         CodeLink.deserializationDone = true;
         loadEverything(variableName, className, (className, flutterJson) => {
-            CodeLinkNodeLoader.addMainWidgetToView(className, flutterJson["classes"]);
+            CodeLinkNodeLoader.addMainWidgetToView(className, variableName, flutterJson["classes"]);
         })
     };
 
@@ -170,6 +179,9 @@ function CodeLink(props) {
 
         CodeLink.deserializationDone = false
         LCanvas = new LiteGraph.LGraphCanvas(canvas, graph);
+        //LCanvas.background_image = black
+        LiteGraph.CANVAS_GRID_SIZE = -1
+        console.log(LiteGraph.CANVAS_GRID_SIZE)
         CodeLinkNodeLoader.registerLCanvas(LCanvas);
         LiteGraph.clearRegisteredTypes();
 
@@ -230,7 +242,7 @@ function CodeLink(props) {
             LiteGraph.clearRegisteredTypes();
             loadEverything(props.location.state.variableName.value, props.location.state.name, () => {});
             dialog.current.unsetDialog();
-        });
+        }, {}, true);
     };
 
     return (

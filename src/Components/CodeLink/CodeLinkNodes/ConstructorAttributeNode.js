@@ -23,28 +23,20 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
     }
 
 
-    function parameterIsFunction(node, index, isConnect) {
-        if (param["type"].toUpperCase().search("FUNC") == -1) {
-            if (isConnect) {
-                node.addNewEntry(false);
-            } else {
-                node.removeAnEntry(false);
-            }
-        } else {
-            if (isConnect) {
-                node.addNewEntry(true);
-            } else {
-                node.removeAnEntry(true);
-            }
-        }
-    }
 
     ConstructorAttributeNode.prototype.onConnectionsChange = function (type, index, isConnected, link, ioSlot) {
         if (!link)
             return;
         const node = LCanvas.graph.getNodeById(link.origin_id);
 
-        parameterIsFunction(node, index, isConnected);
+        // If it is the first input and that it is connected to the widget
+        // Also check if it is a ClassNode
+        if (isConnected && type === LiteGraph.INPUT &&
+          index === 0 && node.nodeType === 'ClassNode') {
+            this.title = `${node.varName}->${param['name']}`
+        } else if (index === 0) {
+            this.title = param['name']
+        }
 
     };
 
@@ -64,7 +56,8 @@ const createConstructorAttributeNode = (currentClass, param, LCanvas, path) => {
         sharedBuffer.addCode(buffer);
         this.setOutputData(0, new NodeTransferData(this, {code: this.varName}))
     };
-    LiteGraph.registerNodeType(`${path}${currentClass} constructor's attributes/${param["name"]}`, ConstructorAttributeNode);
+    console.log(`Creation of attribute - ${path}`);
+    LiteGraph.registerNodeType(`${path}`, ConstructorAttributeNode);
 };
 export default createConstructorAttributeNode
 
