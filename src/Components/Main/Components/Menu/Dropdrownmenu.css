@@ -58,8 +58,12 @@ a {
     justify-content: center;
 }
 
-.MuiBadge-colorPrimary {
+.running .MuiBadge-colorPrimary {
     background-color: #57b53f !important;
+}
+
+.MuiBadge-colorPrimary  {
+    background-color: #fad010 !important;
 }
 
 /* Icon Button */

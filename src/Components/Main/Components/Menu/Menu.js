@@ -204,19 +204,31 @@ export default function Menu(props) {
         if (Main.debug)
             Process.runScript('dart C:\\Users\\axela\\IdeaProjects\\codelink-dart-indexer\\bin\\ideal_dart_code_handler.dart ' + TemporaryFile.createSync(JSON.stringify(data)), () => {});
         else
-            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => {
-                if (jsonCode.view.length > 0) {
-                    if (run.process) {
-                        run.process.stdin.write(keyCommand + '\n');
-                        handleRunState({...run, state: 'running'});
-                        return;
-                    }
-                    const runOnDevice = Main.FlutterDevice.selected !== "none" ? ["run", "-d", Main.FlutterDevice.selected] : ['run'];
-                    const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath}, true);
-                    handleRunState({state: 'running', process: process});
+            Process.runScript('dart pub global run ideal_dart_code_handler ' + TemporaryFile.createSync(JSON.stringify(data)), () => runFlutterProcess(jsonCode, keyCommand));
+    };
+
+    const runFlutterProcess = (jsonCode, keyCommand) => {
+        if (jsonCode.view.length > 0) {
+            if (run.process && keyCommand) {
+                if (run.process.stdin.writable) {
+                    run.process.stdin.write(keyCommand + '\n');
+                    handleRunState({ ...run, state: 'running' });
+                    return;
+                } else {
+                    handleRunState({ process: null, state: 'stopped' });
+                    return;
+                }
+            }
+            const runOnDevice = Main.FlutterDevice.selected !== "none" ? ["run", "-d", Main.FlutterDevice.selected] : ['run'];
+            const process = Process.runScriptBySpawn(Main.FlutterSDK, runOnDevice,{cwd: Main.MainProjectPath}, true);
+            handleRunState({state: 'loading', process: process});
+            process.stdout.on('data', (data) => {
+                if (data.toString().includes('Flutter run key commands.')) {
+                    handleRunState({ state: 'running', process: process});
                 }
             });
-    };
+        }
+    }
 
     const runProject = (keyCommand) => {
         if (!Main.fs.existsSync(Main.MainProjectPath))
@@ -255,6 +267,7 @@ export default function Menu(props) {
         const states = {
             stopped: <PlayArrowIcon onClick={runProject} />,
             building: <RefreshIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            loading: <RefreshIcon style={{animation: 'spin 1s infinite linear'}} onClick={() => {runProject()}} />,
             running: <RefreshIcon onClick={() => {runProject()}} />
         }
         return states[run.state];
@@ -269,6 +282,7 @@ export default function Menu(props) {
         const states = {
             stopped: <StopIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
             building: <StopIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            loading: <StopIcon style={{fill: '#e35c4c'}} onClick={stopProject}/>,
             running: <StopIcon style={{fill: '#e35c4c'}} onClick={stopProject}/>
         }
         return states[run.state];
@@ -278,6 +292,7 @@ export default function Menu(props) {
         const states = {
             stopped: <FlashOnIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
             building: <FlashOnIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
+            loading: <FlashOnIcon style={{fill: 'rgba(255,255,255,0.25)'}}/>,
             running: <FlashOnIcon style={{fill: '#fad010'}} onClick={() => {
                 runProject(keyCommands.HOT_RESTART)}}/>
         }
@@ -296,7 +311,11 @@ export default function Menu(props) {
                     <NavItem icon={<PlusIcon onClick={newProject}/>}/>
                     <Emulators/>
                     <NavItem icon={
-                        <Badge color={'primary'} variant="dot" invisible={run.state === 'stopped'}>
+                        <Badge
+                            color={'primary'}
+                            className={run.state === 'running' ? run.state : ''}
+                            variant="dot"
+                            invisible={run.state === 'stopped'}>
                             {runProjectButton()}
                         </Badge>
                     }/>
