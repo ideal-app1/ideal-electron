@@ -208,7 +208,9 @@ class FlutterManager {
     }
 
     static formatDragAndDropToCodeHandler(jsonData, path) {
+        console.log(jsonData);
         FlutterManager.initialization = [];
+        FlutterManager.variableDescription = [];
         const code = FlutterManager.getAllCode([jsonData]);
 
         code.initialization.reverse();
@@ -219,6 +221,7 @@ class FlutterManager {
         code.initialization = code.initialization.reduce((prev, next) => {
             return prev + "\n" + next
         })
+        console.log(code);
         return code;
     }
 }
