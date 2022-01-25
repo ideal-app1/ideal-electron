@@ -11,7 +11,7 @@ const LibraryItem = props => {
     const [{isDragging}, drag] = useDrag({
         item: {...props},
         begin: () => {
-            safeTimeout = setTimeout(() => WidgetTabs.getInstance().current.handleTab(1), 500);
+            safeTimeout = setTimeout(() => WidgetTabs.getInstance().current.handleTab(1), 400);
 
         },
         end: (draggedItem, monitor) => {

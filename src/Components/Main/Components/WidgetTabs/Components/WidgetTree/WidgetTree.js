@@ -3,6 +3,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { TreeView } from '@material-ui/lab';
 import { RenderTree } from './Components/RenderTree';
+import { WidgetGroup, WidgetType } from '../../../../../../utils/WidgetUtils';
 
 const WidgetTree = (props) => {
 
@@ -10,7 +11,7 @@ const WidgetTree = (props) => {
     const [selected, setSelected] = React.useState([]);
 
     React.useEffect(() => {
-        setExpanded(['root', ...props.expanded]);
+        setExpanded([WidgetType.ROOT, ...props.expanded]);
     }, [props.expanded]);
 
     const handleToggle = (event, nodeIds) => {
@@ -22,10 +23,12 @@ const WidgetTree = (props) => {
     };
 
     const data = {
-        _id: 'root',
-        key: 'root',
+        _id: WidgetType.ROOT,
+        type: WidgetType.ROOT,
+        group: WidgetGroup.LAYOUT,
         name: 'Scaffold',
-        list: props.data.list
+        list: props.data.list,
+        root: true
     }
 
     return (

@@ -180,8 +180,8 @@ class DisplayWidgetsStyle extends React.Component {
             return {
                 style: {
                     borderRadius: widget.properties.rounded.value ? "20px" : "0",
-                    width: widget.properties.size.value.w,
-                    height: widget.properties.size.value.h,
+                    width: widget.properties.width.value + "px",
+                    height: widget.properties.height.value + "px",
                     backgroundImage: widget.properties.url.value ? `url(${widget.properties.url.value})` : null,
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'contain'
