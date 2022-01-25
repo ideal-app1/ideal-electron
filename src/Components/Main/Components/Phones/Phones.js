@@ -101,7 +101,7 @@ class Phones extends React.Component {
                                         alignItems={'center'}
                                         justifyContent={'space-between'}>
                                         <DeleteIcon onClick={() => {
-                                            Phones.phoneList[key].deleteView();
+                                            Phones.phoneList[key].deleteView(key);
                                             Phones.phoneList.splice(key, 1);
                                             this.setState({ phoneListLength: Phones.phoneList.length });
                                         }}/>

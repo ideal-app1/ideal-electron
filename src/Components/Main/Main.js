@@ -36,6 +36,7 @@ class Main extends React.Component {
     static debug = false;
     static selection = 0;
     static platform = window.navigator.platform;
+    static flutterProcess = {state: 'stopped', process: null};
 
     componentDidMount() {
         try {

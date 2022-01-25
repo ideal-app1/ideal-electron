@@ -35,9 +35,9 @@ export default class Phone {
         this.historyChange = false;
     }
 
-    deleteView() {
+    deleteView(myId) {
         let data = JsonManager.get(Path.build(Main.MainProjectPath, "Ideal_config.json"));
-        data.view.splice(this.props.myId, 1);
+        data.view.splice(myId, 1);
         JsonManager.saveThis(data, Path.build(Main.MainProjectPath, "Ideal_config.json"));
     }
 

@@ -58,9 +58,10 @@ import { verbose } from 'electron-log';
 //TODO renommer cette class
 export default function Menu(props) {
 
-    const [run, setRun] = React.useState({state: 'stopped', process: null});
+    const [run, setRun] = React.useState(Main.flutterProcess);
 
     const handleRunState = (state) => {
+        Main.flutterProcess = state;
         setRun(state);
     };
 
