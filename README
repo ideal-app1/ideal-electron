@@ -1,9 +1,10 @@
+EPITECH INOVATIVE PROJECT 2022
+
 ## HOW TO MAKE IDEAL WORKS:
 npm install --global yarn
 npm install
 (if npm install fails: npm install --legacy-peer-deps)
-npm install -g electron
-npm install -g foreman
+
 
 ## START IDEAL
 npm start
